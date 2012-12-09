@@ -46,10 +46,10 @@
 #define fbo
 
 // xinerama support, required libXinerama
-#define xinerama
+//#define xinerama
 
 // joystick support, required SDL compilled with "joystick" flag
-#define joystick
+//#define joystick
 
 // separate thread for music during data loading (based on SDL multithread implementation)
 #define multithread
