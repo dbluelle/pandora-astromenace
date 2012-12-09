@@ -64,12 +64,20 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		if (Bytes == 4)
 		{	// компрессия 4 к 1
 			Format = GL_RGBA;
+#ifdef USE_GLES
+			InternalFormat = Format;
+#else
 			InternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
 		}
 		else
 		{	// компрессия 6 к 1
 			Format = GL_RGB;
+#ifdef USE_GLES
+			InternalFormat = Format;
+#else
 			InternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+#endif
 		}
 	}
 	else
@@ -77,12 +85,20 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		if (Bytes == 4)
 		{
 			Format = GL_RGBA;
+#ifdef USE_GLES
+			InternalFormat = Format;
+#else
 			InternalFormat = GL_RGBA8;
+#endif
 		}
 		else
 		{	// считаем 4 слоя (фактически их задействуем)
 			Format = GL_RGB;
+#ifdef USE_GLES
+			InternalFormat = Format;
+#else
 			InternalFormat = GL_RGB8;
+#endif
 		}
 	}
 
@@ -115,7 +131,11 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		else
 		{
 			// делаем через glu...
+#ifdef USE_GLES
+			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, GLES2D_p2(Width), GLES2D_p2(Height), Format, GL_UNSIGNED_BYTE, ustDIB);
+#else
 			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, Width, Height, Format, GL_UNSIGNED_BYTE, ustDIB);
+#endif
 		}
 	}
 	else // без мипмепов
@@ -543,10 +563,17 @@ void vw_GetTextureImage(eTexture *Texture, void *bits, int BPP)
 
 	vw_BindTexture(0, Texture->TextureID);
 
+#ifdef USE_GLES
+	if (BPP == 4)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLES2D_p2(Texture->Width), GLES2D_p2(Texture->Height), 0, GL_RGBA, GL_UNSIGNED_BYTE, bits);
+	else
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, GLES2D_p2(Texture->Width), GLES2D_p2(Texture->Height), 0, GL_RGB, GL_UNSIGNED_BYTE, bits);
+#else
 	if (BPP == 4)
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, bits);
 	else
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, bits);
+#endif
 }
 
 
@@ -556,7 +583,9 @@ void vw_GetTextureImage(eTexture *Texture, void *bits, int BPP)
 //------------------------------------------------------------------------------------
 void vw_SetPrioritizeTextures(GLuint TextureID, float Prior)
 {
+#ifndef USE_GLES
 	glPrioritizeTextures( 1, &TextureID, &Prior);
+#endif
 }
 
 
@@ -566,9 +595,11 @@ void vw_SetPrioritizeTextures(GLuint TextureID, float Prior)
 //------------------------------------------------------------------------------------
 void vw_GetPrioritizeTextures(GLuint TextureID, float *Prior)
 {
+#ifndef USE_GLES
 	vw_BindTexture(0, TextureID);
 	glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, Prior);
 	vw_BindTexture(0, 0);
+#endif
 }
 
 

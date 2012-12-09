@@ -36,8 +36,11 @@ PFNGLISVERTEXARRAYPROC 			glIsVertexArrayARB = NULL;
 
 
 void vw_SendVertices_DisableStatesAndPointers(int DataFormat, unsigned int *VBO, unsigned int *VAO);
+#ifdef USE_GLES
+GLushort *vw_SendVertices_EnableStatesAndPointers(int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, GLushort RangeStart, GLushort *DataIndex, unsigned int *DataIndexVBO);
+#else
 GLuint *vw_SendVertices_EnableStatesAndPointers(int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, unsigned int RangeStart, unsigned int *DataIndex, unsigned int *DataIndexVBO);
-
+#endif
 
 
 //------------------------------------------------------------------------------------
@@ -71,8 +74,13 @@ bool vw_Internal_InitializationVAO()
 //------------------------------------------------------------------------------------
 // Процедура генерации буферов
 //------------------------------------------------------------------------------------
+#ifdef USE_GLES
+bool vw_BuildVAO(unsigned int *VAO, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO,
+						GLushort RangeStart, GLushort *DataIndex, unsigned int *DataIndexVBO)
+#else
 bool vw_BuildVAO(unsigned int *VAO, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO,
 						unsigned int RangeStart, unsigned int *DataIndex, unsigned int *DataIndexVBO)
+#endif
 {
 	if (VAO == 0) return false;
 	if (glGenVertexArraysARB == NULL) return false;

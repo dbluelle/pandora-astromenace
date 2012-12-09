@@ -97,8 +97,19 @@ bool eModel3D::ReadVW3D(const char *FileName)
 	file->fread(GlobalVertexBuffer,	GlobalVertexCount*DrawObjectList[0].VertexStride*sizeof(float),1);
 
 	// индекс буфер
+#ifdef USE_GLES	
+	GlobalIndexBuffer = new GLushort[GlobalIndexCount];
+	//TODO faster reading possible?
+	unsigned int tmp;
+	for (int i = 0; i < GlobalIndexCount; i++ )
+	{
+		file->fread(&tmp,sizeof(unsigned int),1);
+		GlobalIndexBuffer[i] = (GLushort)tmp;
+	}
+#else
 	GlobalIndexBuffer = new unsigned int[GlobalIndexCount];
 	file->fread(GlobalIndexBuffer, GlobalIndexCount*sizeof(unsigned int),1);
+#endif
 
 	// т.к. наши объекты используют глобальные буферы, надо поставить указатели
 	for (int i=0; i<DrawObjectCount; i++)

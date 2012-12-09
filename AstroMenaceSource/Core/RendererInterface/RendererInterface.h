@@ -33,6 +33,14 @@
 #include "../Math/Math.h"
 #include "../Texture/Texture.h"
 
+#ifdef USE_GLES
+#include "eglport.h"
+#endif
+
+#ifdef USE_GLES
+#define GL_DEPTH_COMPONENT GL_DEPTH_COMPONENT24
+#endif
+
 
 
 struct eCoverageModes
@@ -360,8 +368,13 @@ void vw_GetPrioritizeTextures(GLuint TextureID, float *Prior);
 // 3D rendering functions
 
 // Send (draw) vertices
+#ifdef USE_GLES
+void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO=0,
+						GLushort RangeStart=0,	GLushort *DataIndex=0, unsigned int *DataIndexVBO=0, unsigned int *VAO=0);
+#else
 void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO=0,
 						unsigned int RangeStart=0,	unsigned int *DataIndex=0, unsigned int *DataIndexVBO=0, unsigned int *VAO=0);
+#endif
 // Set color
 void vw_SetColor(float nRed, float nGreen, float nBlue, float nAlpha);
 // Set polygon rasterization mode
@@ -441,8 +454,13 @@ void vw_DeleteVBO(unsigned int VBO);
 // VAO
 
 // создаем
+#ifdef USE_GLES
+bool vw_BuildVAO(unsigned int *VAO, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO,
+						GLushort RangeStart, GLushort *DataIndex, unsigned int *DataIndexVBO);
+#else
 bool vw_BuildVAO(unsigned int *VAO, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO,
 						unsigned int RangeStart, unsigned int *DataIndex, unsigned int *DataIndexVBO);
+#endif
 // устанавливаем
 void vw_BindVAO(unsigned int VAO);
 // удаляем

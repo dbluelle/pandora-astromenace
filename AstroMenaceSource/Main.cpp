@@ -34,6 +34,10 @@
 #endif // xinerama
 #endif // unix
 
+#ifdef USE_GLES
+#include "Core/RendererInterface/eglport.h"
+#endif
+
 
 //------------------------------------------------------------------------------------
 // настройки
@@ -131,7 +135,14 @@ CSpaceStars *psSpaceStatic = 0;
 
 
 
-
+#ifdef USE_GLES
+#include <dlfcn.h>
+void* gles_library;
+void* SDL_GL_GetProcAddress(const char* name)
+{
+	return dlsym(gles_library,name);
+}
+#endif
 
 
 
@@ -487,6 +498,19 @@ ReCreate:
 		fprintf(stderr, "Couldn't init SDL: %s\n", SDL_GetError());
 		return 1;
 	}
+#ifdef USE_GLES
+	gles_library= dlopen("libGLES_CM.so", RTLD_LAZY);
+	if (!gles_library)
+	{
+		fprintf(stderr, "Couldn't init GLES\n");
+		return 1;
+	}
+	if (EGL_Open())
+	{
+		fprintf(stderr, "Couldn't init EGL\n");
+		return 1;
+	}
+#endif
 
 
 
@@ -810,6 +834,10 @@ ReCreate:
 #ifdef WIN32
 		MessageBox(NULL,"Wrong resolution. Please, install the newest video drivers from your video card vendor.", "Render system - Fatal Error",MB_OK|MB_APPLMODAL|MB_ICONERROR);
 #endif // WIN32
+#ifdef USE_GLES
+		EGL_Close();
+		dlclose(gles_library);
+#endif
 		SDL_Quit();
 		return 0;									// Quit If Window Was Not Created
 	}
@@ -969,6 +997,10 @@ ReCreate:
 	// если не поддерживаем как минимум 2 текстуры, железо очень слабое - не запустимся
 	if (CAPS->MaxMultTextures < 2)
 	{
+#ifdef USE_GLES
+		EGL_Close();
+		dlclose(gles_library);
+#endif
 		SDL_Quit();
         fprintf(stderr, "The Multi Textures feature unsupported by hardware. Fatal error.\n");
 #ifdef WIN32
@@ -1261,6 +1293,10 @@ GotoQuit:
 				SDL_JoystickClose(Joystick);
 #endif
 
+#ifdef USE_GLES
+	EGL_Close();
+#endif
+
 	// полностью выходим из SDL
 	SDL_Quit();
 	// сохраняем настройки игры
@@ -1301,7 +1337,9 @@ GotoQuit:
 	// закрываем файловую систему
 	vw_ShutdownVFS();
 
-
+#ifdef USE_GLES
+	dlclose(gles_library);
+#endif
 
 	// уходим из программы...
 	return 0;

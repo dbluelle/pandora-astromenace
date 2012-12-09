@@ -46,7 +46,11 @@
 	#undef __glext_h_
 #else
 	#define __glext_h_  // Don't let gl.h include glext.h
+#ifdef USE_GLES
+	#include <GLES/gl.h>
+#else
 	#include <GL/gl.h>	// Header File For The OpenGL Library
+#endif
 	#include <GL/glu.h>	// Header File For The GLu Library
 	#undef __glext_h_
 #endif
@@ -60,6 +64,11 @@
 #include "SDL/SDL_thread.h"
 #include "SDL/SDL_syswm.h"
 #include "SDL/SDL_endian.h" // для VFS, чтобы правильно считывать таблицу файлов + хранение данных игры
+
+#ifdef USE_GLES
+#undef SDL_GL_GetProcAddress
+void* SDL_GL_GetProcAddress(const char* name);
+#endif
 
 
 

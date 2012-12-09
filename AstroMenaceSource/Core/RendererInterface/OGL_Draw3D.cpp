@@ -35,6 +35,11 @@ extern	eDevCaps OpenGL_DevCaps;
 
 
 
+#ifdef USE_GLES
+#define GL_INT     GL_SHORT
+#define GL_UNSIGNED_INT GL_UNSIGNED_SHORT
+#endif
+
 
 
 
@@ -42,7 +47,11 @@ extern	eDevCaps OpenGL_DevCaps;
 // данный для индекс буфера
 //------------------------------------------------------------------------------------
 int VertexIndexCount = 0;
+#ifdef USE_GLES
+GLushort *VertexIndex = 0;
+#else
 GLuint *VertexIndex = 0;
+#endif
 GLuint *IndexVBO = 0;
 
 //------------------------------------------------------------------------------------
@@ -71,7 +80,11 @@ void vw_Internal_ReleaseIndexBufferData()
 //------------------------------------------------------------------------------------
 // устанавливаем указатели, готовимся к прорисовке
 //------------------------------------------------------------------------------------
+#ifdef USE_GLES
+GLushort *vw_SendVertices_EnableStatesAndPointers(int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, GLushort RangeStart, GLushort *DataIndex, unsigned int *DataIndexVBO)
+#else
 GLuint *vw_SendVertices_EnableStatesAndPointers(int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, unsigned int RangeStart, unsigned int *DataIndex, unsigned int *DataIndexVBO)
+#endif
 {
 	// если ничего не передали
 	if (Data == 0 && VBO == 0) return 0;
@@ -221,21 +234,35 @@ GLuint *vw_SendVertices_EnableStatesAndPointers(int NumVertices, int DataFormat,
 
 
 	// указатель на смещение (в случае вбо) или на массив индексов
+#ifdef USE_GLES
+	GLushort *VertexIndexPointer = 0;
+#else
 	GLuint *VertexIndexPointer = 0;
+#endif
 	// если нет своего, ставим общей массив индексов
 	if (DataIndexVBO == 0 && DataIndex == 0)
 	{
 		// собираем если нужно массив индексов
+#ifdef USE_GLES
+		if ((GLushort)VertexIndexCount < (GLushort)(NumVertices+RangeStart))
+#else
 		if ((unsigned int)VertexIndexCount < (unsigned int)(NumVertices+RangeStart))
+#endif
 		{
 			if (VertexIndex != 0){delete [] VertexIndex; VertexIndex = 0;}
 			VertexIndexCount = 0;
 
+#ifdef USE_GLES
+			VertexIndex = new GLushort[NumVertices+RangeStart]; if (VertexIndex == 0) return 0;
+#else
 			VertexIndex = new GLuint[NumVertices+RangeStart]; if (VertexIndex == 0) return 0;
-
+#endif
 			VertexIndexCount = NumVertices+RangeStart;
+#ifdef USE_GLES
+			for (GLushort i=0; i<NumVertices+RangeStart; i++) VertexIndex[i] = i;
+#else
 			for (unsigned int i=0; i<NumVertices+RangeStart; i++) VertexIndex[i] = i;
-
+#endif
 			// если держим VBO, все это один раз сразу запихиваем в видео память
 			if (OpenGL_DevCaps.VBOSupported)
 			{
@@ -330,7 +357,11 @@ void vw_SendVertices_DisableStatesAndPointers(int DataFormat, unsigned int *VBO,
 //------------------------------------------------------------------------------------
 // Процедура передачи последовательности вертексов для прорисовки
 //------------------------------------------------------------------------------------
+#ifdef USE_GLES
+void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, GLushort RangeStart, GLushort *DataIndex, unsigned int *DataIndexVBO, unsigned int *VAO)
+#else
 void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *Data, int Stride, unsigned int *VBO, unsigned int RangeStart, unsigned int *DataIndex, unsigned int *DataIndexVBO, unsigned int *VAO)
+#endif
 {
 	// если ничего не передали
 	if (Data == 0 && VBO == 0 && VAO == 0) return;
@@ -343,7 +374,11 @@ void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *D
 
 
 	// устанавливаем все необходимые указатели для прорисовки и получаем индексы
+#ifdef USE_GLES
+	GLushort *VertexIndexPointer = 0;
+#else
 	GLuint *VertexIndexPointer = 0;
+#endif
 	if (NeedVAO)
 	{
 		vw_BindVAO(*VAO);
@@ -387,8 +422,13 @@ void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *D
 			break;
 
 		case RI_QUADS:
+#ifdef USE_GLES
+			glDrawElements(GL_TRIANGLE_STRIP,NumVertices,GL_UNSIGNED_INT,VertexIndexPointer);
+			tmpPrimCountGL += NumVertices/4;
+#else
 			glDrawElements(GL_QUADS,NumVertices,GL_UNSIGNED_INT,VertexIndexPointer);
 			tmpPrimCountGL += NumVertices/4;
+#endif
 			break;
 	}
 

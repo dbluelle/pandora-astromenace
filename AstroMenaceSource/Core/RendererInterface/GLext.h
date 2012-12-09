@@ -49,6 +49,14 @@ extern "C" {
 #define GLAPI extern
 #endif
 
+#ifdef USE_GLES
+#define GLdouble     GLfloat
+#define GLclampd     GLclampf
+#define glOrtho      glOrthof
+#define glDepthRange glDepthRangef
+#define glClearDepth glClearDepthf
+#endif
+
 /*************************************************************/
 
 #ifndef GL_VERSION_1_2
@@ -6147,10 +6155,12 @@ extern "C" {
 typedef char GLchar;
 #endif
 
+#ifndef USE_GLES
 #ifndef GL_VERSION_1_5
 /* GL types for handling large vertex buffer objects */
 typedef ptrdiff_t GLintptr;
 typedef ptrdiff_t GLsizeiptr;
+#endif
 #endif
 
 #ifndef GL_ARB_vertex_buffer_object

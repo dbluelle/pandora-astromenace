@@ -219,7 +219,11 @@ public:
 	eObjectBlock	*DrawObjectList;
 	float			*GlobalVertexBuffer;
 	unsigned int	*GlobalVBO;
+#ifdef USE_GLES
+	GLushort	*GlobalIndexBuffer;
+#else
 	unsigned int	*GlobalIndexBuffer;
+#endif
 	unsigned int	*GlobalIBO;
 	unsigned int	*GlobalVAO;
 	// кол-во объектов в списке

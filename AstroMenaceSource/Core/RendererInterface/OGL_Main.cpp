@@ -177,7 +177,11 @@ int vw_InitWindow(const char* Title, int Width, int Height, int *Bits, BOOL Full
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// устанавливаем режим и делаем окно
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef USE_GLES
+	Uint32 Flags = 0;
+#else
 	Uint32 Flags = SDL_OPENGL;
+#endif
 
 	// если иним в первый раз, тут ноль и нужно взять что-то подходящее
 	if (*Bits == 0) *Bits = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
@@ -195,7 +199,9 @@ int vw_InitWindow(const char* Title, int Width, int Height, int *Bits, BOOL Full
 	}
 
 	// ставим двойную буферизацию (теоретически, и так ее должно брать)
+#ifndef USE_GLES
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#endif
 
 	// синхронизация для линукс и мак ос (для виндовс может не сработать, по какой-то причине не работает в wine)
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, VSync);
@@ -208,6 +214,10 @@ int vw_InitWindow(const char* Title, int Width, int Height, int *Bits, BOOL Full
 		fprintf(stderr, "Can't set video mode %i x %i x %i\n\n", Width, Height, WBits);
 		return 1;
 	}
+#ifdef USE_GLES
+	EGL_Init();
+#endif
+
 
 
 	// работаем с синхронизацией в виндовс через расширение
@@ -510,18 +520,24 @@ void vw_InitOpenGL(int Width, int Height, int *MSAA, int *CSAA)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	vw_SetClearColor(fClearRedGL, fClearGreenGL, fClearBlueGL, fClearAlphaGL);
 	glEnable(GL_CULL_FACE);
+#ifndef USE_GLES
 	glPolygonMode(GL_FRONT, GL_FILL);
+#endif
 	glEnable(GL_TEXTURE_2D);							//Enable two dimensional texture mapping
 	glEnable(GL_DEPTH_TEST);							//Enable depth testing
 	glShadeModel(GL_SMOOTH);							//Enable smooth shading (so you can't see the individual polygons of a primitive, best shown when drawing a sphere)
 	glClearDepth(1.0);									//Depth buffer setup
 	glClearStencil(0);
 	glDepthFunc(GL_LEQUAL);								//The type of depth testing to do (LEQUAL==less than or equal to)
+#ifdef USE_GLES
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);	//The fastest perspective look
+	glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
+#else
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	//The nicest perspective look
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -724,7 +740,9 @@ void vw_Clear(int mask)
 
 	if (mask & 0x1000) glmask = glmask | GL_COLOR_BUFFER_BIT;
 	if (mask & 0x0100) glmask = glmask | GL_DEPTH_BUFFER_BIT;
+#ifndef USE_GLES
 	if (mask & 0x0010) glmask = glmask | GL_ACCUM_BUFFER_BIT;
+#endif
 	if (mask & 0x0001) glmask = glmask | GL_STENCIL_BUFFER_BIT;
 
 	glClear(glmask);
@@ -774,7 +792,11 @@ void vw_EndRendering()
 		vw_DrawColorFBO(&ResolveFBO, 0);
 	}
 
+#ifdef USE_GLES
+	EGL_SwapBuffers();
+#else
 	SDL_GL_SwapBuffers();
+#endif
 
 	PrimCountGL = tmpPrimCountGL;
 }
@@ -924,6 +946,7 @@ void vw_GetViewport(int *x, int *y, int *width, int *height, float *znear, float
 //------------------------------------------------------------------------------------
 void vw_PolygonMode(int mode)
 {
+#ifndef USE_GLES
 	switch (mode)
 	{
 		case RI_POINT:
@@ -936,6 +959,7 @@ void vw_PolygonMode(int mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			break;
 	}
+#endif
 }
 
 

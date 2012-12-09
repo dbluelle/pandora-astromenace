@@ -370,8 +370,13 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	int k=0;
 	// буфер для последовательности RI_QUADS
 	// войдет RI_2f_XYZ | RI_2f_TEX
+#ifdef USE_GLES
+	GLshort *tmp = 0;
+	tmp = new GLshort[(2+2)*4*strlen(text)]; if (tmp == 0) return;
+#else
 	float *tmp = 0;
 	tmp = new float[(2+2)*4*strlen(text)]; if (tmp == 0) return;
+#endif
 
 	// чтобы меньше делать операций умножения, включаем коэф. один в другой сразу для ширины символов
 	FontWidthScale = FontScale*FontWidthScale;
@@ -401,7 +406,19 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 				// Установка текстуры
 				vw_SetTexture(0, CurrentTexture);
 				// отрисовываем все что есть в буфере
+#ifdef USE_GLES
+				vw_MatrixMode(RI_TEXTURE_MATRIX);
+				vw_LoadIdentity();
+				vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
+				vw_PushMatrix();
+				vw_MatrixMode(RI_MODELVIEW_MATRIX);
+				vw_SendVertices(RI_QUADS, 4*(k/16), RI_2s_XY | RI_1s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
+				vw_PopMatrix();
+				vw_MatrixMode(RI_TEXTURE_MATRIX);
+				vw_LoadIdentity();
+#else
 				vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+#endif
 			}
 
 
@@ -411,6 +428,82 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			k=0;
 		}
 
+#ifdef USE_GLES
+		float DrawX = (Xstart + DrawChar->Left*FontWidthScale);
+		float DrawY = (Y + 2 + (InternalFontSize - DrawChar->Top)*FontScale); // 2 доп смещение ("привет" от старого фонта)
+		
+		// Вычисление поправки по У в зависимости от DrawCorner
+		// - расположения угла начала координат
+		float tmpPosY = 0;
+		// изменяем только в случае RI_UL_CORNER
+		if (ASpresent) tmpPosY = (AH - DrawY - DrawY - DrawChar->Height*FontScale);
+		else tmpPosY = (AHw - DrawY - DrawY - DrawChar->Height*FontScale);
+
+		// если не пробел - рисуем
+		if (UTF32 != 0x020)
+		{
+
+			GLshort ImageHeight = DrawChar->CharTexture->Height;
+			GLshort ImageWidth = DrawChar->CharTexture->Width;
+
+			GLshort FrameHeight = (DrawChar->TexturePositionBottom);
+			GLshort FrameWidth = (DrawChar->TexturePositionRight);
+
+			GLshort Yst = (DrawChar->TexturePositionTop);
+			GLshort Xst = (DrawChar->TexturePositionLeft);
+
+
+			tmp[k++] = (GLshort)DrawX;
+			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
+			tmp[k++] = Xst;
+			tmp[k++] = ImageHeight-Yst;
+
+			tmp[k++] = (GLshort)DrawX;
+			tmp[k++] = (GLshort)(DrawY + tmpPosY);
+			tmp[k++] = Xst;
+			tmp[k++] = ImageHeight-FrameHeight;
+
+			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
+			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
+			tmp[k++] = FrameWidth;
+			tmp[k++] = ImageHeight-Yst;
+
+			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
+			tmp[k++] = (GLshort)(DrawY + tmpPosY);
+			tmp[k++] = FrameWidth;
+			tmp[k++] = ImageHeight-FrameHeight;
+			Xstart += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
+			LineWidth += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
+		}
+		else
+		{
+		
+			// It seems that we can't just skip empty space :( (some Garbage will be rendered there)
+			// so we just fill the space with empty pixels
+			tmp[k++] = (GLshort)DrawX;
+			tmp[k++] = (GLshort)(DrawY + tmpPosY + InternalFontSize*FontScale);
+			tmp[k++] = 0;
+			tmp[k++] = 0;
+
+			tmp[k++] = (GLshort)DrawX;
+			tmp[k++] = (GLshort)(DrawY + tmpPosY);
+			tmp[k++] = 0;
+			tmp[k++] = 1;
+
+			tmp[k++] = (GLshort)(DrawX + SpaceWidth*FontWidthScale);
+			tmp[k++] = (GLshort)(DrawY + tmpPosY + InternalFontSize*FontScale);
+			tmp[k++] = 1;
+			tmp[k++] = 0;
+
+			tmp[k++] = (GLshort)(DrawX + SpaceWidth*FontWidthScale);
+			tmp[k++] = (GLshort)(DrawY + tmpPosY);
+			tmp[k++] = 1;
+			tmp[k++] = 1;
+
+			Xstart += SpaceWidth*FontWidthScale;
+			LineWidth += SpaceWidth*FontWidthScale;
+		}
+#else
 		// если не пробел - рисуем
 		if (UTF32 != 0x020)
 		{
@@ -463,7 +556,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			Xstart += SpaceWidth*FontWidthScale;
 			LineWidth += SpaceWidth*FontWidthScale;
 		}
-
+#endif
 		// если нужно прорисовывать с ограничением по длине
 		if (MaxWidth != 0.0f)
 			if (LineWidth >= MaxWidth) break;
@@ -476,7 +569,19 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 		// Установка текстуры
 		vw_SetTexture(0, CurrentTexture);
 		// отрисовываем все что есть в буфере
+#ifdef USE_GLES
+		vw_MatrixMode(RI_TEXTURE_MATRIX);
+		vw_LoadIdentity();
+		vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
+		vw_MatrixMode(RI_MODELVIEW_MATRIX);
+		vw_PushMatrix();
+		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
+		vw_PopMatrix();
+		vw_MatrixMode(RI_TEXTURE_MATRIX);
+		vw_LoadIdentity();
+#else
 		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+#endif
 	}
 
 

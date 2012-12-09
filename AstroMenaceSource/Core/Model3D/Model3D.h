@@ -52,7 +52,11 @@ struct eObjectBlock
 
 	// начальный номер индекса в буфере (в случае использования глобальных буферов)
 	// если индексных данных нет - номер вертекса
+#ifdef USE_GLES
+	GLushort RangeStart;
+#else
 	unsigned int RangeStart;
+#endif
 
 
 	// шейдер (зарезервированные переменные для работы внешнего блока кода)
@@ -77,7 +81,11 @@ struct eObjectBlock
 	float 			*VertexBuffer;		// указатель на структуру данных
 	unsigned int 	*VBO;				// номер VBO
 	// индексный буфер
+#ifdef USE_GLES
+	GLushort 	*IndexBuffer;		// указатель на структуру данных
+#else
 	unsigned int 	*IndexBuffer;		// указатель на структуру данных
+#endif
 	unsigned int 	*IBO;				// номер IBO
 	// VAO
 	unsigned int	*VAO;				// номер VAO
@@ -107,8 +115,11 @@ public:
 	eObjectBlock	*DrawObjectList;
 	int				DrawObjectCount;
 	unsigned int	GlobalVertexCount;	// фактическое кол-во вертексов в буфере
+#ifdef USE_GLES	
+	GLushort	GlobalIndexCount;	// фактическое кол-во индексов в буфере
+#else
 	unsigned int	GlobalIndexCount;	// фактическое кол-во индексов в буфере
-
+#endif
 
 	// читаем-пишем форматы 3д моделей
 	bool ReadVW3D(const char *FileName);
@@ -127,7 +138,11 @@ public:
 	// буферы
 	float 			*GlobalVertexBuffer;
 	unsigned int	*GlobalVBO;
+#ifdef USE_GLES
+	GLushort	*GlobalIndexBuffer;
+#else
 	unsigned int	*GlobalIndexBuffer;
+#endif
 	unsigned int	*GlobalIBO;
 	unsigned int	*GlobalVAO;
 

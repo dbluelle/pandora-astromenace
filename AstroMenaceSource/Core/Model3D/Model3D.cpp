@@ -209,7 +209,11 @@ void eModel3D::CreateObjectsBuffers()
 		}
 
 		// создаем индексный буфер блока
+#ifdef USE_GLES
+		DrawObjectList[i].IndexBuffer = new GLushort[DrawObjectList[i].VertexCount];
+#else
 		DrawObjectList[i].IndexBuffer = new unsigned int[DrawObjectList[i].VertexCount];
+#endif
 		for (int j=0; j<DrawObjectList[i].VertexCount; j++) DrawObjectList[i].IndexBuffer[j] = j;
 
 		// т.к. у нас отдельные буферы, то начало идет с нуля теперь

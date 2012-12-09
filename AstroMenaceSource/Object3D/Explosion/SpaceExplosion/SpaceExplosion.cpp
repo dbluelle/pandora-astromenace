@@ -679,7 +679,11 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 
 
 			// создаем индексный буфер блока
+#ifdef USE_GLES
+			DrawObjectList[i].IndexBuffer = new GLushort[DrawObjectList[i].VertexCount];
+#else
 			DrawObjectList[i].IndexBuffer = new unsigned int[DrawObjectList[i].VertexCount];
+#endif
 			for (int j=0; j<DrawObjectList[i].VertexCount; j++) DrawObjectList[i].IndexBuffer[j] = j;
 
 
