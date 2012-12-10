@@ -1258,10 +1258,10 @@ GotoQuit:
 	}
 
 
-
+#ifndef USE_GLES
 	if (!NeedShowSystemCursor)
 		SDL_ShowCursor(SDL_ENABLE);
-
+#endif
 
 	// завершение, и освобождение памяти...
 	if (Script != 0){delete Script; Script = 0;}
@@ -1295,6 +1295,8 @@ GotoQuit:
 
 #ifdef USE_GLES
 	EGL_Close();
+	if (!NeedShowSystemCursor)
+		SDL_ShowCursor(SDL_ENABLE);
 #endif
 
 	// полностью выходим из SDL
