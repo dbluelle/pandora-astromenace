@@ -200,7 +200,7 @@ IF(DEFINED DATADIR)
 ENDIF(DEFINED DATADIR)
 
 # we need all speed optimization flags, this could add up to 40% FPS in game
-ADD_DEFINITIONS("-O -O1 -O2 -O3 -Os -fomit-frame-pointer -DUSE_GLES -I/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/SDL")
+ADD_DEFINITIONS("-O -O1 -O2 -O3 -Os -fomit-frame-pointer -DUSE_GLES -DPANDORA -I/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/SDL")
 ADD_EXECUTABLE(AstroMenace ${astromenace_SRCS})
 TARGET_LINK_LIBRARIES(AstroMenace ${ALL_LIBRARIES} -L/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/lib -lX11 -lSDL -lGLES_CM -lGLUES_CM -lEGL -ldl)
 
