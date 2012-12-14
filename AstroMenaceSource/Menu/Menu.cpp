@@ -102,8 +102,9 @@ void InitMenu()
 	float ARHeight;
 	vw_GetAspectWH(&ARWidth, &ARHeight);
 	// установка мышки, чтобы не учитывать перемещения в меню
+#ifndef USE_GLES
 	SDL_WarpMouse((int)((512.0f+256.0f)/(ARWidth/AWw)), (int)(384.0f/(ARHeight/AHw)));
-
+#endif
 
 
 	Button1Transp = 1.0f;
