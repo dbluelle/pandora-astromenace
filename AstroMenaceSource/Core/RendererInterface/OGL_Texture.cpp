@@ -52,8 +52,39 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 
 	int Format;
 	int InternalFormat;
+	int type = GL_UNSIGNED_BYTE;
 	eDevCaps *OpenGL_DevCaps = vw_GetDevCaps();
 
+
+#ifdef USE_GLES
+	uint16_t *outPixel16 = (uint16_t *)ustDIB;
+	uint32_t pixelCount = Width*Height;
+	if (Bytes == 4) //RGBA
+	{
+		// convert RGBA to RGBA4444
+		uint32_t *inPixel32  = (uint32_t *)ustDIB;
+		for (int i = 0; i < pixelCount; i++, inPixel32++)
+		{
+			uint32_t r = (((*inPixel32 >> 0)  & 0xFF) >> 4);
+			uint32_t g = (((*inPixel32 >> 8)  & 0xFF) >> 4);
+			uint32_t b = (((*inPixel32 >> 16) & 0xFF) >> 4);
+			uint32_t a = (((*inPixel32 >> 24) & 0xFF) >> 4);
+			*outPixel16++ = (r<<12) | (g<<8) | (b<<4) | a;
+		}
+	}
+	else // RGB
+	{
+		// convert RGB to RGB565
+		BYTE *inPixel  = ustDIB;
+		for (int i = 0; i < pixelCount; i++)
+		{
+			uint32_t r = ((*inPixel++& 0xFF) >> 3);
+			uint32_t g = ((*inPixel++& 0xFF) >> 2);
+			uint32_t b = ((*inPixel++& 0xFF) >> 3);
+			*outPixel16++ = (r << 11) | (g << 5) | (b << 0);
+		}
+	}
+#endif
 
 // как будет железо, поддерживающее расширение GL_ARB_texture_compression_bptc,
 // добавить поддержку BPTC компрессии текстур (см GLext.h)
@@ -65,6 +96,7 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		{	// компрессия 4 к 1
 			Format = GL_RGBA;
 #ifdef USE_GLES
+			type = GL_UNSIGNED_SHORT_4_4_4_4;
 			InternalFormat = Format;
 #else
 			InternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
@@ -74,6 +106,7 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		{	// компрессия 6 к 1
 			Format = GL_RGB;
 #ifdef USE_GLES
+			type = GL_UNSIGNED_SHORT_5_6_5;
 			InternalFormat = Format;
 #else
 			InternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -86,6 +119,7 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		{
 			Format = GL_RGBA;
 #ifdef USE_GLES
+			type = GL_UNSIGNED_SHORT_4_4_4_4;
 			InternalFormat = Format;
 #else
 			InternalFormat = GL_RGBA8;
@@ -95,6 +129,7 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		{	// считаем 4 слоя (фактически их задействуем)
 			Format = GL_RGB;
 #ifdef USE_GLES
+			type = GL_UNSIGNED_SHORT_5_6_5;
 			InternalFormat = Format;
 #else
 			InternalFormat = GL_RGB8;
@@ -132,9 +167,9 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		{
 			// делаем через glu...
 #ifdef USE_GLES
-			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, GLES2D_p2(Width), GLES2D_p2(Height), Format, GL_UNSIGNED_BYTE, ustDIB);
+			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, GLES2D_p2(Width), GLES2D_p2(Height), Format, type, ustDIB);
 #else
-			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, Width, Height, Format, GL_UNSIGNED_BYTE, ustDIB);
+			gluBuild2DMipmaps(GL_TEXTURE_2D, InternalFormat, Width, Height, Format, type, ustDIB);
 #endif
 		}
 	}
@@ -147,7 +182,11 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Width, Height, 0, Format, GL_UNSIGNED_BYTE, ustDIB);
+#ifdef USE_GLES
+			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, GLES2D_p2(Width), GLES2D_p2(Height), 0, Format, type, ustDIB);
+#else
+			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, Width, Height, 0, Format, type, ustDIB);
+#endif
 		}
 	}
 
