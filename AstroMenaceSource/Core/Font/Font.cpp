@@ -372,7 +372,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	// войдет RI_2f_XYZ | RI_2f_TEX
 #ifdef USE_GLES
 	GLshort *tmp = 0;
-	tmp = new GLshort[(2+2)*4*strlen(text)]; if (tmp == 0) return;
+	tmp = new GLshort[(2+2)*6*strlen(text)]; if (tmp == 0) return;
 #else
 	float *tmp = 0;
 	tmp = new float[(2+2)*4*strlen(text)]; if (tmp == 0) return;
@@ -468,38 +468,27 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			tmp[k++] = FrameWidth;
 			tmp[k++] = ImageHeight-Yst;
 
+
+			tmp[k++] = (GLshort)DrawX;
+			tmp[k++] = (GLshort)(DrawY + tmpPosY);
+			tmp[k++] = Xst;
+			tmp[k++] = ImageHeight-FrameHeight;
+
 			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
 			tmp[k++] = (GLshort)(DrawY + tmpPosY);
 			tmp[k++] = FrameWidth;
 			tmp[k++] = ImageHeight-FrameHeight;
+
+
+			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
+			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
+			tmp[k++] = FrameWidth;
+			tmp[k++] = ImageHeight-Yst;
 			Xstart += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
 			LineWidth += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
 		}
 		else
 		{
-		
-			// It seems that we can't just skip empty space :( (some Garbage will be rendered there)
-			// so we just fill the space with empty pixels
-			tmp[k++] = (GLshort)DrawX;
-			tmp[k++] = (GLshort)(DrawY + tmpPosY + InternalFontSize*FontScale);
-			tmp[k++] = 0;
-			tmp[k++] = 0;
-
-			tmp[k++] = (GLshort)DrawX;
-			tmp[k++] = (GLshort)(DrawY + tmpPosY);
-			tmp[k++] = 0;
-			tmp[k++] = 1;
-
-			tmp[k++] = (GLshort)(DrawX + SpaceWidth*FontWidthScale);
-			tmp[k++] = (GLshort)(DrawY + tmpPosY + InternalFontSize*FontScale);
-			tmp[k++] = 1;
-			tmp[k++] = 0;
-
-			tmp[k++] = (GLshort)(DrawX + SpaceWidth*FontWidthScale);
-			tmp[k++] = (GLshort)(DrawY + tmpPosY);
-			tmp[k++] = 1;
-			tmp[k++] = 1;
-
 			Xstart += SpaceWidth*FontWidthScale;
 			LineWidth += SpaceWidth*FontWidthScale;
 		}
@@ -575,7 +564,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 		vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
 		vw_MatrixMode(RI_MODELVIEW_MATRIX);
 		vw_PushMatrix();
-		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
+		vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
 		vw_PopMatrix();
 		vw_MatrixMode(RI_TEXTURE_MATRIX);
 		vw_LoadIdentity();
