@@ -424,7 +424,7 @@ void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *D
 		case RI_QUADS:
 #ifdef USE_GLES
 			glDrawElements(GL_TRIANGLE_STRIP,NumVertices,GL_UNSIGNED_INT,VertexIndexPointer);
-			tmpPrimCountGL += NumVertices/4;
+			tmpPrimCountGL += NumVertices-2;
 #else
 			glDrawElements(GL_QUADS,NumVertices,GL_UNSIGNED_INT,VertexIndexPointer);
 			tmpPrimCountGL += NumVertices/4;
