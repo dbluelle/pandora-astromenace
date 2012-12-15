@@ -412,7 +412,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 				vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
 				vw_PushMatrix();
 				vw_MatrixMode(RI_MODELVIEW_MATRIX);
-				vw_SendVertices(RI_QUADS, 4*(k/16), RI_2s_XY | RI_1s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
+				vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
 				vw_PopMatrix();
 				vw_MatrixMode(RI_TEXTURE_MATRIX);
 				vw_LoadIdentity();
