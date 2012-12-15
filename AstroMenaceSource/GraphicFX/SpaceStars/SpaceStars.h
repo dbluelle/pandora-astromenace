@@ -87,7 +87,11 @@ public:
 
 	// данные, храним их, чтобы каждый раз не пересчитывать
 	CStar **list;
+#ifdef USE_GLES
+	GLshort *tmpDATA;
+#else
 	float *tmpDATA;
+#endif
 	unsigned int *VBO; // указатель на номер VBO массива
 	int PrimitCount;
 	float LastCameraAngleX, LastCameraAngleY, LastCameraAngleZ;

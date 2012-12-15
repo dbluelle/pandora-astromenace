@@ -687,10 +687,14 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 
 
 			// делаем массив для всех элементов
+#ifdef USE_GLES
+			// RI_3s_XYZ | RI_4ub_COLOR
+			tmpDATA = new GLshort[6*(3+2+2)*DrawCount];
+#else
 			// RI_3f_XYZ | RI_2f_TEX | RI_4ub_COLOR
 			tmpDATA = new float[4*(3+2+1)*DrawCount];
+#endif
 			tmpDATAub = (GLubyte *)tmpDATA;
-
 
 			GLubyte R,G,B,A;
 
@@ -742,6 +746,75 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 					B = (GLubyte)(tmp->Color.b*255);
 					A = (GLubyte)(tmp->Alpha*255);
 
+#ifdef USE_GLES
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle3.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle3.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle3.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 0;
+					tmpDATA[k++] = 1;
+
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle2.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle2.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle2.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 0;
+					tmpDATA[k++] = 0;
+
+
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle1.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle1.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle1.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 1;
+					tmpDATA[k++] = 0;
+
+
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle3.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle3.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle3.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 0;
+					tmpDATA[k++] = 1;
+
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle1.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle1.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle1.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 1;
+					tmpDATA[k++] = 0;
+
+					tmpDATA[k++] = (GLshort)(tmp->Location.x+tmpAngle4.x);
+					tmpDATA[k++] = (GLshort)(tmp->Location.y+tmpAngle4.y);
+					tmpDATA[k++] = (GLshort)(tmp->Location.z+tmpAngle4.z);
+					tmpDATAub[k*sizeof(GLshort)] = R;
+					tmpDATAub[k*sizeof(GLshort)+1] = G;
+					tmpDATAub[k*sizeof(GLshort)+2] = B;
+					tmpDATAub[k*sizeof(GLshort)+3] = A;
+					k+=2;
+					tmpDATA[k++] = 1;
+					tmpDATA[k++] = 1;
+#else
 					tmpDATA[k++] = tmp->Location.x+tmpAngle3.x;
 					tmpDATA[k++] = tmp->Location.y+tmpAngle3.y;
 					tmpDATA[k++] = tmp->Location.z+tmpAngle3.z;
@@ -785,7 +858,7 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 					k++;
 					tmpDATA[k++] = 1.0f;
 					tmpDATA[k++] = 1.0f;
-
+#endif
 					tmp = tmp2;
 				}
 			}
@@ -865,8 +938,11 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 
 
 			if (BlendType == 1) vw_SetTextureBlend(true, RI_BLEND_SRCALPHA, RI_BLEND_INVSRCALPHA);
-
+#ifdef USE_GLES
+			vw_SendVertices(RI_TRIANGLES, 6*DrawCount, RI_3s_XYZ | RI_4ub_COLOR | RI_2s_TEX | RI_1_TEX, tmpDATA, 7*sizeof(GLshort));
+#else
 			vw_SendVertices(RI_QUADS, 4*DrawCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
+#endif
 
 			if (BlendType != 0) vw_SetTextureBlend(true, RI_BLEND_SRCALPHA, RI_BLEND_ONE);
 

@@ -471,9 +471,15 @@ void eParticleSystem2D::Draw()
 
 	// выделяем память
 	// буфер для последовательности RI_TRIANGLE_STRIP
+#ifdef USE_GLES
+	// войдет RI_2s_XYZ | RI_2s_TEX | RI_4ub_COLOR
+	GLshort *tmp = 0;
+	tmp = new GLshort[(2+2+2)*6*CurrentCount]; if (tmp == 0) return;
+#else
 	// войдет RI_2f_XYZ | RI_2f_TEX | RI_4f_COLOR
 	float *tmp = 0;
 	tmp = new float[(2+2+4)*4*CurrentCount]; if (tmp == 0) return;
+#endif
 	int k=0;
 
 
@@ -495,6 +501,56 @@ void eParticleSystem2D::Draw()
 			if (ASpresent) tmpPosY = (AH - DestRest.top - DestRest.top - (DestRest.bottom - DestRest.top));
 			else tmpPosY = (AHw - DestRest.top - DestRest.top - (DestRest.bottom - DestRest.top));
 
+#ifdef USE_GLES
+			float FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
+			float FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+
+			float Yst = (SrcRest.top*1.0f)/ImageHeight;
+			float Xst = (SrcRest.left*1.0f)/ImageWidth;
+
+				tmp[k++] = (GLshort)(DestRest.left);
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY +(DestRest.bottom - DestRest.top));
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(Xst);
+				tmp[k++] = (GLshort)(1.0f-Yst);
+
+				tmp[k++] = (GLshort)(DestRest.left);
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY);
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(Xst);
+				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+
+				tmp[k++] = (GLshort)(DestRest.left + (DestRest.right - DestRest.left));
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY);
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(FrameWidth);
+				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+
+
+				tmp[k++] = (GLshort)(DestRest.left);
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY +(DestRest.bottom - DestRest.top));
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(Xst);
+				tmp[k++] = (GLshort)(1.0f-Yst);
+
+				tmp[k++] = (GLshort)(DestRest.left + (DestRest.right - DestRest.left));
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY);
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(FrameWidth);
+				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+
+				tmp[k++] = (GLshort)(DestRest.left + (DestRest.right - DestRest.left));
+				tmp[k++] = (GLshort)(DestRest.top +tmpPosY +(DestRest.bottom - DestRest.top));
+				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
+				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
+				tmp[k++] = (GLshort)(FrameWidth);
+				tmp[k++] = (GLshort)(1.0f-Yst);
+#else
 			float FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
 			float FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
 
@@ -536,12 +592,16 @@ void eParticleSystem2D::Draw()
 				tmp[k++] = tmp1->Alpha;
 				tmp[k++] = FrameWidth;
 				tmp[k++] = 1.0f-Yst;
+#endif
 
 		tmp1 = tmp2;
 	}
 
-
+#ifdef USE_GLES
+	vw_SendVertices(RI_TRIANGLES, 6*CurrentCount, RI_2s_XY | RI_2s_TEX | RI_1_TEX | RI_4ub_COLOR, tmp, 6*sizeof(GLshort));
+#else
 	vw_SendVertices(RI_QUADS, 4*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
+#endif
 
 	if (tmp != 0){delete [] tmp; tmp = 0;}
 	vw_SetTextureBlend(false, 0, 0);
