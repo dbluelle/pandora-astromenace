@@ -929,11 +929,13 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 			// копируем индексный буфер блока
 #ifdef USE_GLES
 			DrawObjectList[i].IndexBuffer = new GLushort[DrawObjectList[i].VertexCount];
+			memcpy(DrawObjectList[i].IndexBuffer, Projectile->DrawObjectList[i].IndexBuffer,
+					DrawObjectList[i].VertexCount*sizeof(GLushort));
 #else
 			DrawObjectList[i].IndexBuffer = new unsigned int[DrawObjectList[i].VertexCount];
-#endif
 			memcpy(DrawObjectList[i].IndexBuffer, Projectile->DrawObjectList[i].IndexBuffer,
 					DrawObjectList[i].VertexCount*sizeof(unsigned int));
+#endif
 		}
 
 		float tRadius2 = Projectile->Radius/1.5f;
