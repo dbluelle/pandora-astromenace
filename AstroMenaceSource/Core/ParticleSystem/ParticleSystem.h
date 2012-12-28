@@ -53,11 +53,7 @@ public:
 	eTexture	*Texture[5];
 	int			TextureQuantity;
 	// последовательность прорисовки
-#ifdef USE_GLES
-	GLshort *tmpDATA;
-#else
 	float 		*tmpDATA;
-#endif
 	// тип смешивания
 	int			BlendType;
 
