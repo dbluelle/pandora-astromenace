@@ -471,13 +471,11 @@ void eParticleSystem2D::Draw()
 
 	// выделяем память
 	// буфер для последовательности RI_TRIANGLE_STRIP
-#ifdef USE_GLES
-	// войдет RI_2s_XYZ | RI_2s_TEX | RI_4ub_COLOR
-	GLshort *tmp = 0;
-	tmp = new GLshort[(2+2+2)*6*CurrentCount]; if (tmp == 0) return;
-#else
 	// войдет RI_2f_XYZ | RI_2f_TEX | RI_4f_COLOR
 	float *tmp = 0;
+#ifdef USE_GLES
+	tmp = new float[(2+2+4)*6*CurrentCount]; if (tmp == 0) return;
+#else
 	tmp = new float[(2+2+4)*4*CurrentCount]; if (tmp == 0) return;
 #endif
 	int k=0;
@@ -508,48 +506,60 @@ void eParticleSystem2D::Draw()
 			float Yst = (SrcRect.top*1.0f)/ImageHeight;
 			float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-				tmp[k++] = (GLshort)(DestRect.left);
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(Xst);
-				tmp[k++] = (GLshort)(1.0f-Yst);
+				tmp[k++] = (DestRect.left);
+				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (Xst);
+				tmp[k++] = (1.0f-Yst);
 
-				tmp[k++] = (GLshort)(DestRect.left);
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY);
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(Xst);
-				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+				tmp[k++] = (DestRect.left);
+				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (Xst);
+				tmp[k++] = (1.0f-FrameHeight);
 
-				tmp[k++] = (GLshort)(DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY);
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(FrameWidth);
-				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
+				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (FrameWidth);
+				tmp[k++] = (1.0f-FrameHeight);
 
 
-				tmp[k++] = (GLshort)(DestRect.left);
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(Xst);
-				tmp[k++] = (GLshort)(1.0f-Yst);
+				tmp[k++] = (DestRect.left);
+				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (Xst);
+				tmp[k++] = (1.0f-Yst);
 
-				tmp[k++] = (GLshort)(DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY);
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(FrameWidth);
-				tmp[k++] = (GLshort)(1.0f-FrameHeight);
+				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
+				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (FrameWidth);
+				tmp[k++] = (1.0f-FrameHeight);
 
-				tmp[k++] = (GLshort)(DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (GLshort)(DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
-				tmp[k++] = ((GLshort)(tmp1->Color.r)) <<8 |  (((GLshort)(tmp1->Color.g)) & 0xff);
-				tmp[k++] = ((GLshort)(tmp1->Color.b)) <<8 |  (((GLshort)(tmp1->Alpha)) & 0xff);
-				tmp[k++] = (GLshort)(FrameWidth);
-				tmp[k++] = (GLshort)(1.0f-Yst);
+				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
+				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = tmp1->Color.r;
+				tmp[k++] = tmp1->Color.g;
+				tmp[k++] = tmp1->Color.b;
+				tmp[k++] = tmp1->Alpha;
+				tmp[k++] = (FrameWidth);
+				tmp[k++] = (1.0f-Yst);
 #else
 			float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 			float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
@@ -598,7 +608,7 @@ void eParticleSystem2D::Draw()
 	}
 
 #ifdef USE_GLES
-	vw_SendVertices(RI_TRIANGLES, 6*CurrentCount, RI_2s_XY | RI_2s_TEX | RI_1_TEX | RI_4ub_COLOR, tmp, 6*sizeof(GLshort));
+	vw_SendVertices(RI_TRIANGLES, 6*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #else
 	vw_SendVertices(RI_QUADS, 4*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #endif
