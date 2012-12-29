@@ -44,12 +44,12 @@ void CreditsMenu()
 	LastCreditsCurrentPosUpdateTime = vw_GetTime();
 
 	// зацикливание
-	if (CreditsCurrentPos <= -3340) CreditsCurrentPos = 0.0f;
+	if (CreditsCurrentPos <= -3280) CreditsCurrentPos = 0.0f;
 
 
 
 
-	RECT SrcRest, DstRest;
+	RECT SrcRect, DstRect;
 
 
 	int Y1 = 690+(int)CreditsCurrentPos;
@@ -327,17 +327,10 @@ void CreditsMenu()
 
 	Y1 += Offset1;
 	Y2 += Offset1;
-	SizeI = (Setup.iAspectRatioWidth-vw_FontSize("Ubuntu Font Family (http://font.ubuntu.com)"))/2;
+	SizeI = (Setup.iAspectRatioWidth-vw_FontSize("Linux Libertine (http://www.linuxlibertine.org)"))/2;
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Ubuntu Font Family (http://font.ubuntu.com)");
-	Y1 += Offset1;
-	Y2 += Offset1;
-	SizeI = (Setup.iAspectRatioWidth-vw_FontSize("Copyright © 2010,2011 Canonical Ltd."))/2;
-	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
-	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Copyright © 2010,2011 Canonical Ltd.");
-
+	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Linux Libertine (http://www.linuxlibertine.org)");
 
 	Y1 += Offset1+15;
 	Y2 += Offset1+15;
@@ -345,13 +338,6 @@ void CreditsMenu()
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
 	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "GNU FreeFont (http://www.gnu.org/software/freefont)");
-	Y1 += Offset1;
-	Y2 += Offset1;
-	SizeI = (Setup.iAspectRatioWidth-vw_FontSize("Free Software Foundation."))/2;
-	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
-	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Free Software Foundation.");
-
 
 	Y1 += Offset1+15;
 	Y2 += Offset1+15;
@@ -359,12 +345,6 @@ void CreditsMenu()
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
 	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Liberation (https://fedorahosted.org/liberation-fonts)");
-	Y1 += Offset1;
-	Y2 += Offset1;
-	SizeI = (Setup.iAspectRatioWidth-vw_FontSize("Sponsored by Red Hat."))/2;
-	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
-	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawFont(SizeI, Y2, 0, 0, 1.0f, 1.0f,1.0f,1.0f, ttt*MenuContentTransp, "Sponsored by Red Hat.");
 
 
 
@@ -383,11 +363,11 @@ void CreditsMenu()
 	// SDL
 	Y1 += Offset1-20;
 	Y2 += Offset1-20;
-	SetRect(&SrcRest,0,0,128,64);
-	SetRect(&DstRest,LogoX,Y2,LogoX+128,Y2+64);
+	SetRect(&SrcRect,0,0,128,64);
+	SetRect(&DstRect,LogoX,Y2,LogoX+128,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/sdl.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/sdl.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -402,11 +382,11 @@ void CreditsMenu()
 	// OpenGL
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,128,64);
-	SetRect(&DstRest,LogoX,Y2,LogoX+128,Y2+64);
+	SetRect(&SrcRect,0,0,128,64);
+	SetRect(&DstRect,LogoX,Y2,LogoX+128,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/opengl.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/opengl.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -421,11 +401,11 @@ void CreditsMenu()
 	// OpenAL
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,128,64);
-	SetRect(&DstRest,LogoX,Y2,LogoX+128,Y2+64);
+	SetRect(&SrcRect,0,0,128,64);
+	SetRect(&DstRect,LogoX,Y2,LogoX+128,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/openal.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/openal.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -441,11 +421,11 @@ void CreditsMenu()
 	// FreeType
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,128,64);
-	SetRect(&DstRest,LogoX,Y2,LogoX+128,Y2+64);
+	SetRect(&SrcRect,0,0,128,64);
+	SetRect(&DstRect,LogoX,Y2,LogoX+128,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/freetype.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/freetype.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -460,11 +440,11 @@ void CreditsMenu()
 	// ogg vorbis
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/oggvorbis.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/oggvorbis.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -490,11 +470,11 @@ void CreditsMenu()
 	// Code::Blocks
 	Y1 += Offset1-20;
 	Y2 += Offset1-20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/codeblocks.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/codeblocks.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -508,11 +488,11 @@ void CreditsMenu()
 	// gcc
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/gnugcc.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/gnugcc.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -527,11 +507,11 @@ void CreditsMenu()
 	// svn
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/svn.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/svn.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -546,11 +526,11 @@ void CreditsMenu()
 	// gentoo
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/gentoo.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/gentoo.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
@@ -565,11 +545,11 @@ void CreditsMenu()
 	// gimp
 	Y1 += Offset1+20;
 	Y2 += Offset1+20;
-	SetRect(&SrcRest,0,0,64,64);
-	SetRect(&DstRest,LogoX+32,Y2,LogoX+32+64,Y2+64);
+	SetRect(&SrcRect,0,0,64,64);
+	SetRect(&DstRect,LogoX+32,Y2,LogoX+32+64,Y2+64);
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/CREDITS/gimp.tga"), true, ttt*MenuContentTransp);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/CREDITS/gimp.tga"), true, ttt*MenuContentTransp);
 
 	if (Y2 > 300) {ttt = (650 - Y2) /100.0f; if (ttt > 1.0f) ttt = 1.0f;}
 	else {ttt = (Y2 - 100) /100.0f; if (ttt < 0.0f) ttt = 0.0f;}

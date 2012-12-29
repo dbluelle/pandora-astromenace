@@ -132,7 +132,7 @@ sGLSLLoadList	GLSLLoadList[GLSLLoadListCount] =
 #define TEXTURE_NO_MIPMAP	RI_MAGFILTER_LINEAR | RI_MINFILTER_LINEAR | RI_MIPFILTER_NONE
 
 // сколько нужно загружать в листе меню
-const int	MenuLoadListCount = 185;
+const int	MenuLoadListCount = 187;
 // лист загрузки меню
 LoadList	MenuLoadList[MenuLoadListCount] =
 {
@@ -194,6 +194,8 @@ LoadList	MenuLoadList[MenuLoadListCount] =
 {"DATA/MENU/arrows_on.tga",				0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/arrows_off.tga",			0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/arrows_blue.tga",			0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
+{"DATA/MENU/arrow_list_up.tga",		0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
+{"DATA/MENU/arrow_list_down.tga",		0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 // иконки отображения в меню выбора миссий
 {"DATA/SCRIPT/mission1_icon.tga",			0, 12, false,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, false, -1.0f, false},
 {"DATA/SCRIPT/mission2_icon.tga",			0, 12, false,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, false, -1.0f, false},
@@ -840,11 +842,11 @@ void DrawViewizardLogo(eTexture *ViewizardLogoTexture)
 
 	while (ShowLogoLife > 0)
 	{
-		RECT SrcRest,DstRest;
-		SetRect(&SrcRest, 1,1,511,511);
+		RECT SrcRect,DstRect;
+		SetRect(&SrcRect, 1,1,511,511);
 		int StartX = (Setup.iAspectRatioWidth-510)/2;
 		int EndX = StartX+510;
-		SetRect(&DstRest, StartX, 128+1, EndX, 640-2);
+		SetRect(&DstRect, StartX, 128+1, EndX, 640-2);
 		float Transp = 1.0f;
 		float GreyColor = 1.0f;
 
@@ -871,7 +873,7 @@ void DrawViewizardLogo(eTexture *ViewizardLogoTexture)
 		vw_BeginRendering(RI_COLOR_BUFFER | RI_DEPTH_BUFFER);
 		vw_Start2DMode(-1,1);
 
-		vw_DrawTransparent(&DstRest, &SrcRest, ViewizardLogoTexture, true, Transp, 0.0f, RI_UL_CORNER, GreyColor, GreyColor, GreyColor);
+		vw_DrawTransparent(&DstRect, &SrcRect, ViewizardLogoTexture, true, Transp, 0.0f, RI_UL_CORNER, GreyColor, GreyColor, GreyColor);
 
 		vw_End2DMode();
 		vw_EndRendering();
@@ -932,25 +934,25 @@ void DrawLoading(int Current, int AllDrawLoading, float *LastDrawTime, eTexture 
 	vw_BeginRendering(RI_COLOR_BUFFER | RI_DEPTH_BUFFER);
 	vw_Start2DMode(-1,1);
 
-	RECT SrcRest, DstRest;
+	RECT SrcRect, DstRect;
 
 	// выводим картинку
-	SetRect(&SrcRest, 0,0,1024,512);
-	SetRect(&DstRest, 0, 64+32,Setup.iAspectRatioWidth,64+32+512);
-	vw_DrawTransparent(&DstRest, &SrcRest, LoadImageTexture, false, 1.0f, 0.0f);
+	SetRect(&SrcRect, 0,0,1024,512);
+	SetRect(&DstRect, 0, 64+32,Setup.iAspectRatioWidth,64+32+512);
+	vw_DrawTransparent(&DstRect, &SrcRect, LoadImageTexture, false, 1.0f, 0.0f);
 
 	// пишем "загрузка"
 	vw_DrawFont(Setup.iAspectRatioWidth/2-vw_FontSize(vw_GetText("11_Loading"))/2, 768-128, 0, 0, 1.0f, 1.0f,1.0f,1.0f, 1.0f, vw_GetText("11_Loading"));
 
 	// выводим подложку линии загрузки
-	SetRect(&SrcRest, 0,0,256,32);
+	SetRect(&SrcRect, 0,0,256,32);
 	int StartX = (Setup.iAspectRatioWidth-256)/2;
-	vw_Draw(StartX, 768-64-8 -32, &SrcRest, vw_FindTextureByName("DATA/LOADING/loading_back.tga"), true);
+	vw_Draw(StartX, 768-64-8 -32, &SrcRect, vw_FindTextureByName("DATA/LOADING/loading_back.tga"), true);
 
 	// выводим линию загрузки
 	int loaded = (int)(256.0f*Current/AllDrawLoading);
-	SetRect(&SrcRest, 0,0,loaded,16);
-	vw_Draw(StartX, 768-64-1 -32, &SrcRest, vw_FindTextureByName("DATA/LOADING/loading_line.tga"), true);
+	SetRect(&SrcRect, 0,0,loaded,16);
+	vw_Draw(StartX, 768-64-1 -32, &SrcRect, vw_FindTextureByName("DATA/LOADING/loading_line.tga"), true);
 
 
 	// выводим хинт при загрузке
@@ -1028,7 +1030,7 @@ bool ReleaseGameData(int LoadType)
 		}
 		else
 		{
-			vw_ReleaseAllFontChar();
+			vw_ReleaseAllFontChars(); // (!) всегда перед vw_ReleaseAllTextures
 			vw_ReleaseAllTextures();
 			CurretnLoadedData = LoadType;
 			return false;
@@ -1566,51 +1568,63 @@ void LoadGameData(int LoadType)
 					vw_SetTextureProp(CurrentList[i].TextFiltr, CurrentList[i].TextWrap,
 						CurrentList[i].Alpha, CurrentList[i].AlphaMode, CurrentList[i].MipMap);
 
+					// мы можем принудительно менять размер текстур через настройки, но надо учитывать их размеры
+					// базовый размер почти всех текстур моделей - 512х512 пикселей, небольшая часть текстур 256х256 (мины, турели)
+					// текстуры всех планет - 1024х512
+					// "неформатные" текстуры - track.VW2D и asteroid-01.tga, им вообще не надо менять размеры
+
 					if (Setup.TexturesQuality == 1)
 					{
+						// только для текстур в папке MODELS (скайбоксы никогда не трогаем)
 						if (!strncmp("DATA/MODELS/", CurrentList[i].FileName, strlen("DATA/MODELS/")) &&
+							// не меняем размеры небольших текстур вообще
 							strcmp("DATA/MODELS/track.VW2D", CurrentList[i].FileName) &&
-							// не ставим низкое для текстур-подсветки файтеров землян - плохо...
+							strcmp("DATA/MODELS/SPACE/asteroid-01.tga", CurrentList[i].FileName) &&
+							// не меняем размер или ставим спец размер
+							strncmp("DATA/MODELS/SPACEBASE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACEBASE/")) &&
+							strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")) &&
+							strncmp("DATA/MODELS/NORMALMAP/", CurrentList[i].FileName, strlen("DATA/MODELS/NORMALMAP/")) &&
+							// не ставим маленький размер для текстур-подсветки файтеров землян - плохо смотрится
 							strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum01.VW2D", CurrentList[i].FileName) &&
 							strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum02.VW2D", CurrentList[i].FileName) &&
 							strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum03.VW2D", CurrentList[i].FileName) &&
-							strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum04.VW2D", CurrentList[i].FileName) &&
-							strncmp("DATA/MODELS/SPACE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACE/")) &&
-							strncmp("DATA/MODELS/SPACEBASE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACEBASE/")) &&
-							strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")))
+							strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum04.VW2D", CurrentList[i].FileName))
 						{
 							H = W = 128;
 						}
 						else
 						{
-							if (!strncmp("DATA/SKYBOX/", CurrentList[i].FileName, strlen("DATA/SKYBOX/")))
+							// для подсветки файтеров землян и частей баз (с решетками на альфа канале) - ставим больше размер
+							if (!strncmp("DATA/MODELS/SPACEBASE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACEBASE/")) ||
+								!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum01.VW2D", CurrentList[i].FileName) ||
+								!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum02.VW2D", CurrentList[i].FileName) ||
+								!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum03.VW2D", CurrentList[i].FileName) ||
+								!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum04.VW2D", CurrentList[i].FileName))
 							{
-								H = W = 512;
+								H = W = 256;
 							}
-							else// не ставим низкое для текстур-подсветки файтеров землян - плохо...
-								if (!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum01.VW2D", CurrentList[i].FileName) ||
-									!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum02.VW2D", CurrentList[i].FileName) ||
-									!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum03.VW2D", CurrentList[i].FileName) ||
-									!strcmp("DATA/MODELS/EARTHFIGHTER/sf-illum04.VW2D", CurrentList[i].FileName) ||
-									!strncmp("DATA/MODELS/SPACEBASE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACEBASE/")) ||
-									!strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")))
-								{
-									H = W = 256;
-								}
-
+							// текстуры планет не квадратные, учитываем это
+							if (!strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")) &&
+								strcmp("DATA/MODELS/PLANET/asteroid.tga", CurrentList[i].FileName))
+							{
+								W = 512; H = 256;
+							}
 						}
 					}
 					if (Setup.TexturesQuality == 2)
 					{
+						// только для текстур в папке MODELS (скайбоксы никогда не трогаем)
 						if (!strncmp("DATA/MODELS/", CurrentList[i].FileName, strlen("DATA/MODELS/")) &&
+							// не меняем размеры небольших текстур вообще
 							strcmp("DATA/MODELS/track.VW2D", CurrentList[i].FileName) &&
-							strncmp("DATA/MODELS/SPACE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACE/")) &&
+							strcmp("DATA/MODELS/SPACE/asteroid-01.tga", CurrentList[i].FileName) &&
+							// не меняем размер
 							strncmp("DATA/MODELS/SPACEBASE/", CurrentList[i].FileName, strlen("DATA/MODELS/SPACEBASE/")) &&
-							strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")))
+							strncmp("DATA/MODELS/PLANET/", CurrentList[i].FileName, strlen("DATA/MODELS/PLANET/")) &&
+							strncmp("DATA/MODELS/NORMALMAP/", CurrentList[i].FileName, strlen("DATA/MODELS/NORMALMAP/")))
 						{
 							H = W = 256;
 						}
-
 					}
 
 					// если это карта нормалей, но у нас не включены шейдеры - пропускаем

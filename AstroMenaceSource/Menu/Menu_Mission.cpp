@@ -37,8 +37,6 @@ int AllMission;
 // начало и конец отображаемых миссий
 int StartMission = 0;
 int EndMission = 4;
-// ограничение, сколько миссий может быть открыто (нужно для демо версии)
-int MissionLimitation;
 
 // списки с данными для каждой миссии
 char **MissionTitle = 0;
@@ -54,6 +52,7 @@ int *MissionTitleType = 0;
 int *MissionDescrType = 0;
 char **MissionFile = 0;
 
+bool SliderUnderMouseControl = false;
 
 
 
@@ -193,6 +192,9 @@ void MissionsListInit()
 							case 5: // серый,
 								MissionTitleColorR[i]=0.5f;MissionTitleColorG[i]=0.5f;MissionTitleColorB[i]=0.5f;
 								break;
+							case 6: // темно оранжевый
+								MissionTitleColorR[i]=1.0f;MissionTitleColorG[i]=0.3f;MissionTitleColorB[i]=0.0f;
+								break;
 						}
 					}
 					if (xmlDoc->GetEntryAttribute(TMission, "type") != 0) MissionTitleType[i] = xmlDoc->iGetEntryAttribute(TMission, "type");
@@ -228,6 +230,9 @@ void MissionsListInit()
 								break;
 							case 5: // серый,
 								MissionDescrColorR[i]=0.5f;MissionDescrColorG[i]=0.5f;MissionDescrColorB[i]=0.5f;
+								break;
+							case 6: // темно оранжевый
+								MissionDescrColorR[i]=0.8f;MissionDescrColorG[i]=0.4f;MissionDescrColorB[i]=0.0f;
 								break;
 						}
 					}
@@ -322,11 +327,6 @@ void MissionsListInit()
 
 	// чистим память, со скриптом работать больше не надо
 	delete xmlDoc;
-
-
-	// на одну меньше, т.к. это номер миссии, а не кол-во
-	MissionLimitation = AllMission-1;
-
 }
 
 
@@ -401,30 +401,50 @@ void MissionMenu()
 {
 
 	// проверка ограничения
-	if (Setup.Profile[CurrentProfile].OpenLevelNum > MissionLimitation)
-		Setup.Profile[CurrentProfile].OpenLevelNum = MissionLimitation;
+	if (Setup.Profile[CurrentProfile].OpenLevelNum > AllMission-1)
+		Setup.Profile[CurrentProfile].OpenLevelNum = AllMission-1;
 
 
 
-	RECT SrcRest, DstRest;
-	SetRect(&SrcRest,2,2,863-2,484-2);
-	SetRect(&DstRest,Setup.iAspectRatioWidth/2-427,175-15,Setup.iAspectRatioWidth/2-427+863-4,175-15+484-4);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/panel800_444_back.tga"), true, 0.9f*MenuContentTransp);
+	RECT SrcRect, DstRect;
+	SetRect(&SrcRect,2,2,863-2,484-2);
+	SetRect(&DstRect,Setup.iAspectRatioWidth/2-427,175-15,Setup.iAspectRatioWidth/2-427+863-4,175-15+484-4);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/panel800_444_back.tga"), true, 0.9f*MenuContentTransp);
 
 
 
 	int X1 = Setup.iAspectRatioWidth/2 - 372;
-	int Y1 = 215;
+	int Y1 = 270;
 
 
-	// подложка
-	SetRect(&SrcRest,0,0,2,2);
-	SetRect(&DstRest,X1-2,Y1-2,X1+2+750,Y1+2+320);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
-	SetRect(&DstRest,X1,Y1,X1+750,Y1+320);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
 
 
+	// выводим текущий профиль пилота
+	int Size = vw_FontSize("%s: ", vw_GetText("3_Pilot_Profile"));
+	vw_DrawFont(X1, 208+12, 0, 0, 1.0f, 0.0f,1.0f,0.0f, 1.0f*MenuContentTransp, "%s: ", vw_GetText("3_Pilot_Profile"));
+
+	if (Size+vw_FontSize(Setup.Profile[CurrentProfile].Name) > 500)
+	{
+		vw_DrawFont(X1+Size, 208+12, 0, 500-Size, 1.0f, 1.0f,1.0f,1.0f, MenuContentTransp, Setup.Profile[CurrentProfile].Name);
+		vw_DrawFont(X1+510, 208+12, 0, 0, 1.0f, 1.0f,1.0f,1.0f, MenuContentTransp, "...");
+	}
+	else
+		vw_DrawFont(X1+Size, 208+12, 0, 0, 1.0f, 1.0f,1.0f,1.0f, MenuContentTransp, Setup.Profile[CurrentProfile].Name);
+
+	if (DrawButton200_2(X1+616-72, 212, vw_GetText("1_Change_Profile"), MenuContentTransp, false))
+	{
+		ComBuffer = PROFILE;
+	}
+
+
+
+
+	// подложка для вывода описания миссий
+	SetRect(&SrcRect,0,0,2,2);
+	SetRect(&DstRect,X1-2,Y1-2,X1+2+710,Y1+2+320);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
+	SetRect(&DstRect,X1,Y1,X1+710,Y1+320);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
 
 
 
@@ -434,13 +454,11 @@ void MissionMenu()
 	if (StartMission<=CurrentMission && CurrentMission<=EndMission)
 	{
 		int ShowLine = CurrentMission;
-		while (ShowLine>4) ShowLine -= 5;
+		if (ShowLine>=StartMission) ShowLine -= StartMission;
 
-		int Y1 = 215 + 64*ShowLine;
-
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,X1+1,Y1+1,X1+749,Y1+63);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,X1+1,Y1 + 64*ShowLine+1,X1+709,Y1 + 64*ShowLine+63);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
 	}
 
 
@@ -449,52 +467,32 @@ void MissionMenu()
 	// выводим миссии текущего листа
 	int TMPSoundOnMissionID = -1;
 	for (int i=StartMission; i<=EndMission; i++)
-	if (AllMission > i) // на тот случай, если у нас кол-во миссий не делится на 5
+	if (AllMission > i)
 	{
 		// если не можем выбирать...
 		if (i > Setup.Profile[CurrentProfile].OpenLevelNum)
 		{
-			SetRect(&SrcRest,0,0,64,64);
-			SetRect(&DstRest,X1+2,Y1+2,X1+62,Y1+62);
+			SetRect(&SrcRect,0,0,64,64);
+			SetRect(&DstRect,X1+2,Y1+2,X1+62,Y1+62);
 
 			if (MissionIcon[i] != 0)
-				vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName(MissionIcon[i]), true, 0.3f*MenuContentTransp);
+				vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName(MissionIcon[i]), true, 0.3f*MenuContentTransp);
 
-			int SizeI = vw_FontSize(vw_GetText(MissionTitle[i]));
-			if (SizeI < 750-30-64)
-			{
-				if (MissionTitleType[i] == 1)
-					vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionTitle[i]));
-				else
-					vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, MissionTitle[i]);
-			}
-			else
-			{
-				if (MissionTitleType[i] == 1)
-					vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionTitle[i]));
-				else
-					vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, MissionTitle[i]);
-			}
 
-			SizeI = vw_FontSize(vw_GetText(MissionDescr[i]));
-			if (SizeI < 750-30-64)
-			{
-				if (MissionDescrType[i] == 1)
-					vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionDescr[i]));
-				else
-					vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, MissionDescr[i]);
-			}
+			if (MissionTitleType[i] == 1)
+				vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionTitle[i]));
 			else
-			{
-				if (MissionDescrType[i] == 1)
-					vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionDescr[i]));
-				else
-					vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, MissionDescr[i]);
-			}
+				vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.3f*MenuContentTransp, MissionTitle[i]);
+
+			if (MissionDescrType[i] == 1)
+				vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, vw_GetText(MissionDescr[i]));
+			else
+				vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.3f*MenuContentTransp, MissionDescr[i]);
+
 		}
 
 
-		SetRect(&DstRest,X1,Y1+1,X1+750,Y1+64);
+		SetRect(&DstRect,X1,Y1+1,X1+710,Y1+64);
 		if (i <= Setup.Profile[CurrentProfile].OpenLevelNum)
 		{
 			// работаем с клавиатурой
@@ -509,7 +507,7 @@ void MissionMenu()
 			}
 
 
-			if ((vw_OnRect(&DstRest) || InFocusByKeyboard) && !isDialogBoxDrawing())
+			if ((vw_OnRect(&DstRect) || InFocusByKeyboard) && !isDialogBoxDrawing())
 			{
 				TMPSoundOnMissionID = i;
 				CurrentCursorStatus = 1;
@@ -522,51 +520,28 @@ void MissionMenu()
 				}
 
 				// если стоим над ним...
-				SetRect(&SrcRest,0,0,64,64);
-				SetRect(&DstRest,X1,Y1,X1+64,Y1+64);
+				SetRect(&SrcRect,0,0,64,64);
+				SetRect(&DstRect,X1,Y1,X1+64,Y1+64);
 				if (MissionIcon != 0)
-					vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName(MissionIcon[i]), true, MenuContentTransp);
+					vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName(MissionIcon[i]), true, MenuContentTransp);
 
 
-				int SizeI = vw_FontSize(vw_GetText(MissionTitle[i]));
-				if (SizeI < 750-30-64)
-				{
-					if (MissionTitleType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, vw_GetText(MissionTitle[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, MissionTitle[i]);
-				}
+				if (MissionTitleType[i] == 1)
+					vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, vw_GetText(MissionTitle[i]));
 				else
-				{
-					if (MissionTitleType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, vw_GetText(MissionTitle[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, MissionTitle[i]);
-				}
-				SizeI = vw_FontSize(vw_GetText(MissionDescr[i]));
-				if (SizeI < 750-30-64)
-				{
-					if (MissionDescrType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, vw_GetText(MissionDescr[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, MissionDescr[i]);
+					vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], MenuContentTransp, MissionTitle[i]);
 
-				}
+				if (MissionDescrType[i] == 1)
+					vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, vw_GetText(MissionDescr[i]));
 				else
-				{
-					if (MissionDescrType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, vw_GetText(MissionDescr[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, MissionDescr[i]);
-				}
-
+					vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], MenuContentTransp, MissionDescr[i]);
 
 
 				if (CurrentMission != i)
 				{
-					SetRect(&SrcRest,0,0,2,2);
-					SetRect(&DstRest,X1+64,Y1+1,X1+749,Y1+63);
-					vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
+					SetRect(&SrcRect,0,0,2,2);
+					SetRect(&DstRect,X1+64,Y1+1,X1+709,Y1+63);
+					vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
 				}
 				if (vw_GetWindowLBMouse(true) || (InFocusByKeyboard && (vw_GetKeys(SDLK_KP_ENTER) || vw_GetKeys(SDLK_RETURN))))
 				{
@@ -610,89 +585,124 @@ void MissionMenu()
 			else
 			{
 				// если не стоим над ним, но можем выбирать
-				SetRect(&SrcRest,0,0,64,64);
-				SetRect(&DstRest,X1+2,Y1+2,X1+62,Y1+62);
+				SetRect(&SrcRect,0,0,64,64);
+				SetRect(&DstRect,X1+2,Y1+2,X1+62,Y1+62);
 				if (MissionIcon != 0)
-					vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName(MissionIcon[i]), true, 0.8f*MenuContentTransp);
+					vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName(MissionIcon[i]), true, 0.8f*MenuContentTransp);
 
-				int SizeI = vw_FontSize(vw_GetText(MissionTitle[i]));
-				if (SizeI < 750-30-64)
-				{
-					if (MissionTitleType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionTitle[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, MissionTitle[i]);
-				}
+
+				if (MissionTitleType[i] == 1)
+					vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionTitle[i]));
 				else
-				{
-					if (MissionTitleType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionTitle[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+9, -650, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, MissionTitle[i]);
-				}
+					vw_DrawFont(X1+20+64, Y1+9, -610, 0, 1.0f, MissionTitleColorR[i],MissionTitleColorG[i],MissionTitleColorB[i], 0.8f*MenuContentTransp, MissionTitle[i]);
 
-				SizeI = vw_FontSize(vw_GetText(MissionDescr[i]));
-				if (SizeI < 750-30-64)
-				{
-					if (MissionDescrType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionDescr[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, MissionDescr[i]);
-
-				}
+				if (MissionDescrType[i] == 1)
+					vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionDescr[i]));
 				else
-				{
-					if (MissionDescrType[i] == 1)
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, vw_GetText(MissionDescr[i]));
-					else
-						vw_DrawFont(X1+20+64, Y1+33, -650, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, MissionDescr[i]);
-				}
+					vw_DrawFont(X1+20+64, Y1+33, -610, 0, 1.0f, MissionDescrColorR[i],MissionDescrColorG[i],MissionDescrColorB[i], 0.8f*MenuContentTransp, MissionDescr[i]);
+
 			}
 		}
 
 		Y1 += 64;
 	}
-	// если не стоим над профайлами - нужно сбросить флаг
+	// если не стоим над профилями - нужно сбросить флаг
 	if (TMPSoundOnMissionID == -1) SoundOnMissionID = -1;
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-	// чтобы не сбивать.. устанавливаем "железно"
-	Y1 = 218+320+24;
-	int AllPagesQuant = AllMission/5;
-	if (AllMission/5 < (AllMission*1.0f)/5.0f) AllPagesQuant++;
-
-	int AllCurPage = StartMission/5 + 1;
-	vw_DrawFont(X1, Y1, 0, 0, 1.0f, 1.0f,1.0f,1.0f, 0.5f*MenuContentTransp, vw_GetText("3_Page_%i_of_%i"), AllCurPage, AllPagesQuant);
-
-
-
-	bool Off = false;
-	if (AllCurPage == 1) Off = true;
-	if (DrawButton200_2(X1+616-200-30-72, Y1-6, vw_GetText("1_Page_Up"), MenuContentTransp, Off))
+	Y1 = 270;
+	// стрелки перемещения списка
+	if (DrawListUpButton(X1+718, Y1, MenuContentTransp, !(StartMission > 0)))
 	{
-		StartMission -= 5;
-		EndMission -= 5;
-	}
-	Off = false;
-	if (AllCurPage == AllPagesQuant) Off = true;
-	if (DrawButton200_2(X1+616-72, Y1-6, vw_GetText("1_Page_Down"), MenuContentTransp, Off))
-	{
-		StartMission += 5;
-		EndMission += 5;
+		StartMission--;
+		EndMission--;
 	}
 
+	if (DrawListDownButton(X1+718,Y1+320-32, MenuContentTransp, !(StartMission < AllMission-5)))
+	{
+		StartMission++;
+		EndMission++;
+	}
+	// проверяем колесико мышки, если курсор находится над активной частью
+	SetRect(&DstRect,X1,Y1,X1+750,Y1+320);
+	if (vw_OnRect(&DstRect))
+	{
+		if (vw_GetWheelStatus() != 0 && !isDialogBoxDrawing())
+		{
+			StartMission += vw_GetWheelStatus();
+			EndMission += vw_GetWheelStatus();
+
+			if (StartMission < 0)
+			{
+				StartMission = 0;
+				EndMission = 4;
+			}
+			if (EndMission > AllMission-1)
+			{
+				EndMission = AllMission-1;
+				StartMission = EndMission-4;
+			}
+
+			vw_ResetWheelStatus();
+		}
+	}
+	else if (vw_GetWheelStatus() != 0)
+	{
+		vw_ResetWheelStatus();
+	}
+
+	// выводим отображение положени в списке на полоске со стрелками
+	SetRect(&SrcRect,0,0,32,32);
+	SetRect(&DstRect,X1+750-32+4,Y1+32+((320.0f-64)/AllMission)*StartMission,X1+750-4,Y1+32+((320.0f-64)/AllMission)*(EndMission+1));
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.3f*MenuContentTransp);
+
+	// обработка перетягивания ползунка отображения позиции списка
+	// если стоим на ползунком и нажали кнопку мышки - "захватываем"
+	if (!SliderUnderMouseControl && vw_OnRect(&DstRect) && vw_GetWindowLBMouse(false) && !isDialogBoxDrawing())
+	{
+		SliderUnderMouseControl = true;
+		Audio_PlaySound2D(2,1.0f);
+	}
+	// если ползунок был захвачен, но уже не над секцией где его можно перетягивать или отпустили мышку - отпускаем
+	RECT DstRect2;
+	SetRect(&DstRect2,X1+750-32+4,Y1+32,X1+750-4,Y1+32+(320.0f-64));
+	if ((SliderUnderMouseControl && (!vw_OnRect(&DstRect2) || !vw_GetWindowLBMouse(false))) || isDialogBoxDrawing())
+	{
+		SliderUnderMouseControl = false;
+	}
+	// просто кликнули на зону перетягивания, не на ползунок
+	if (!vw_OnRect(&DstRect) && vw_OnRect(&DstRect2) && vw_GetWindowLBMouse(false) && !isDialogBoxDrawing())
+	{
+		SliderUnderMouseControl = true;
+		Audio_PlaySound2D(2,1.0f);
+		vw_SetWindowLBMouse(false);
+	}
+	// отображаем курсором, что можно кликать на полосе прокрутки
+	if (vw_OnRect(&DstRect2)) CurrentCursorStatus = 1;
+	// корректируем его положение ползунка согласно положению мышки
+	if (SliderUnderMouseControl)
+	{
+		int MouseX, MouseY;
+		vw_GetMousePos(&MouseX, &MouseY);
+		int SliderNewPosition = (MouseY - Y1-32)/((320.0f-64)/AllMission);
+
+		StartMission = 0;
+		EndMission = 4;
+		if (SliderNewPosition > 2)
+		{
+			StartMission = SliderNewPosition-2;
+			EndMission = SliderNewPosition+2;
+
+			if (SliderNewPosition >= AllMission-2)
+			{
+				StartMission = AllMission-5;
+				EndMission = AllMission-1;
+			}
+		}
+	}
 
 
 
@@ -701,15 +711,13 @@ void MissionMenu()
 
 	int X = Setup.iAspectRatioWidth/2 - 284;
 	int Y = 165+100*5;
-	if (DrawButton256(X,Y, vw_GetText("1_BACK"), MenuContentTransp, &Button10Transp, &LastButton10UpdateTime))
+	if (DrawButton256(X,Y, vw_GetText("1_MAIN_MENU"), MenuContentTransp, &Button10Transp, &LastButton10UpdateTime))
 	{
-		ComBuffer = PROFILE;
+		ComBuffer = MAIN_MENU;
 	}
 
-	Off = true;
-	if (CurrentMission >= 0) Off = false;
 	X = Setup.iAspectRatioWidth/2 + 28;
-	if (DrawButton256(X,Y, vw_GetText("1_NEXT"), MenuContentTransp, &Button11Transp, &LastButton11UpdateTime, Off))
+	if (DrawButton256(X,Y, vw_GetText("1_NEXT"), MenuContentTransp, &Button11Transp, &LastButton11UpdateTime, !(CurrentMission >= 0)))
 	{
 		// если уже играли в эту миссию
 		if (Setup.Profile[CurrentProfile].MissionReplayCount[CurrentMission] > 0)

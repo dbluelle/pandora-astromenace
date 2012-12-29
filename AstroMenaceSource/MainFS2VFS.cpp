@@ -28,8 +28,8 @@
 #include "Game.h"
 
 
-const int	ConvertListCount = 387;
-const char *ConvertList[ConvertListCount] =
+const int	VFSFilesListCount = 390;
+const char *VFSFilesList[VFSFilesListCount] =
 {"DATA_RU/VOICE/EngineMalfunction.wav",
 "DATA_RU/VOICE/WeaponDamaged.wav",
 "DATA_RU/VOICE/MissileDetected.wav",
@@ -257,6 +257,8 @@ const char *ConvertList[ConvertListCount] =
 "MENU/weapon6_icon.tga",
 "MENU/arrows_off.tga",
 "MENU/arrows_blue.tga",
+"MENU/arrow_list_up.tga",
+"MENU/arrow_list_down.tga",
 "MENU/workshop_panel5.tga",
 "MENU/workshop_panel3.tga",
 "MENU/dialog768_600.tga",
@@ -400,7 +402,8 @@ const char *ConvertList[ConvertListCount] =
 "FONT/FreeMonoBold.ttf",
 "FONT/FreeSansBold.ttf",
 "FONT/FreeSerifBold.ttf",
-"FONT/Ubuntu-B.ttf",
+"FONT/LinBiolinumBold.ttf",
+"FONT/LinLibertineBold.ttf",
 "CREDITS/freetype.tga",
 "CREDITS/oggvorbis.tga",
 "text.csv",
@@ -685,50 +688,21 @@ int ConvertFS2VFS(char RawDataDir[MAX_PATH])
 	char DstFileName[MAX_PATH];
 
 	// добавляем физические файлы
-	for (int i=0; i<ConvertListCount; i++)
+	for (int i=0; i<VFSFilesListCount; i++)
 	{
 
 		strcpy(SrcFileName, RawDataDir);
-		strcat(SrcFileName, ConvertList[i]);
+		strcat(SrcFileName, VFSFilesList[i]);
 
 		// все наши файлы внутри VFS лежат в директории DATA
 		strcpy(DstFileName, "DATA/");
-		strcat(DstFileName, ConvertList[i]);
+		strcat(DstFileName, VFSFilesList[i]);
 
-
-		// читаем данные файла в буфер
-		SDL_RWops *Ftmp = SDL_RWFromFile(SrcFileName, "rb");
-		// Если файл не найден - выходим
-		if (Ftmp == NULL)
-    	{
-			fprintf(stderr, "Can't find file %s !!!\n", SrcFileName);
+		if (0 != vw_WriteIntoVFSfromFile(SrcFileName, DstFileName))
+		{
 			fprintf(stderr, "VFS compilation process aborted!\n");
         	return -1;
-    	}
-
-		// получаем размер файла
-		SDL_RWseek(Ftmp, 0, SEEK_END);
-		int tmpLength = SDL_RWtell(Ftmp);
-		SDL_RWseek(Ftmp, 0, SEEK_SET);
-
-		// копируем все данные файла в массив
-		BYTE *tmp = 0;
-		tmp = new BYTE[tmpLength];
-		SDL_RWread(Ftmp, tmp, tmpLength, 1);
-		SDL_RWclose(Ftmp);
-
-		// запись в VFS
-		if (0 != vw_WriteIntoVFSfromMemory(DstFileName, tmp, tmpLength))
-		{
-			// какая-то ошибка, не можем записать в VFS
-			delete [] tmp; tmp = 0;
-			fprintf(stderr, "Can't write into VFS from memory %s !!!\n", DstFileName);
-			fprintf(stderr, "VFS compilation process aborted!\n");
-			return -1;
 		}
-
-		// Освобождаем память
-		delete [] tmp; tmp = 0;
 	}
 
 

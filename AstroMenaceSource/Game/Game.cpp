@@ -160,26 +160,26 @@ float LastGameTime;
 //------------------------------------------------------------------------------------
 // данные фонта
 //------------------------------------------------------------------------------------
-void GetGameNumFontData(char Char, RECT *SrcRest)
+void GetGameNumFontData(char Char, RECT *SrcRect)
 {
 	switch (Char)
 	{
-		case '0':	SetRect(SrcRest,232,4,245,25); break;
-		case '1':	SetRect(SrcRest,71,4,84,25); break;
-		case '2':	SetRect(SrcRest,88,4,101,25); break;
-		case '3':	SetRect(SrcRest,106,4,119,25); break;
-		case '4':	SetRect(SrcRest,124,4,137,25); break;
-		case '5':	SetRect(SrcRest,142,4,155,25); break;
-		case '6':	SetRect(SrcRest,160,4,173,25); break;
-		case '7':	SetRect(SrcRest,178,4,191,25); break;
-		case '8':	SetRect(SrcRest,196,4,209,25); break;
-		case '9':	SetRect(SrcRest,214,4,227,25); break;
+		case '0':	SetRect(SrcRect,232,4,245,25); break;
+		case '1':	SetRect(SrcRect,71,4,84,25); break;
+		case '2':	SetRect(SrcRect,88,4,101,25); break;
+		case '3':	SetRect(SrcRect,106,4,119,25); break;
+		case '4':	SetRect(SrcRect,124,4,137,25); break;
+		case '5':	SetRect(SrcRect,142,4,155,25); break;
+		case '6':	SetRect(SrcRect,160,4,173,25); break;
+		case '7':	SetRect(SrcRect,178,4,191,25); break;
+		case '8':	SetRect(SrcRect,196,4,209,25); break;
+		case '9':	SetRect(SrcRect,214,4,227,25); break;
 
-		case 'E':	SetRect(SrcRest,47,4,66,25); break;
-		case 'S':	SetRect(SrcRest,4,4,21,25); break;
-		case '$':	SetRect(SrcRest,25,4,41,25); break;
+		case 'E':	SetRect(SrcRect,47,4,66,25); break;
+		case 'S':	SetRect(SrcRect,4,4,21,25); break;
+		case '$':	SetRect(SrcRect,25,4,41,25); break;
 
-		case ' ':	SetRect(SrcRest,0,0,13,0); break;
+		case ' ':	SetRect(SrcRect,0,0,13,0); break;
 	}
 
 }
@@ -190,8 +190,8 @@ void GetGameNumFontData(char Char, RECT *SrcRest)
 void DrawGameExpMoney(int Exp, int Money)
 {
 
-	RECT DstRest, SrcRest;
-	SetRect(&SrcRest, 0, 0, 0, 0);
+	RECT DstRect, SrcRect;
+	SetRect(&SrcRect, 0, 0, 0, 0);
 	int Ystart;
 	float Xstart;
 	eTexture *Tex = vw_FindTextureByName("DATA/GAME/game_num.tga");
@@ -235,21 +235,21 @@ void DrawGameExpMoney(int Exp, int Money)
 
 	Xstart = Setup.iAspectRatioWidth/2-57.0f;
 	Ystart = 5;
-	GetGameNumFontData('E', &SrcRest);
-	SetRect(&DstRest, (int)Xstart,	Ystart,
-				(int)Xstart+SrcRest.right-SrcRest.left, Ystart+SrcRest.bottom-SrcRest.top);
+	GetGameNumFontData('E', &SrcRect);
+	SetRect(&DstRect, (int)Xstart,	Ystart,
+				(int)Xstart+SrcRect.right-SrcRect.left, Ystart+SrcRect.bottom-SrcRect.top);
 
-	if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-	else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+	if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+	else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-	float FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-	float FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+	float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+	float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-	float Yst = (SrcRest.top*1.0f)/ImageHeight;
-	float Xst = (SrcRest.left*1.0f)/ImageWidth;
+	float Yst = (SrcRect.top*1.0f)/ImageHeight;
+	float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -257,8 +257,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -266,8 +266,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -275,8 +275,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = FrameWidth;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -286,21 +286,21 @@ void DrawGameExpMoney(int Exp, int Money)
 
 	Xstart = Setup.iAspectRatioWidth/2-56.0f;
 	Ystart = 31;
-	GetGameNumFontData('$', &SrcRest);
-	SetRect(&DstRest, (int)Xstart,	Ystart,
-				(int)Xstart+SrcRest.right-SrcRest.left, Ystart+SrcRest.bottom-SrcRest.top);
+	GetGameNumFontData('$', &SrcRect);
+	SetRect(&DstRect, (int)Xstart,	Ystart,
+				(int)Xstart+SrcRect.right-SrcRect.left, Ystart+SrcRect.bottom-SrcRect.top);
 
-	if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-	else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+	if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+	else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-	FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-	FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+	FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+	FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-	Yst = (SrcRest.top*1.0f)/ImageHeight;
-	Xst = (SrcRest.left*1.0f)/ImageWidth;
+	Yst = (SrcRect.top*1.0f)/ImageHeight;
+	Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -308,8 +308,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -317,8 +317,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -326,8 +326,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = FrameWidth;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -350,29 +350,29 @@ void DrawGameExpMoney(int Exp, int Money)
 		if (7-i > strlen(buffer))
 		{
 			Transp = 0.2f;
-			GetGameNumFontData('0', &SrcRest);
+			GetGameNumFontData('0', &SrcRect);
 		}
 		else
 		{
 			Transp = 1.0f;
-			GetGameNumFontData(buffer[i+strlen(buffer)-7], &SrcRest);
+			GetGameNumFontData(buffer[i+strlen(buffer)-7], &SrcRect);
 		}
-		SetRect(&DstRest, (int)Xstart,	Ystart,
-				(int)Xstart+SrcRest.right-SrcRest.left, Ystart+SrcRest.bottom-SrcRest.top);
+		SetRect(&DstRect, (int)Xstart,	Ystart,
+				(int)Xstart+SrcRect.right-SrcRect.left, Ystart+SrcRect.bottom-SrcRect.top);
 
 
 
-		if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-		else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+		if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+		else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-		FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-		FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+		FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+		FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-		Yst = (SrcRest.top*1.0f)/ImageHeight;
-		Xst = (SrcRest.left*1.0f)/ImageWidth;
+		Yst = (SrcRect.top*1.0f)/ImageHeight;
+		Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -380,8 +380,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -389,8 +389,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -398,8 +398,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = FrameWidth;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -408,7 +408,7 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-Yst;
 
 
-		Xstart += SrcRest.right - SrcRest.left;
+		Xstart += SrcRect.right - SrcRect.left;
 	}
 
 
@@ -424,29 +424,29 @@ void DrawGameExpMoney(int Exp, int Money)
 		if (7-i > strlen(buffer))
 		{
 			Transp = 0.2f;
-			GetGameNumFontData('0', &SrcRest);
+			GetGameNumFontData('0', &SrcRect);
 		}
 		else
 		{
 			Transp = 1.0f;
-			GetGameNumFontData(buffer[i+strlen(buffer)-7], &SrcRest);
+			GetGameNumFontData(buffer[i+strlen(buffer)-7], &SrcRect);
 		}
-		SetRect(&DstRest, (int)Xstart,	Ystart,
-				(int)Xstart+SrcRest.right-SrcRest.left, Ystart+SrcRest.bottom-SrcRest.top);
+		SetRect(&DstRect, (int)Xstart,	Ystart,
+				(int)Xstart+SrcRect.right-SrcRect.left, Ystart+SrcRect.bottom-SrcRect.top);
 
 
 
-		if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-		else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+		if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+		else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-		FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-		FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+		FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+		FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-		Yst = (SrcRest.top*1.0f)/ImageHeight;
-		Xst = (SrcRest.left*1.0f)/ImageWidth;
+		Yst = (SrcRect.top*1.0f)/ImageHeight;
+		Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -454,8 +454,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
-		tmp[k++] = DstRest.left;	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left;	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -463,8 +463,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY;	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -472,8 +472,8 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = FrameWidth;
 		tmp[k++] = 1.0f-FrameHeight;
 
-		tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-		tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
@@ -482,7 +482,7 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-Yst;
 
 
-		Xstart += SrcRest.right - SrcRest.left;
+		Xstart += SrcRect.right - SrcRect.left;
 	}
 
 
@@ -982,28 +982,35 @@ void ExitGameWithSave()
 		}
 	}
 
-	// ставим нужною миссию
+	// ставим следующую миссию
 	CurrentMission ++;
-	// ставим ограничитель дальше, если это нужно
+	// перемещаем ограничитель дальше, если это нужно
 	if (Setup.Profile[CurrentProfile].OpenLevelNum < CurrentMission)
 		Setup.Profile[CurrentProfile].OpenLevelNum = CurrentMission;
 
-	// ставим нужный лист миссий
-	if (!(StartMission<=CurrentMission && CurrentMission<=EndMission && CurrentMission<AllMission))
-	{
-		StartMission += 5;
-		EndMission += 5;
-	}
-
-
-	// если дальше уже ничего, просто снимаем все... пусть игрок сам выберет
-	if (CurrentMission > MissionLimitation)
+	// если дальше уже ничего нет, просто снимаем все... пусть игрок сам выберет
+	if (CurrentMission > AllMission-1)
 	{
 		CurrentMission = -1;
-		// ставим первый лист миссий
-		StartMission = 0;
-		EndMission = 4;
 	}
+
+	vw_ResetWheelStatus();
+	// ставим нужный лист миссий
+	StartMission = 0;
+	EndMission = 4;
+	if (CurrentMission != -1)
+	if (CurrentMission > 2)// нужно сдвинуть лист, чтобы выбранный элемент был по середине списка
+	{
+		StartMission = CurrentMission-2;
+		EndMission = CurrentMission+2;
+
+		if (CurrentMission >= AllMission-2)
+		{
+			StartMission = AllMission-5;
+			EndMission = AllMission-1;
+		}
+	}
+
 
 	Setup.Profile[CurrentProfile].LastMission = CurrentMission;
 
@@ -1104,7 +1111,7 @@ void DrawGame()
 	// 2д часть
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	vw_Start2DMode(-1,1);
-	RECT SrcRest, DstRest;
+	RECT SrcRect, DstRect;
 
 
 
@@ -1122,25 +1129,25 @@ void DrawGame()
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	if (Setup.iAspectRatioWidth == 1024)
 	{
-		SetRect(&SrcRest,0,0,1024,74);
-		SetRect(&DstRest,0,0,1024,74);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/game_panel.tga"), true, 1.0f);
+		SetRect(&SrcRect,0,0,1024,74);
+		SetRect(&DstRect,0,0,1024,74);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel.tga"), true, 1.0f);
 	}
 	if (Setup.iAspectRatioWidth == 1228)
 	{
-		SetRect(&SrcRest,0,0,466,73);
-		SetRect(&DstRest,0,0,466,73);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		SetRect(&SrcRect,0,0,466,73);
+		SetRect(&DstRect,0,0,466,73);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
 
 
-		SetRect(&SrcRest,1,74,150,145);
-		SetRect(&DstRest,540,0,540+149,71);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		SetRect(&SrcRect,1,74,150,145);
+		SetRect(&DstRect,540,0,540+149,71);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
 
 
-		SetRect(&SrcRest,150,74,610,145);
-		SetRect(&DstRest,768,0,768+460,71);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		SetRect(&SrcRect,150,74,610,145);
+		SetRect(&DstRect,768,0,768+460,71);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
 	}
 
 
@@ -1303,24 +1310,24 @@ void DrawGame()
 			for (int i=0; i<DrawEnergNum; i++)
 			{
 				// получаем данные текущего фрагмента
-				SetRect(&SrcRest,67+i*20,0,85+i*20,64);
-				DstRest = SrcRest;
+				SetRect(&SrcRect,67+i*20,0,85+i*20,64);
+				DstRect = SrcRect;
 				// находим прозначность
 				float Transp = (CurrentDrawEnergNumFull * 19) - i;
 				if (Transp > 1.0f) Transp = 1.0f;
 
 
-				if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-				else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+				if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+				else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-				float FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-				float FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+				float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+				float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-				float Yst = (SrcRest.top*1.0f)/ImageHeight;
-				float Xst = (SrcRest.left*1.0f)/ImageWidth;
+				float Yst = (SrcRect.top*1.0f)/ImageHeight;
+				float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-					tmp[k++] = DstRest.left;	// X
-					tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1328,8 +1335,8 @@ void DrawGame()
 					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-Yst;
 
-					tmp[k++] = DstRest.left;	// X
-					tmp[k++] = DstRest.top +tmpPosY;	// Y
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1337,8 +1344,8 @@ void DrawGame()
 					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-FrameHeight;
 
-					tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-					tmp[k++] = DstRest.top +tmpPosY;	// Y
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1346,8 +1353,8 @@ void DrawGame()
 					tmp[k++] = FrameWidth;
 					tmp[k++] = 1.0f-FrameHeight;
 
-					tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-					tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1362,31 +1369,31 @@ void DrawGame()
 			for (int i=0; i<DrawLifeNum; i++)
 			{
 				// получаем данные текущего фрагмента
-				SetRect(&SrcRest,582+i*20,0,599+i*20,64);
+				SetRect(&SrcRect,582+i*20,0,599+i*20,64);
 				if (Setup.iAspectRatioWidth == 1024)
 				{
-					DstRest = SrcRest;
+					DstRect = SrcRect;
 				}
 				if (Setup.iAspectRatioWidth == 1228)
 				{
-					//SetRect(&DstRest,Setup.iAspectRatioWidth-446+i*20,0,Setup.iAspectRatioWidth-425+i*20,64);
-					SetRect(&DstRest,204+582+i*20,0,204+599+i*20,64);
+					//SetRect(&DstRect,Setup.iAspectRatioWidth-446+i*20,0,Setup.iAspectRatioWidth-425+i*20,64);
+					SetRect(&DstRect,204+582+i*20,0,204+599+i*20,64);
 				}
 				// находим прозначность
 				float Transp = (CurrentDrawLifeNumFull * 19) - i;
 				if (Transp > 1.0f) Transp = 1.0f;
 
-				if (ASpresent) tmpPosY = (AH - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
-				else tmpPosY = (AHw - DstRest.top - DstRest.top - (DstRest.bottom - DstRest.top));
+				if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
+				else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
-				float FrameHeight = (SrcRest.bottom*1.0f )/ImageHeight;
-				float FrameWidth = (SrcRest.right*1.0f )/ImageWidth;
+				float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+				float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
-				float Yst = (SrcRest.top*1.0f)/ImageHeight;
-				float Xst = (SrcRest.left*1.0f)/ImageWidth;
+				float Yst = (SrcRect.top*1.0f)/ImageHeight;
+				float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-					tmp[k++] = DstRest.left;	// X
-					tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1394,8 +1401,8 @@ void DrawGame()
 					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-Yst;
 
-					tmp[k++] = DstRest.left;	// X
-					tmp[k++] = DstRest.top +tmpPosY;	// Y
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1403,8 +1410,8 @@ void DrawGame()
 					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-FrameHeight;
 
-					tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-					tmp[k++] = DstRest.top +tmpPosY;	// Y
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1412,8 +1419,8 @@ void DrawGame()
 					tmp[k++] = FrameWidth;
 					tmp[k++] = 1.0f-FrameHeight;
 
-					tmp[k++] = DstRest.left + (DstRest.right - DstRest.left);	// X
-					tmp[k++] = DstRest.top +tmpPosY +(DstRest.bottom - DstRest.top);	// Y
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
@@ -1552,12 +1559,12 @@ void DrawGame()
 		if (GameMissionCompleteStatus)
 		{
 
-			RECT SrcRest, DstRest;
+			RECT SrcRect, DstRect;
 
 			// выводим подложку меню
-			SetRect(&SrcRest,2,2,564-2,564-2);
-			SetRect(&DstRest,Setup.iAspectRatioWidth/2-256+4-30,128+2-30,Setup.iAspectRatioWidth/2-256+564-30,128+564-2-30);
-			vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/dialog512_512.tga"),
+			SetRect(&SrcRect,2,2,564-2,564-2);
+			SetRect(&DstRect,Setup.iAspectRatioWidth/2-256+4-30,128+2-30,Setup.iAspectRatioWidth/2-256+564-30,128+564-2-30);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/dialog512_512.tga"),
 				true, 1.0f*GameContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
 			// название меню
 			int Size = vw_FontSize(vw_GetText("1_Mission_Complete"));
@@ -1638,92 +1645,104 @@ void DrawGame()
 		}
 		else
 		{
-			if (GameMenuStatus == 1)
+			switch(GameMenuStatus)
 			{
-
-				// выводим подложку меню
-				SetRect(&SrcRest,2,2,564-2,564-2);
-				SetRect(&DstRest,Setup.iAspectRatioWidth/2-256+4-30,128+2-30,Setup.iAspectRatioWidth/2-256+564-30,128+564-2-30);
-				vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/dialog512_512.tga"),
-					true, GameContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
-				// название меню
-				int SizeI = 17 + (234-vw_FontSize(vw_GetText("1_GAME_MENU")))/2;
-				vw_DrawFont(Setup.iAspectRatioWidth/2-256+SizeI, 128+22, 0, 0, 1.0f, 1.0f,1.0f,0.0f, 0.7f*GameContentTransp, vw_GetText("1_GAME_MENU"));
-
-				// выводим кнопки меню
-
-
-				int X = Setup.iAspectRatioWidth/2-192;
-				int Y = 225;
-				int Prir = 100;
-
-				// продолжаем игру
-				if (DrawButton384(X,Y, vw_GetText("1_RESUME"), GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime))
+				// основное меню игры
+				case 1:
 				{
-					GameMenu = false;
-					NeedShowGameMenu = false;
-					NeedHideGameMenu = true;
-					DrawGameCursor = false;
-					// установка в последюю точку указателя
+					// выводим подложку меню
+					SetRect(&SrcRect,2,2,564-2,564-2);
+					SetRect(&DstRect,Setup.iAspectRatioWidth/2-256+4-30,128+2-30,Setup.iAspectRatioWidth/2-256+564-30,128+564-2-30);
+					vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/dialog512_512.tga"),
+						true, GameContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
+					// название меню
+					int SizeI = 17 + (234-vw_FontSize(vw_GetText("1_GAME_MENU")))/2;
+					vw_DrawFont(Setup.iAspectRatioWidth/2-256+SizeI, 128+22, 0, 0, 1.0f, 1.0f,1.0f,0.0f, 0.7f*GameContentTransp, vw_GetText("1_GAME_MENU"));
+
+
+					// выводим кнопки меню
+
+
+					int X = Setup.iAspectRatioWidth/2-192;
+					int Y = 225;
+					int Prir = 100;
+
+					// продолжаем игру
+					if (DrawButton384(X,Y, vw_GetText("1_RESUME"), GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime))
+					{
+						GameMenu = false;
+						NeedShowGameMenu = false;
+						NeedHideGameMenu = true;
+						DrawGameCursor = false;
+						// установка в последюю точку указателя
 #ifndef USE_GLES
-					SDL_WarpMouse(LastMouseXR, LastMouseYR);
+						SDL_WarpMouse(LastMouseXR, LastMouseYR);
 #endif
-					if (SoundShowHideMenu != 0)
-						if (vw_FindSoundByNum(SoundShowHideMenu) != 0)
-							vw_FindSoundByNum(SoundShowHideMenu)->Stop(0.15f);
-					SoundShowHideMenu = Audio_PlaySound2D(13, 1.0f);
-				}
 
-				// выход в настройки
-				Y = Y+Prir;
-				if (DrawButton384(X,Y, vw_GetText("1_OPTIONS"), GameContentTransp, &GameButton2Transp, &LastGameButton2UpdateTime))
-				{
-					GameMenuStatus = 2;
-				}
-
-				// прерываем игру
-				Y = Y+Prir;
-				if (DrawButton384(X,Y, vw_GetText("1_RESTART"), GameContentTransp, &GameButton3Transp, &LastGameButton3UpdateTime))
-				{
-					// если убили, выводить диалог не нужно
-					if (PlayerFighter == 0)
-					{
-						ComBuffer = GAME;
-						ExitGame();
+						if (SoundShowHideMenu != 0)
+							if (vw_FindSoundByNum(SoundShowHideMenu) != 0)
+								vw_FindSoundByNum(SoundShowHideMenu)->Stop(0.15f);
+						SoundShowHideMenu = Audio_PlaySound2D(13, 1.0f);
 					}
-					else
-						SetCurrentDialogBox(5);
-				}
-
-				// выход из игры
-				Y = Y+Prir;
-				if (DrawButton384(X,Y, vw_GetText("1_QUIT"), GameContentTransp, &GameButton4Transp, &LastGameButton4UpdateTime))
-				{
-					// если убили, выводить диалог не нужно
-					if (PlayerFighter == 0)
+					// выход в настройки
+					Y = Y+Prir;
+					if (DrawButton384(X,Y, vw_GetText("1_OPTIONS"), GameContentTransp, &GameButton2Transp, &LastGameButton2UpdateTime))
 					{
-						ComBuffer = 101;
-						ExitGame();
+						SetOptionsMenu(OPTIONS);
+						GameMenuStatus = 2;
 					}
-					else
-						SetCurrentDialogBox(41);
+
+					// прерываем игру
+					Y = Y+Prir;
+					if (DrawButton384(X,Y, vw_GetText("1_RESTART"), GameContentTransp, &GameButton3Transp, &LastGameButton3UpdateTime))
+					{
+						// если убили, выводить диалог не нужно
+						if (PlayerFighter == 0)
+						{
+							ComBuffer = GAME;
+							ExitGame();
+						}
+						else
+							SetCurrentDialogBox(5);
+ 					}
+
+					// выход из игры
+					Y = Y+Prir;
+					if (DrawButton384(X,Y, vw_GetText("1_QUIT"), GameContentTransp, &GameButton4Transp, &LastGameButton4UpdateTime))
+					{
+						// если убили, выводить диалог не нужно
+						if (PlayerFighter == 0)
+						{
+							ComBuffer = 101;
+							ExitGame();
+						}
+						else
+							SetCurrentDialogBox(41);
+					}
+					break;
 				}
-
-
-			}
-			else
-			{
-				GameOptions();
+				// основное меню настроек
+				case 2:
+					OptionsMenu(GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime, &GameButton2Transp, &LastGameButton2UpdateTime); break;
+				// меню продвинутых настроек
+				case 3:
+					OptionsAdvMenu(GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime, &GameButton2Transp, &LastGameButton2UpdateTime); break;
+				// меню настройки интерфейса
+				case 4:
+					InterfaceMenu(GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime); break;
+				// меню настройки управления
+				case 5:
+					ConfControlMenu(GameContentTransp, &GameButton1Transp, &LastGameButton1UpdateTime); break;
 			}
 
 
 			// вывод надписи пауза
-			SetRect(&SrcRest,0,0,256,64);
-			SetRect(&DstRest,Setup.iAspectRatioWidth-256+60,768-64+10,Setup.iAspectRatioWidth+60,768+10);
+			SetRect(&SrcRect,0,0,256,64);
+			SetRect(&DstRect,Setup.iAspectRatioWidth-256+60,768-64+10,Setup.iAspectRatioWidth+60,768+10);
 			if (GameContentTransp == 1.0f)
-				vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/pause.tga"), true, CurrentAlert2*GameContentTransp);
+				vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/pause.tga"), true, CurrentAlert2*GameContentTransp);
 			else
-				vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/GAME/pause.tga"), true, GameContentTransp);
+				vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/pause.tga"), true, GameContentTransp);
 
 		}
 
@@ -1810,10 +1829,10 @@ void DrawGame()
 			NeedOnGame = false;
 		}
 
-		RECT SrcRest, DstRest;
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,0,0,Setup.iAspectRatioWidth,768);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, GameBlackTransp);
+		RECT SrcRect, DstRect;
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,0,0,Setup.iAspectRatioWidth,768);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, GameBlackTransp);
 	}
 
 	// черное затемнение, если нужно
@@ -1830,10 +1849,10 @@ void DrawGame()
 			ComBuffer = NewComBuffer;
 		}
 
-		RECT SrcRest, DstRest;
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,0,0,Setup.iAspectRatioWidth,768);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, GameBlackTransp);
+		RECT SrcRect, DstRect;
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,0,0,Setup.iAspectRatioWidth,768);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, GameBlackTransp);
 	}
 
 

@@ -33,6 +33,7 @@ void vw_AttachFontChar(eFontChar* FontChar);
 void vw_DetachFontChar(eFontChar* FontChar);
 extern FT_Face InternalFace;
 extern int InternalFontSize;
+extern int GlobalFontOffsetY;
 
 
 
@@ -155,6 +156,7 @@ void vw_GenerateFontChars(int FontTextureWidth, int FontTextureHeight, const cha
 		NewChar->Height = InternalFace->glyph->bitmap.rows;
 		NewChar->Left = InternalFace->glyph->bitmap_left;
 		NewChar->Top = InternalFace->glyph->bitmap_top;
+		NewChar->AdvanceX = InternalFace->glyph->advance.x / 64.0f;
 		NewChar->Prev = 0;
 		NewChar->Next = 0;
 
@@ -298,8 +300,10 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	if (strlen(text) == 0) return;
 
 	float Xstart = X;
-	// делаем пробел в 2/3 от размера фонта
-	float SpaceWidth = InternalFontSize * 2 / 3;
+	// сразу определяем "базовую" ширину пробела, чтобы учитывать в расчетах
+	float SpaceWidth = vw_FindFontCharByUTF32(0x020)->AdvanceX*FontScale;
+	// чтобы было более читаемо - делаем пробел не менее 2/3 ширины
+	if (SpaceWidth < (InternalFontSize * 0.65f)) SpaceWidth = InternalFontSize * 0.65f;
 	// коэф. изменения букв по ширине
 	float FontWidthScale = 1.0f;
 
@@ -326,7 +330,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			if (UTF32 == 0x020)
 				SpaceCount++;
 			else
-				LineWidth += DrawChar->Width + DrawChar->Left;
+				LineWidth += DrawChar->AdvanceX;
 		}
 
 		if (FlattenWidth > LineWidth)
@@ -349,7 +353,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 
 			// считаем длину символов с пробелами
 			if (UTF32 != 0x020)
-				LineWidth += DrawChar->Width + DrawChar->Left;
+				LineWidth += DrawChar->AdvanceX;
 			else
 				LineWidth += SpaceWidth;
 		}
@@ -498,7 +502,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 		{
 
 			float DrawX = Xstart + DrawChar->Left*FontWidthScale;
-			float DrawY = Y + 2 + (InternalFontSize - DrawChar->Top)*FontScale; // 2 доп смещение ("привет" от старого фонта)
+			float DrawY = Y + GlobalFontOffsetY + (InternalFontSize - DrawChar->Top)*FontScale;
 
 			// Вычисление поправки по У в зависимости от DrawCorner
 			// - расположения угла начала координат
@@ -537,8 +541,8 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			tmp[k++] = 1.0f-Yst;
 
 
-			Xstart += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
-			LineWidth += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
+			Xstart += DrawChar->AdvanceX*FontWidthScale;
+			LineWidth += DrawChar->AdvanceX*FontWidthScale;
 		}
 		else
 		{
@@ -601,8 +605,10 @@ int vw_FontSize(const char *Text, ...)
 	if (strlen(text) == 0) return 0;
 
 	const char *textdraw = text;
-	// делаем пробел в 2/3 от размера фонта
-	float SpaceWidth = InternalFontSize * 2 / 3;
+	// сразу определяем "базовую" ширину пробела
+	float SpaceWidth = vw_FindFontCharByUTF32(0x020)->AdvanceX;
+	// чтобы было более читаемо - делаем пробел не менее 2/3 ширины
+	if (SpaceWidth < (InternalFontSize * 0.65f)) SpaceWidth = InternalFontSize * 0.65f;
 	float LineWidth = 0;
 
 	while (strlen(textdraw) > 0)
@@ -618,7 +624,7 @@ int vw_FontSize(const char *Text, ...)
 		if (UTF32 == 0x020)
 			LineWidth += SpaceWidth;
 		else
-			LineWidth += DrawChar->Width + DrawChar->Left;
+			LineWidth += DrawChar->AdvanceX;
 	}
 
 
@@ -650,8 +656,10 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 
 
 	float Xstart = 0.0f;
-	// делаем пробел в 2/3 от размера фонта
-	float SpaceWidth = InternalFontSize * 2 / 3;
+	// сразу определяем "базовую" ширину пробела
+	float SpaceWidth = vw_FindFontCharByUTF32(0x020)->AdvanceX;
+	// чтобы было более читаемо - делаем пробел не менее 2/3 ширины
+	if (SpaceWidth < (InternalFontSize * 0.65f)) SpaceWidth = InternalFontSize * 0.65f;
 
 	textdraw = text;
 
@@ -750,7 +758,7 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 			tmp[k++] = 1.0f-Yst;
 
 
-			Xstart += DrawChar->Width + DrawChar->Left;
+			Xstart += DrawChar->AdvanceX;
 		}
 		else
 		{

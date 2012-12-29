@@ -98,8 +98,44 @@ extern bool JoysticButtons[100];
 void SaveGameData();
 void CodeXOR(char *Text, char *Key, int Count);
 
-const int FontQuantity=7;
-extern sFontList FontList[FontQuantity];
+struct sFontList
+{
+	const char *FontTitle;
+	const char *FontFileName;
+};
+
+// In order to change/add/delete font:
+//
+// 1. Edit AstroMenaceSource/Game.h file
+// - change/add/delete lines in FontList list
+// - correct FontQuantity variable value
+//
+// 2. Edit AstroMenaceSource/MainFS2VFS.cpp file (for bundled with game fonts only!)
+// - change/add/delete lines in VFSFilesList list
+// - correct VFSFilesListCount variable value
+// - make sure, that you have all font files in RAW_VFS_DATA/FONT/ folder
+//
+// You can also use external (installed into your system) ttf fonts. For example:
+/*
+const int FontQuantity = 2;
+const sFontList FontList[FontQuantity] =
+{
+{"Linux Biolinum", "DATA/FONT/LinBiolinumBold.ttf"},
+{"Liberation Sans", "/usr/share/fonts/liberation-fonts/LiberationSans-Bold.ttf"},
+};
+*/
+const int FontQuantity = 8;
+const sFontList FontList[FontQuantity] =
+{
+{"Linux Biolinum", "DATA/FONT/LinBiolinumBold.ttf"},
+{"Linux Libertine", "DATA/FONT/LinLibertineBold.ttf"},
+{"Liberation Mono", "DATA/FONT/LiberationMono-Bold.ttf"},
+{"Liberation Sans", "DATA/FONT/LiberationSans-Bold.ttf"},
+{"Liberation Serif", "DATA/FONT/LiberationSerif-Bold.ttf"},
+{"FreeFont Mono", "DATA/FONT/FreeMonoBold.ttf"},
+{"FreeFont Sans", "DATA/FONT/FreeSansBold.ttf"},
+{"FreeFont Serif", "DATA/FONT/FreeSerifBold.ttf"},
+};
 
 
 
@@ -240,7 +276,8 @@ bool DrawButton256(int X, int Y, const char *Text, float Transp, float *ButTrans
 bool DrawButton128_2(int X, int Y, const char *Text, float Transp, bool Off, bool SoundClick = true);
 bool DrawButton200_2(int X, int Y, const char *Text, float Transp, bool Off);
 void DrawCheckBox(int X, int Y, bool *CheckBoxStatus, const char *Text, float Transp);
-
+bool DrawListUpButton(int X, int Y, float Transp, bool Off);
+bool DrawListDownButton(int X, int Y, float Transp, bool Off);
 
 
 
@@ -283,9 +320,10 @@ extern float MenuContentTransp;
 extern float LastMenuOnOffUpdateTime;
 
 void InitMenu();
+void SetOptionsMenu(eGameStatus Menu);
 void SetMenu(eGameStatus Menu);
 void DrawMenu();
-void DrawTransparent(RECT *DstRest, RECT *SrcRest, eTexture *Tex, eTexture *Tex2, bool Alpha, float Transp, float RotateAngle, int DrawCorner, float R, float G, float B);
+void DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, eTexture *Tex2, bool Alpha, float Transp, float RotateAngle, int DrawCorner, float R, float G, float B);
 void MainMenu();
 
 
@@ -322,8 +360,8 @@ extern int Options_BPP;
 extern int Options_VSync;
 extern int Options_iAspectRatioWidth;
 
-void OptionsMenu();
-
+void OptionsMenu(float ContentTransp, float *ButtonTransp1, float *LastButtonUpdateTime1, float *ButtonTransp2, float *LastButtonUpdateTime2);
+void SaveOptionsMenuTmpData();
 
 
 
@@ -339,21 +377,11 @@ extern int NeedCheck;
 extern int ButQuant;
 extern float But[10];
 
-void ConfControlMenu();
+void ConfControlMenu(float ContentTransp, float *ButtonTransp1, float *LastButtonUpdateTime1);
 const char * MouseCodeName(char Num);
 const char * JoystickCodeName(char Num);
 void CheckMouseKeybJState();
 
-
-
-
-
-
-
-//------------------------------------------------------------------------------------
-// Game_Options.cpp
-//------------------------------------------------------------------------------------
-void GameOptions();
 
 
 
@@ -365,13 +393,11 @@ void GameOptions();
 //------------------------------------------------------------------------------------
 // Menu_Interface.cpp
 //------------------------------------------------------------------------------------
-extern int Options_FontNumber;
-
 void CreateMenuLanguageEntryLinks();
 void ReCreateMenuLanguageEntryLinks();
 void CreateVoiceLanguageEntryLinks();
 void ReCreateVoiceLanguageEntryLinks();
-void InterfaceMenu();
+void InterfaceMenu(float ContentTransp, float *ButtonTransp1, float *LastButtonUpdateTime1);
 
 
 
@@ -389,8 +415,8 @@ extern int Options_CSAA;
 extern int Options_ShadowMap;
 extern int Options_TexturesQuality;
 
-void OptionsAdvMenu();
-
+void OptionsAdvMenu(float ContentTransp, float *ButtonTransp1, float *LastButtonUpdateTime1, float *ButtonTransp2, float *LastButtonUpdateTime2);
+void SaveOptionsAdvMenuTmpData();
 
 
 
@@ -402,6 +428,8 @@ void OptionsAdvMenu();
 // Menu_Profile.cpp
 //------------------------------------------------------------------------------------
 extern int CurrentProfile;
+extern char NewProfileName[128];
+extern int NewProfileNamePos;
 
 void ProfileMenu();
 void DeleteRecord();
@@ -462,7 +490,6 @@ void DifficultyMenu();
 // Menu_Mission.cpp
 //------------------------------------------------------------------------------------
 extern int CurrentMission;
-extern int MissionLimitation;
 extern int AllMission;
 extern int StartMission;
 extern int EndMission;

@@ -33,7 +33,7 @@ int	CurrentProfile=-1;
 
 
 char NewProfileName[128] = "";
-int Pos = 0;
+int NewProfileNamePos = 0;
 float LastProfileNameTime = 0.0f;
 float CurrentProfileNameTransp = 0.9f;
 int	SoundOnProfileID = -1;
@@ -131,9 +131,8 @@ void NewRecord()
 
 
 	// подготавливаем, для новой записи
-	Pos = 0;
-	for(int i=0; i<128; i++)
-		NewProfileName[i] = 0;
+	NewProfileNamePos = 0;
+	memset(NewProfileName, 0, sizeof(NewProfileName));
 
 
 	CurrentProfile = ProfileNum;
@@ -309,32 +308,32 @@ exit:
 void ProfileInputText()
 {
 
-	// пишем букву, если можем
-	if (Pos < 127)
+	// пишем букву, если можем (т.к. у нас утф8 юникод, нужно как минимум 3 байта + 1 байт под \0 в конце строки)
+	if (NewProfileNamePos < 124)
 	if (vw_FontSize(NewProfileName)< 540)
 	if (vw_GetCurrentKeyUnicode()) // если тут не ноль, а юникод - значит нажали
 	{
 		Uint16 NewChar = vw_GetCurrentKeyUnicode();
 		vw_SetCurrentKeyUnicode(0); // сразу сбрасываем данные
 		// делаем простое преобразование, без учета суррогатной пары
-		char* str = NewProfileName + Pos;
+		char* str = NewProfileName + NewProfileNamePos;
 		if (NewChar <= 0x7F)
 		{
 			*str = (char)NewChar;
-			Pos++;
+			NewProfileNamePos++;
 		}
 		else if (NewChar <= 0x7FF)
 		{
 			*str++ = (char)(0xC0 | (NewChar >> 6));
 			*str = (char)(0x80 | (NewChar & 0x3F));
-			Pos+=2;
+			NewProfileNamePos+=2;
 		}
 		else
 		{
 			*str++ = (char)(0xE0 | (NewChar >> 12));
 			*str++ = (char)(0x80 | ((NewChar >> 6) & 0x3F));
 			*str = (char)(0x80 | (NewChar & 0x3F));
-			Pos+=3;
+			NewProfileNamePos+=3;
 		}
 
 		if (vw_FindSoundByNum(SoundTaping) != 0)
@@ -349,7 +348,7 @@ void ProfileInputText()
 
 	// проверяем, может спец-код
 	if (vw_GetKeys(SDLK_BACKSPACE))
-	if (Pos>0)
+	if (NewProfileNamePos>0)
 	{
 		// кривое решение на "пока", перебираем в поисках предпоследнего символа
 		const char *ReversePoint = NewProfileName;
@@ -362,11 +361,11 @@ void ProfileInputText()
 		}
 		while (ReversePointPrevious != ReversePoint)
 		{
-			NewProfileName[Pos] = 0;
-			Pos--;
+			NewProfileName[NewProfileNamePos] = 0;
+			NewProfileNamePos--;
 			ReversePointPrevious++;
 		}
-		NewProfileName[Pos] = 0;
+		NewProfileName[NewProfileNamePos] = 0;
 
 		if (vw_FindSoundByNum(SoundTaping) != 0)
 			vw_FindSoundByNum(SoundTaping)->Stop(0.0f);
@@ -377,7 +376,7 @@ void ProfileInputText()
 
 	// ввод названия
 	if (vw_GetKeys(SDLK_KP_ENTER) || vw_GetKeys(SDLK_RETURN))
-	if (Pos>0)
+	if (NewProfileNamePos>0)
 	{
 		NewRecord();
 		//Audio_PlayMenuSound(4,1.0f);
@@ -392,10 +391,10 @@ void ProfileInputText()
 
 	// находим положения ввода
 	int Size = vw_FontSize(NewProfileName);
-	RECT SrcRest, DstRest;
-	SetRect(&SrcRest,0,0,2,2);
-	SetRect(&DstRest,X1+Size+2,Y1-2,X1+26+Size,Y1+24);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/whitepoint.tga"),
+	RECT SrcRect, DstRect;
+	SetRect(&SrcRect,0,0,2,2);
+	SetRect(&DstRect,X1+Size+2,Y1-2,X1+26+Size,Y1+24);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"),
 		true, CurrentProfileNameTransp*MenuContentTransp);
 
 	float DeltaTime = vw_GetTime() - LastProfileNameTime;
@@ -427,10 +426,10 @@ void ProfileInputText()
 void ProfileMenu()
 {
 
-	RECT SrcRest, DstRest;
-	SetRect(&SrcRest,2,2,863-2,484-2);
-	SetRect(&DstRest,Setup.iAspectRatioWidth/2-427,175-15,Setup.iAspectRatioWidth/2-427+863-4,175-15+484-4);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/panel800_444_back.tga"), true, 0.9f*MenuContentTransp);
+	RECT SrcRect, DstRect;
+	SetRect(&SrcRect,2,2,863-2,484-2);
+	SetRect(&DstRect,Setup.iAspectRatioWidth/2-427,175-15,Setup.iAspectRatioWidth/2-427+863-4,175-15+484-4);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/panel800_444_back.tga"), true, 0.9f*MenuContentTransp);
 
 
 	int X1 = Setup.iAspectRatioWidth/2 - 372;
@@ -442,11 +441,11 @@ void ProfileMenu()
 
 
 	Y1 += 30;
-	SetRect(&SrcRest,0,0,2,2);
-	SetRect(&DstRest,X1-2,Y1-6,X1+2+590,Y1-2+30);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
-	SetRect(&DstRest,X1,Y1-4,X1+590,Y1-4+30);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
+	SetRect(&SrcRect,0,0,2,2);
+	SetRect(&DstRect,X1-2,Y1-6,X1+2+590,Y1-2+30);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
+	SetRect(&DstRect,X1,Y1-4,X1+590,Y1-4+30);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
 	// кнопка, создания новой записи
 	bool Off = false;
 	if (strlen(NewProfileName)<=0) Off = true;
@@ -504,11 +503,11 @@ void ProfileMenu()
 
 
 	Y1 += 30;
-	SetRect(&SrcRest,0,0,2,2);
-	SetRect(&DstRest,X1-2,Y1-6,X1+2+750,Y1-2+230);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
-	SetRect(&DstRest,X1,Y1-4,X1+750,Y1-4+230);
-	vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
+	SetRect(&SrcRect,0,0,2,2);
+	SetRect(&DstRect,X1-2,Y1-6,X1+2+750,Y1-2+230);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.2f*MenuContentTransp);
+	SetRect(&DstRect,X1,Y1-4,X1+750,Y1-4+230);
+	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, 0.5f*MenuContentTransp);
 	Y1 += 230;
 
 
@@ -553,10 +552,10 @@ void ProfileMenu()
 			}
 
 			// проверяем, если стоим над записью
-			SetRect(&SrcRest,0,0,2,2);
-			SetRect(&DstRest,X1,Y1-233+46*i,X1+750,Y1-234+46+46*i);
+			SetRect(&SrcRect,0,0,2,2);
+			SetRect(&DstRect,X1,Y1-233+46*i,X1+750,Y1-234+46+46*i);
 			if (!isDialogBoxDrawing())
-			if (vw_OnRect(&DstRest) || InFocusByKeyboard)
+			if (vw_OnRect(&DstRect) || InFocusByKeyboard)
 			{
 				TMPSoundOnProfileID = i;
 				CurrentCursorStatus = 1;
@@ -596,9 +595,9 @@ void ProfileMenu()
 					}
 
 
-					SetRect(&DstRest,X1+2,Y1-233+46*i,X1+748,Y1-235+46+46*i);
+					SetRect(&DstRect,X1+2,Y1-233+46*i,X1+748,Y1-235+46+46*i);
 					if (CurrentProfile != i)
-						vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
+						vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
 				}
 				else
 				{
@@ -627,9 +626,9 @@ void ProfileMenu()
 	// подсветка выбранного...
 	if (CurrentProfile != -1)
 	{
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,X1+2,Y1-233+46*CurrentProfile,X1+748,Y1-235+46+46*CurrentProfile);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,X1+2,Y1-233+46*CurrentProfile,X1+748,Y1-235+46+46*CurrentProfile);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/whitepoint.tga"), true, 0.1f*MenuContentTransp);
 	}
 
 
@@ -678,7 +677,7 @@ void ProfileMenu()
 	Off = true;
 	if (CurrentProfile >= 0) Off = false;
 	X = Setup.iAspectRatioWidth/2 + 28;
-	if (DrawButton256(X,Y, vw_GetText("1_NEXT"), MenuContentTransp, &Button11Transp, &LastButton11UpdateTime, Off))
+	if (DrawButton256(X,Y, vw_GetText("1_MISSIONS_LIST"), MenuContentTransp, &Button11Transp, &LastButton11UpdateTime, Off))
 	{
 		ComBuffer = MISSION;
 	}

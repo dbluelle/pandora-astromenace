@@ -48,18 +48,6 @@ GameSetup Setup;
 eDevCaps *CAPS=0;
 
 
-sFontList FontList[FontQuantity] =
-{
-{"Ubuntu Family", "DATA/FONT/Ubuntu-B.ttf"},
-{"Liberation Mono", "DATA/FONT/LiberationMono-Bold.ttf"},
-{"Liberation Sans", "DATA/FONT/LiberationSans-Bold.ttf"},
-{"Liberation Serif", "DATA/FONT/LiberationSerif-Bold.ttf"},
-{"FreeFont Mono", "DATA/FONT/FreeMonoBold.ttf"},
-{"FreeFont Sans", "DATA/FONT/FreeSansBold.ttf"},
-{"FreeFont Serif", "DATA/FONT/FreeSerifBold.ttf"},
-};
-
-
 //------------------------------------------------------------------------------------
 // общие состояния и статусы
 //------------------------------------------------------------------------------------
@@ -432,8 +420,6 @@ int main( int argc, char **argv )
 
 	// работа с файлом данных... передаем базовый режим окна
 	bool FirstStart = LoadXMLSetupFile(NeedSafeMode);
-	// проверяем, чтобы номер шрифта был из допустимого диапазона
-	if ((Setup.FontNumber > FontQuantity-1) || (Setup.FontNumber < 0)) Setup.FontNumber = 0;
 
 
 
@@ -465,6 +451,11 @@ int main( int argc, char **argv )
 	vw_InitText("DATA/text.csv", ';', '\n');
 
 
+	// иним фонт
+	vw_InitFont(FontList[Setup.FontNumber].FontFileName, 16);
+	// ставим доп смещение при прорисовке в 2 ("привет" от старого шрифта из первых версий игры)
+	vw_SetFontOffsetY(2);
+
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// установка звука, всегда до LoadGameData
@@ -480,9 +471,6 @@ int main( int argc, char **argv )
 
 
 ReCreate:
-
-	// иним фонт
-	vw_InitFont(FontList[Setup.FontNumber].FontFileName, 16);
 
 
 #ifdef __unix
@@ -1114,6 +1102,8 @@ loop:
 
 				// обрабатываем кнопки мыши
 				case SDL_MOUSEBUTTONDOWN:
+					if (event.button.button ==  SDL_BUTTON_WHEELUP) vw_ChangeWheelStatus(-1);
+					if (event.button.button ==  SDL_BUTTON_WHEELDOWN) vw_ChangeWheelStatus(1);
 					if (event.button.button == SDL_BUTTON_LEFT)
 					{
 						vw_SetWindowLBMouse(true);
@@ -1208,6 +1198,10 @@ loop:
 				int X = SDL_JoystickGetAxis(Joystick, 0);
 				int Y = SDL_JoystickGetAxis(Joystick, 1);
 
+				// учитываем "мертвую зону" хода ручки джойстика
+				if (abs(X) < Setup.JoystickDeadZone*3000) X = 0;
+				if (abs(Y) < Setup.JoystickDeadZone*3000) Y = 0;
+
 				if (JoystickAxisX != X || JoystickAxisY != Y)
 				{
 					JoystickAxisX = 0;
@@ -1281,7 +1275,7 @@ GotoQuit:
 	vw_ReleaseAllLights();
 	ReleaseAllGameLvlText();
 
-	vw_ShutdownFont();
+	vw_ReleaseAllFontChars(); // (!) всегда перед vw_ReleaseAllTextures
 	vw_ReleaseAllTextures();
 	ShadowMap_Release();
 	vw_ShutdownRenderer();
@@ -1334,6 +1328,7 @@ GotoQuit:
 	}
 
 
+	// освобождаем память выделенную под ттф шрифт
 	vw_ShutdownFont();
 	// освобождаем весь подготовленный текст из языкового файла
 	vw_ReleaseText();

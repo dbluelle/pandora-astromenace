@@ -37,7 +37,7 @@ bool wLBDoubleMouse = false;
 bool wLBMouse = false;
 int MouseX = 0;
 int MouseY = 0;
-
+int MouseWheelStatus = 0;
 
 
 //------------------------------------------------------------------------------------
@@ -129,8 +129,18 @@ bool vw_GetWindowLBDoubleMouse(bool ResetStatus)
 
 
 
-
-
+void vw_ChangeWheelStatus(int Value)
+{
+	MouseWheelStatus += Value;
+}
+void vw_ResetWheelStatus()
+{
+	MouseWheelStatus = 0;
+}
+int vw_GetWheelStatus()
+{
+	return MouseWheelStatus;
+}
 
 
 //------------------------------------------------------------------------------------
@@ -200,10 +210,10 @@ bool vw_OnRect(RECT *MDetect)
 	vw_GetMousePos(&MouseX, &MouseY);
 
 
-	if  (((MDetect->right  >= MouseX)&
-		(MDetect->left<= MouseX)&
-		(MDetect->bottom >= MouseY)&
-		(MDetect->top<= MouseY)))
+	if  (((MDetect->right  >= MouseX) &&
+		(MDetect->left <= MouseX) &&
+		(MDetect->bottom >= MouseY) &&
+		(MDetect->top <= MouseY)))
 	{
 		return true;
 	}

@@ -57,6 +57,7 @@ struct eFontChar
 	int 		Height;
 	int 		Left;
 	int 		Top;
+	float		AdvanceX;
 
 	// указатели на список
 	eFontChar*	Prev;
@@ -68,6 +69,8 @@ struct eFontChar
 
 // инициализация фонта
 int vw_InitFont(const char *FontName, int FontSize);
+// задаем фиксированное смещение при прорисовке через vw_DrawFont
+void vw_SetFontOffsetY(int NewOffsetY);
 // делаем генерацию нужных символов по списку
 void vw_GenerateFontChars(int FontTextureWidth, int FontTextureHeight, const char * CharsList);
 // загрузка символа с генерацией всех необходимых данных
@@ -75,12 +78,12 @@ eFontChar* vw_LoadFontChar(unsigned UTF32);
 // Нахождение символа по его UTF32
 eFontChar* vw_FindFontCharByUTF32(unsigned UTF32);
 // освобождаем память от сгенерированных символов
-void vw_ReleaseAllFontChar();
+void vw_ReleaseAllFontChars();
+// освобождаем память от сгенерированных символов с удалением текстур
+void vw_ReleaseAllFontCharsWithTextures();
 // освобождаем память, завершаем работу с фонтом
 void vw_ShutdownFont();
 
-// создаем текстуру с текстом который передали
-int vw_TextureFromText(const char *FontName, int FontSize, const char * Text);
 
 // получаем размер строки
 int vw_FontSize(const char *Text, ...);

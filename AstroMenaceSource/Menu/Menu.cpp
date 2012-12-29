@@ -238,17 +238,10 @@ void InitMenu()
 //------------------------------------------------------------------------------------
 // установка меню
 //------------------------------------------------------------------------------------
-void SetMenu(eGameStatus Menu)
+void SetOptionsMenu(eGameStatus Menu)
 {
-	Audio_PlaySound2D(3,1.0f);
-
 	switch (Menu)
 	{
-		case INTERFACE:
-			Options_FontNumber = Setup.FontNumber;
-			break;
-
-
 		case OPTIONS:
 			Options_Width = Setup.Width;
 			Options_Height = Setup.Height;
@@ -279,6 +272,27 @@ void SetMenu(eGameStatus Menu)
 			if (Setup.JoystickSecondary == -1) Setup.JoystickSecondary = 1;
 			break;
 
+		default:
+			break;
+	}
+}
+void SetMenu(eGameStatus Menu)
+{
+	Audio_PlaySound2D(3,1.0f);
+
+	switch (Menu)
+	{
+		case PROFILE:
+			NewProfileNamePos = 0;
+			memset(NewProfileName, 0, sizeof(NewProfileName));
+			break;
+
+		case OPTIONS:
+		case OPTIONS_ADVANCED:
+		case CONFCONTROL:
+			SetOptionsMenu(Menu);
+			break;
+
 		case TOP_SCORES:
 			// копируем исходные данные
 			for (int i=0; i<10; i++)
@@ -296,15 +310,28 @@ void SetMenu(eGameStatus Menu)
 			break;
 
 		case MISSION:
+			vw_ResetWheelStatus();
 			// ставим нужный лист миссий
 			StartMission = 0;
 			EndMission = 4;
 			if (CurrentMission != -1)
-			while (!(StartMission<=CurrentMission && CurrentMission<=EndMission))
+			if (CurrentMission > 2)// нужно сдвинуть лист, чтобы выбранный элемент был по середине списка
 			{
-				StartMission += 5;
-				EndMission += 5;
+				StartMission = CurrentMission-2;
+				EndMission = CurrentMission+2;
+
+				if (CurrentMission >= AllMission-2)
+				{
+					StartMission = AllMission-5;
+					EndMission = AllMission-1;
+				}
 			}
+			break;
+
+		case INFORMATION:
+			vw_ResetWheelStatus();
+			CreateNum = 1;
+			CreateInfoObject();
 			break;
 
 		case CREDITS:
@@ -332,37 +359,14 @@ void SetMenu(eGameStatus Menu)
 
 void SetMenu2(eGameStatus Menu)
 {
-
-	switch (Menu)
-	{
-		case INFORMATION:
-			CreateInfoObject();
-			break;
-		default:
-			break;
-	}
-
-
+	// текущее меню уже стало невидимым, освобождаем память после воркшопа + выключаем голосовые сообщения
+	// раньше удалять нельзя - для вывода используем данные из 3д объектов (!)
 	switch (GameStatus)
 	{
-		case INFORMATION:
-			CreateNum = 1;
-			break;
 		case WORKSHOP:
 			WorkshopDestroyData();
 			VoiceNeedMoreEnergy = 0;
 			VoiceAmmoOut = 0;
-			break;
-		case MISSION:
-			// ставим нужный лист миссий
-			StartMission = 0;
-			EndMission = 4;
-			if (CurrentMission != -1)
-			while (!(StartMission<=CurrentMission && CurrentMission<=EndMission))
-			{
-				StartMission += 5;
-				EndMission += 5;
-			}
 			break;
 		default:
 			break;
@@ -485,10 +489,10 @@ void DrawMenu()
 	// рисуем название игры, чтобы звезды и корабли пролетали перед ним
 	vw_Start2DMode(-1,1);
 	// надпись AstroMenace
-	RECT SrcRest, DstRest;
-	SetRect(&SrcRest,0,0,863,128 );
+	RECT SrcRect, DstRect;
+	SetRect(&SrcRect,0,0,863,128 );
 	int StartX = (Setup.iAspectRatioWidth - 863)/2;
-	SetRect(&DstRest,StartX,10,StartX+863,10+128);
+	SetRect(&DstRect,StartX,10,StartX+863,10+128);
 
 	if (GameStatus != WORKSHOP &&
 		GameStatus != INFORMATION &&
@@ -497,7 +501,7 @@ void DrawMenu()
 		GameStatus != CONFCONTROL &&
 		GameStatus != OPTIONS_ADVANCED)
 	{
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/astromenace.tga"),
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/astromenace.tga"),
 			true, MenuContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
 	}
 
@@ -543,12 +547,12 @@ void DrawMenu()
 	{
 		case MAIN_MENU:		MainMenu(); break;
 		case TOP_SCORES:	TopScoresMenu(); break;
-		case INTERFACE:		InterfaceMenu(); break;
-		case OPTIONS:		OptionsMenu(); break;
-		case OPTIONS_ADVANCED: OptionsAdvMenu(); break;
+		case INTERFACE:		InterfaceMenu(MenuContentTransp, &Button10Transp, &LastButton10UpdateTime); break;
+		case OPTIONS:		OptionsMenu(MenuContentTransp, &Button10Transp, &LastButton10UpdateTime, &Button11Transp, &LastButton11UpdateTime); break;
+		case OPTIONS_ADVANCED: OptionsAdvMenu(MenuContentTransp, &Button10Transp, &LastButton10UpdateTime, &Button11Transp, &LastButton11UpdateTime); break;
 		case INFORMATION:	InformationMenu(); break;
 		case CREDITS:		CreditsMenu(); break;
-		case CONFCONTROL:	ConfControlMenu(); break;
+		case CONFCONTROL:	ConfControlMenu(MenuContentTransp, &Button10Transp, &LastButton10UpdateTime); break;
 		case PROFILE:		ProfileMenu(); break;
 		case DIFFICULTY:	DifficultyMenu(); break;
 		case MISSION:		MissionMenu(); break;
@@ -584,11 +588,6 @@ void DrawMenu()
 	// если нужно - рисуем в окошке еще одном
 	switch(GameStatus)
 	{
-		case MAIN_MENU:		break;
-		case TOP_SCORES:	break;
-		case OPTIONS:		break;
-		case CREDITS:		break;
-
 		case INFORMATION:	InformationDrawObject(); break;
 
 		default:
@@ -611,10 +610,10 @@ void DrawMenu()
 
 		vw_Start2DMode(-1,1);
 
-		RECT SrcRest, DstRest;
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,0,0,Setup.iAspectRatioWidth,768);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, MenuBlackTransp);
+		RECT SrcRect, DstRect;
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,0,0,Setup.iAspectRatioWidth,768);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, MenuBlackTransp);
 
 		vw_End2DMode();
 	}
@@ -635,10 +634,10 @@ void DrawMenu()
 
 		vw_Start2DMode(-1,1);
 
-		RECT SrcRest, DstRest;
-		SetRect(&SrcRest,0,0,2,2);
-		SetRect(&DstRest,0,0,Setup.iAspectRatioWidth,768);
-		vw_DrawTransparent(&DstRest, &SrcRest, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, MenuBlackTransp);
+		RECT SrcRect, DstRect;
+		SetRect(&SrcRect,0,0,2,2);
+		SetRect(&DstRect,0,0,Setup.iAspectRatioWidth,768);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/blackpoint.tga"), true, MenuBlackTransp);
 
 		vw_End2DMode();
 	}
@@ -668,7 +667,11 @@ void MainMenu()
 
 	if (DrawButton384(X,Y, vw_GetText("1_START_GAME"), MenuContentTransp, &Button1Transp, &LastButton1UpdateTime))
 	{
-		ComBuffer = PROFILE;
+		// если текущего профиля нет - нужно перейти на выбор профилей, если есть - сразу идем на выбор миссий
+		if (CurrentProfile < 0)
+			ComBuffer = PROFILE;
+		else
+			ComBuffer = MISSION;
 	}
 
 
