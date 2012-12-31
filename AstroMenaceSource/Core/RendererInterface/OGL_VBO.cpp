@@ -46,11 +46,19 @@ PFNGLISBUFFERARBPROC 		glIsBufferARB = NULL;
 bool vw_Internal_InitializationVBO()
 {
 	// Get Pointers To The GL Functions
+#ifdef USE_GLES
+	glGenBuffersARB = (PFNGLGENBUFFERSARBPROC) SDL_GL_GetProcAddress("glGenBuffers");
+	glBindBufferARB = (PFNGLBINDBUFFERARBPROC) SDL_GL_GetProcAddress("glBindBuffer");
+	glBufferDataARB = (PFNGLBUFFERDATAARBPROC) SDL_GL_GetProcAddress("glBufferData");
+	glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) SDL_GL_GetProcAddress("glDeleteBuffers");
+	glIsBufferARB = (PFNGLISBUFFERARBPROC) SDL_GL_GetProcAddress("glIsBuffer");
+#else
 	glGenBuffersARB = (PFNGLGENBUFFERSARBPROC) SDL_GL_GetProcAddress("glGenBuffersARB");
 	glBindBufferARB = (PFNGLBINDBUFFERARBPROC) SDL_GL_GetProcAddress("glBindBufferARB");
 	glBufferDataARB = (PFNGLBUFFERDATAARBPROC) SDL_GL_GetProcAddress("glBufferDataARB");
 	glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) SDL_GL_GetProcAddress("glDeleteBuffersARB");
 	glIsBufferARB = (PFNGLISBUFFERARBPROC) SDL_GL_GetProcAddress("glIsBufferARB");
+#endif
 
 	if (glGenBuffersARB == NULL || glBindBufferARB == NULL || glBufferDataARB == NULL ||
 		glDeleteBuffersARB == NULL || glIsBufferARB == NULL)
@@ -110,7 +118,11 @@ bool vw_BuildIBO(int NumIndex, void *Data, unsigned int *IBO)
 	glGenBuffersARB( 1, IBO );								// Get A Valid Name
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, *IBO );	// Bind The Buffer
 	// Load The Data
+#ifdef USE_GLES
+	glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, NumIndex*sizeof(GLushort), Data, GL_STATIC_DRAW_ARB );
+#else
 	glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, NumIndex*sizeof(unsigned int), Data, GL_STATIC_DRAW_ARB );
+#endif
 	// убираем буфер
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0 );
 

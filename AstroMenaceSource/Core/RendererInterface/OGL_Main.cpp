@@ -314,7 +314,9 @@ int vw_InitWindow(const char* Title, int Width, int Height, int *Bits, BOOL Full
 	}
 
 	// проверем поддержку VBO
+#ifndef USE_GLES
 	if (ExtensionSupported("GL_ARB_vertex_buffer_object"))
+#endif
 	{
 		OpenGL_DevCaps.VBOSupported = true;
 		printf("Vertex Buffer support enabled.\n");
@@ -867,7 +869,7 @@ void vw_SetGammaRamp(float Gamma, float Contrast, float Brightness)
 	for (int i = 0; i < 256; i++)
 	{
 		float k = i/256.0f;
-		k = (float)pow(k, 1.f/CurrentGammaGL);
+		k = (float)powf(k, 1.f/CurrentGammaGL);
 		k = k*256;
 		float value = k*angle*256+offset*256;
 		if (value > 65535)	value = 65535;
