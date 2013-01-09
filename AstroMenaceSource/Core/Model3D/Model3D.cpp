@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -458,7 +458,7 @@ void eModel3D::CreateVertexBufferLimitedBySizeTriangles(float TriangleSizeLimit)
 								DrawObjectList[i].VertexBuffer[DrawObjectList[i].VertexStride*(j+2)+7]};
 
 				// идем на рекурсивную функцию
-				FakeCalculation = RecursiveBufferLimitedBySizeTriangles(Point1, Point2, Point3, DrawObjectList[i].VertexStride, DrawObjectList[i].VertexBufferLimitedBySizeTriangles, &CurrentPosition, TriangleSizeLimit)*3;
+				FakeCalculation += RecursiveBufferLimitedBySizeTriangles(Point1, Point2, Point3, DrawObjectList[i].VertexStride, DrawObjectList[i].VertexBufferLimitedBySizeTriangles, &CurrentPosition, TriangleSizeLimit)*3;
 			}
 		}
 	}

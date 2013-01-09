@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -42,7 +42,12 @@ extern int GlobalFontOffsetY;
 //------------------------------------------------------------------------------------
 eFontChar* vw_LoadFontChar(unsigned UTF32)
 {
-	// прежде всего, пытаемся загрузить символ, а уже потом создаем структуру
+	// устанавливаем размеры
+	if (FT_Set_Char_Size( InternalFace, InternalFontSize <<6, InternalFontSize <<6, 96, 96 ))
+	{
+		fprintf(stderr, "Can't set char size %i.", InternalFontSize);
+		return 0;
+	}
 
 
 	// загрузка глифа нужного нам символа
@@ -59,6 +64,7 @@ eFontChar* vw_LoadFontChar(unsigned UTF32)
 
 	NewChar->UTF32 = UTF32;
 	NewChar->CharTexture = 0;
+	NewChar->FontSize = InternalFontSize;
 	NewChar->TexturePositionLeft = 0;
 	NewChar->TexturePositionRight = InternalFace->glyph->bitmap.width; // в случае одной текстуры совпадают с шириной
 	NewChar->TexturePositionTop = 0;
@@ -67,6 +73,7 @@ eFontChar* vw_LoadFontChar(unsigned UTF32)
 	NewChar->Height = InternalFace->glyph->bitmap.rows;
 	NewChar->Left = InternalFace->glyph->bitmap_left;
 	NewChar->Top = InternalFace->glyph->bitmap_top;
+	NewChar->AdvanceX = InternalFace->glyph->advance.x / 64.0f;
 	NewChar->Prev = 0;
 	NewChar->Next = 0;
 
@@ -93,7 +100,7 @@ eFontChar* vw_LoadFontChar(unsigned UTF32)
 	sprintf(texturefilename, "%i", UTF32);
 
 	vw_SetTextureProp(RI_MAGFILTER_LINEAR | RI_MINFILTER_LINEAR | RI_MIPFILTER_NONE, RI_CLAMP_TO_EDGE, true, TX_ALPHA_GREYSC, false);
-	NewChar->CharTexture = vw_CreateTextureFromMemory(texturefilename, pixels, NewChar->Width, NewChar->Height, 4, false);
+	NewChar->CharTexture = vw_CreateTextureFromMemory(texturefilename, pixels, NewChar->Width, NewChar->Height, 4, false, 0, 0, false);
 	// очищаем память
 	delete [] pixels;
 
@@ -125,6 +132,12 @@ void vw_GenerateFontChars(int FontTextureWidth, int FontTextureHeight, const cha
 	int EdgingSpace = 2;
 	int MaxHeightInCurrentLine = 0;
 
+	// устанавливаем размеры
+	if (FT_Set_Char_Size( InternalFace, InternalFontSize <<6, InternalFontSize <<6, 96, 96 ))
+	{
+		fprintf(stderr, "Can't set char size %i.", InternalFontSize);
+		return;
+	}
 
 	// первый проход, формируем одну большую текстуру
 	const char *CharsList2 = CharsList;
@@ -148,6 +161,7 @@ void vw_GenerateFontChars(int FontTextureWidth, int FontTextureHeight, const cha
 
 		NewChar->UTF32 = CurrentChar;
 		NewChar->CharTexture = 0;
+		NewChar->FontSize = InternalFontSize;
 		NewChar->TexturePositionLeft = 0;
 		NewChar->TexturePositionRight = 0;
 		NewChar->TexturePositionTop = 0;
@@ -208,19 +222,44 @@ void vw_GenerateFontChars(int FontTextureWidth, int FontTextureHeight, const cha
 
 /////////////////////////////////
 /*
-		// выводим в bmp файл сгенерированный DIB, если нужно проверить
+	// выводим в tga файл сгенерированный DIB, если нужно проверить
 
-        SDL_Surface *temp;
-        temp = SDL_CreateRGBSurface(SDL_SWSURFACE, FontTextureWidth, FontTextureHeight, 32,
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-        0x000000FF, 0x0000FF00, 0x00FF0000, 0
-#else
-        0x00FF0000, 0x0000FF00, 0x000000FF, 0
-#endif
-        );
-		memcpy(temp->pixels, DIB, FontTextureWidth*FontTextureHeight*4);
-        SDL_SaveBMP(temp, "fontgenerationtest.bmp");
-        SDL_FreeSurface(temp);
+	SDL_RWops *TgaFile = SDL_RWFromFile("fontgenerationtest.tga", "wb");
+	if (TgaFile == NULL)
+    {
+		fprintf(stderr, "Can't open VFS file for write.\n");
+        return;
+    }
+
+	unsigned char UselessChar = 0;	// used for useless char.
+	short int UselessInt = 0;		// used for useless int.
+	unsigned char ImageType = 2;	// Type of image we are saving.
+	unsigned char ImageBits = 32;		// Bit depth.
+	short int ImageWidth = (short int)FontTextureWidth;
+	short int ImageHeight = (short int)FontTextureHeight;
+
+	// пишем неиспользуемые данные
+	SDL_RWwrite(TgaFile, &UselessChar, sizeof(unsigned char), 1);
+	SDL_RWwrite(TgaFile, &UselessChar, sizeof(unsigned char), 1);
+	// тип картинки
+	SDL_RWwrite(TgaFile, &ImageType, sizeof(unsigned char), 1);
+	// пишем неиспользуемые данные
+	SDL_RWwrite(TgaFile, &UselessInt, sizeof(short int), 1);
+	SDL_RWwrite(TgaFile, &UselessInt, sizeof(short int), 1);
+	SDL_RWwrite(TgaFile, &UselessChar, sizeof(unsigned char), 1);
+	SDL_RWwrite(TgaFile, &UselessInt, sizeof(short int), 1);
+	SDL_RWwrite(TgaFile, &UselessInt, sizeof(short int), 1);
+	// записываем параметры картинки
+	SDL_RWwrite(TgaFile, &ImageWidth, sizeof(short int), 1);
+	SDL_RWwrite(TgaFile, &ImageHeight, sizeof(short int), 1);
+	SDL_RWwrite(TgaFile, &ImageBits, sizeof(unsigned char), 1);
+	// пишем неиспользуемые данные
+	SDL_RWwrite(TgaFile, &UselessChar, sizeof(unsigned char), 1);
+	// пишем данные диб массива
+	SDL_RWwrite(TgaFile, DIB, FontTextureWidth*FontTextureHeight*4, 1);
+
+	// закрываем файл
+	SDL_RWclose(TgaFile);
 */
 /////////////////////////////////
 
@@ -274,9 +313,6 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	vw_GetViewport(0, 0, &W, &H);
 	float AHw = H*1.0f;
 
-	float RealTextYPos = AHw - 2*Y + 4 + InternalFontSize*FontScale;
-	if (ASpresent) RealTextYPos = AH - 2*Y + 4 + InternalFontSize*FontScale;
-
 
 	// если текст ниже чем ширина нашего окна - не рисуем
 	if (ASpresent){ if (Y > AH) return;}
@@ -301,6 +337,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 
 	float Xstart = X;
 	// сразу определяем "базовую" ширину пробела, чтобы учитывать в расчетах
+	if (vw_FindFontCharByUTF32(0x020) == 0) vw_LoadFontChar(0x020);
 	float SpaceWidth = vw_FindFontCharByUTF32(0x020)->AdvanceX*FontScale;
 	// чтобы было более читаемо - делаем пробел не менее 2/3 ширины
 	if (SpaceWidth < (InternalFontSize * 0.65f)) SpaceWidth = InternalFontSize * 0.65f;
@@ -606,6 +643,7 @@ int vw_FontSize(const char *Text, ...)
 
 	const char *textdraw = text;
 	// сразу определяем "базовую" ширину пробела
+	if (vw_FindFontCharByUTF32(0x020) == 0) vw_LoadFontChar(0x020);
 	float SpaceWidth = vw_FindFontCharByUTF32(0x020)->AdvanceX;
 	// чтобы было более читаемо - делаем пробел не менее 2/3 ширины
 	if (SpaceWidth < (InternalFontSize * 0.65f)) SpaceWidth = InternalFontSize * 0.65f;

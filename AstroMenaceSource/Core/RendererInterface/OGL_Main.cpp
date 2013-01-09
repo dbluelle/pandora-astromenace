@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -991,6 +991,25 @@ void vw_CullFace(int face)
 
 
 
+
+
+//------------------------------------------------------------------------------------
+// Polygon Offset
+//------------------------------------------------------------------------------------
+void vw_PolygonOffset(bool enable, float factor, float units)
+{
+	if (enable)	glEnable(GL_POLYGON_OFFSET_FILL);
+	else glDisable(GL_POLYGON_OFFSET_FILL);
+
+	glPolygonOffset(factor, units);
+}
+
+
+
+
+
+
+
 //------------------------------------------------------------------------------------
 // Установка цвета очистки буфера
 //------------------------------------------------------------------------------------
@@ -1013,6 +1032,17 @@ void vw_SetClearColor(float nRed, float nGreen, float nBlue, float nAlpha)
 void vw_SetColor(float nRed, float nGreen, float nBlue, float nAlpha)
 {
 	glColor4f(nRed, nGreen, nBlue, nAlpha);
+}
+
+
+
+
+//------------------------------------------------------------------------------------
+// Установка маски цвета
+//------------------------------------------------------------------------------------
+void vw_SetColorMask(bool red, bool green, bool blue, bool alpha)
+{
+	glColorMask(red ? GL_TRUE : GL_FALSE, green ? GL_TRUE : GL_FALSE, blue ? GL_TRUE : GL_FALSE, alpha ? GL_TRUE : GL_FALSE);
 }
 
 

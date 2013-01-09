@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -185,6 +185,22 @@ struct eDevCaps
 #define RI_TBLEND_CONSTANT					0x103082
 #define RI_TBLEND_DIFFUSE					0x103083
 #define RI_TBLEND_SPECULAR					0x103084
+// vw_SetTextureEnvMode GL_TEXTURE_ENV_MODE
+#define RI_TENV_DECAL		1
+#define RI_TENV_BLEND		2
+#define RI_TENV_REPLACE		3
+#define RI_TENV_ADD			4
+#define RI_TENV_MODULATE	5
+#define RI_TENV_COMBINE		6
+
+// vw_SetTextureCompare MODE
+#define RI_COMPARE_R_TO_TEXTURE		1
+#define RI_COMPARE_NONE				2
+
+// vw_SetTextureDepthMode MODE
+#define RI_DEPTH_TEXTURE_MODE_LUMINANCE		1
+#define RI_DEPTH_TEXTURE_MODE_INTENSITY		2
+#define RI_DEPTH_TEXTURE_MODE_ALPHA			3
 
 
 // Primitives types
@@ -235,7 +251,7 @@ struct eDevCaps
 #define RI_BACK								0x10C2
 #define RI_FRONT							0x10C3
 
-// Set depth buffer status
+// Set depth buffer status and texture compare function
 #define RI_NEVER          		1
 #define RI_LESS                 2
 #define RI_EQUAL                3
@@ -321,8 +337,8 @@ void vw_Start2DMode(float nZ1, float nZ2);
 void vw_End2DMode(void);
 // Set scene clear color
 void vw_SetClearColor(float nRed, float nGreen, float nBlue, float nAlpha);
-
-
+// Set scene color mask
+void vw_SetColorMask(bool red, bool green, bool blue, bool alpha);
 
 
 
@@ -348,6 +364,12 @@ void vw_SetTextureAlphaTest(bool Flag, float Value);
 void vw_SetTextureBlend(bool Flag, int Src, int Dst);
 // Set texture blending mode
 void vw_SetTextureBlendMode(int pname, int param);
+// Set texture env mode
+void vw_SetTextureEnvMode(int param);
+// Set texture compare mode
+void vw_SetTextureCompare(int MODE, int FUNC);
+// Set texture depth mode
+void vw_SetTextureDepthMode(int MODE);
 // Set texture by pointer
 void vw_SetTexture(DWORD Stage, eTexture *Texture);
 // Get texture image bitmap (RGBA) by void pointer
@@ -383,6 +405,8 @@ void vw_PolygonMode(int mode);
 void vw_CullFace(int face);
 // Set depth buffer
 void vw_DepthTest(bool mode, int funct);
+// Set polygon offset mode
+void vw_PolygonOffset(bool enable, float factor, float units);
 
 // Loads identity in the current matrix
 void vw_LoadIdentity(void);

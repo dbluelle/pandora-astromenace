@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -460,8 +460,7 @@ void WorkshopDrawShip(CEarthSpaceFighter *SpaceFighter, int Mode)
 	float AHw = height*1.0f;
 	float AW;
 	float AH;
-	bool ASpresent = false;
-	ASpresent = vw_GetAspectWH(&AW, &AH);
+	vw_GetAspectWH(&AW, &AH);
 
 
 	if (Mode == 1)
@@ -667,8 +666,7 @@ void WorkshopDrawWeapon(CWeapon *Weapon)
 	float AHw = height*1.0f;
 	float AW;
 	float AH;
-	bool ASpresent=false;
-	ASpresent = vw_GetAspectWH(&AW, &AH);
+	vw_GetAspectWH(&AW, &AH);
 
 
 	// удаление относительно размеров оружия

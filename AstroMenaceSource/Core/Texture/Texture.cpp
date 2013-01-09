@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -152,7 +152,7 @@ void ResizeImage(int width, int height, BYTE **DIB, eTexture *Texture)
 {
 	if (width == Texture->Width && height == Texture->Height) return;
 
-	int		i, j, x, y, offset_y, offset_x;
+	int i, j, x, y, offset_y, offset_x;
 
 	// переносим во временный массив данные...
 	BYTE *src = *DIB;
@@ -170,11 +170,11 @@ void ResizeImage(int width, int height, BYTE **DIB, eTexture *Texture)
 			x = (i * Texture->Width) / width;
 			offset_x = (offset_y + x) * Texture->Bytes;
 
-			dst[(i+j*width)*Texture->Bytes] = src[(x+y*Texture->Width)*Texture->Bytes];
-			dst[(i+j*width)*Texture->Bytes+1] = src[(x+y*Texture->Width)*Texture->Bytes+1];
-			dst[(i+j*width)*Texture->Bytes+2] = src[(x+y*Texture->Width)*Texture->Bytes+2];
+			dst[(i+j*width)*Texture->Bytes] = src[offset_x];
+			dst[(i+j*width)*Texture->Bytes+1] = src[offset_x+1];
+			dst[(i+j*width)*Texture->Bytes+2] = src[offset_x+2];
 			if (Texture->Bytes == 4)
-				dst[(i+j*width)*Texture->Bytes+3] = src[(x+y*Texture->Width)*Texture->Bytes+3];
+				dst[(i+j*width)*Texture->Bytes+3] = src[offset_x+3];
 		}
 	}
 
@@ -617,19 +617,22 @@ eTexture* vw_LoadTexture(const char *nName, const char *RememberAsName, bool Nee
 //------------------------------------------------------------------------------------
 // создание текстуры из памяти
 //------------------------------------------------------------------------------------
-eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DWidth, int DHeight, int DChanels, bool NeedCompression, int NeedResizeW, int NeedResizeH)
+eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DWidth, int DHeight, int DChanels, bool NeedCompression, int NeedResizeW, int NeedResizeH, bool NeedDuplicateCheck)
 {
 	// проверяем в списке, если уже создавали ее - просто возвращаем указатель
-	eTexture *Tmp = StartTexMan;
-	while (Tmp != 0)
+	if (NeedDuplicateCheck)
 	{
-		eTexture *Tmp1 = Tmp->Next;
-		if(vw_strcmp(Tmp->Name, TextureName) == 0)
+		eTexture *Tmp = StartTexMan;
+		while (Tmp != 0)
 		{
-			printf("Texture already loaded: %s\n", TextureName);
-			return Tmp;
+			eTexture *Tmp1 = Tmp->Next;
+			if(vw_strcmp(Tmp->Name, TextureName) == 0)
+			{
+				printf("Texture already loaded: %s\n", TextureName);
+				return Tmp;
+			}
+			Tmp = Tmp1;
 		}
-		Tmp = Tmp1;
 	}
 
 

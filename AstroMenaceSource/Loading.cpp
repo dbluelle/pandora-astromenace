@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -132,7 +132,7 @@ sGLSLLoadList	GLSLLoadList[GLSLLoadListCount] =
 #define TEXTURE_NO_MIPMAP	RI_MAGFILTER_LINEAR | RI_MINFILTER_LINEAR | RI_MIPFILTER_NONE
 
 // сколько нужно загружать в листе меню
-const int	MenuLoadListCount = 187;
+const int	MenuLoadListCount = 185;
 // лист загрузки меню
 LoadList	MenuLoadList[MenuLoadListCount] =
 {
@@ -191,8 +191,6 @@ LoadList	MenuLoadList[MenuLoadListCount] =
 {"DATA/MENU/button_dialog128_out.tga",	0, 39, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/button_dialog128_in.tga",	0, 39, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/button_dialog128_off.tga",	0, 39, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
-{"DATA/MENU/arrows_on.tga",				0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
-{"DATA/MENU/arrows_off.tga",			0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/arrows_blue.tga",			0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/arrow_list_up.tga",		0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
 {"DATA/MENU/arrow_list_down.tga",		0, 69, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, TEXTURE_NO_MIPMAP, false, true, -1.0f, false},
@@ -1407,7 +1405,7 @@ void LoadGameData(int LoadType)
 	if ((LoadType == -1) || (!Setup.EqualOrMore128MBVideoRAM))
 	{
 		// задаем размеры текстуры (всегда степерь 2 ставим, чтобы избежать проблем со старым железом)
-		vw_GenerateFontChars(256, 256, " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+\():;%&`'*#$=[]@^{}_~><–—«»“”|абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЧЦШЩЪЫЬЭЮЯ©®ÄÖÜäöüß°§/");
+		vw_GenerateFontChars(Setup.FontSize > 16 ? 512 : 256, 256, " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+\():;%&`'*#$=[]@^{}_~><–—«»“”|абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЧЦШЩЪЫЬЭЮЯ©®ÄÖÜäöüß°§/");
 #ifdef gamedebug
 		// проверяем все ли символы из текущего языкового файла вошли в прегенерацию, иначе не сможем потом рисовать меню через одну текстуру
 		// смысла гонять постоянно такую проверку нет, один раз сводим все символы языка и не замедляем загрузку поиском
@@ -1550,7 +1548,7 @@ void LoadGameData(int LoadType)
 					vw_SetTextureProp(CurrentList[i].TextFiltr, CurrentList[i].TextWrap,
 						CurrentList[i].Alpha, CurrentList[i].AlphaMode, CurrentList[i].MipMap);
 
-					vw_LoadTexture(CurrentList[i].FileName, NULL, CurrentList[i].NeedCompression);
+					vw_LoadTexture(CurrentList[i].FileName, NULL, CurrentList[i].NeedCompression && Setup.TexturesCompression);
 				}
 				break;
 
@@ -1561,7 +1559,6 @@ void LoadGameData(int LoadType)
 				{
 					int H = 0;
 					int W = 0;
-					bool NeedCompression = CurrentList[i].NeedCompression && Setup.TexturesCompression;
 
 					// установки параметров
 					vw_SetTextureAlpha(CurrentList[i].Red, CurrentList[i].Green, CurrentList[i].Blue);
@@ -1630,7 +1627,7 @@ void LoadGameData(int LoadType)
 					// если это карта нормалей, но у нас не включены шейдеры - пропускаем
 					if (!strncmp("DATA/MODELS/NORMALMAP", CurrentList[i].FileName, strlen("DATA/MODELS/NORMALMAP")) && !Setup.UseGLSL) break;
 
-					vw_LoadTexture(CurrentList[i].FileName, NULL, NeedCompression, AUTO_FILE, W, H);
+					vw_LoadTexture(CurrentList[i].FileName, NULL, CurrentList[i].NeedCompression && Setup.TexturesCompression, AUTO_FILE, W, H);
 				}
 				break;
 

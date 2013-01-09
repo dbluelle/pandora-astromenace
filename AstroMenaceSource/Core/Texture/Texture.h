@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ struct eTexture
 // Load texture from file
 eTexture*	vw_LoadTexture(const char *TextureName, const char *RememberAsName, bool NeedCompression, int LoadAs=AUTO_FILE, int NeedResizeW=0, int NeedResizeH=0);
 // Create texture from memory
-eTexture*	vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DWidth, int DHeight, int DChanels, bool NeedCompression, int NeedResizeW=0, int NeedResizeH=0);;
+eTexture*	vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DWidth, int DHeight, int DChanels, bool NeedCompression, int NeedResizeW=0, int NeedResizeH=0, bool NeedDuplicateCheck=true);
 // Release texture
 void		vw_ReleaseTexture(eTexture* Texture);
 

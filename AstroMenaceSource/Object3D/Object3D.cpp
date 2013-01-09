@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -1002,9 +1002,8 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 			// по умолчанию всегда трилинейная фильтрация, если надо - ставим билинейную
 			if (Setup.TextureFilteringMode == 1) vw_SetTextureFiltering(RI_TEXTURE_BILINEAR);
 			// для корректной прорисовки без шейдеров, ставим правильный режим смешивания
+			vw_SetTextureEnvMode(RI_TENV_COMBINE);
 			vw_SetTextureBlendMode(RI_TBLEND_COLOROP, RI_TBLEND_ADD);
-			vw_SetTextureBlendMode(RI_TBLEND_COLORARG1,  RI_TBLEND_CURRENT);
-			vw_SetTextureBlendMode(RI_TBLEND_COLORARG2,  RI_TBLEND_TEXTURE);
 		}
 
 		// если у нас работают шейдеры и есть текстура нормал меппа - ставим ее
@@ -1184,9 +1183,8 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 					// по умолчанию всегда трилинейная фильтрация, если надо - ставим билинейную
 					if (Setup.TextureFilteringMode == 1) vw_SetTextureFiltering(RI_TEXTURE_BILINEAR);
 					// для корректной прорисовки без шейдеров, ставим правильный режим смешивания
+					vw_SetTextureEnvMode(RI_TENV_COMBINE);
 					vw_SetTextureBlendMode(RI_TBLEND_COLOROP, RI_TBLEND_ADD);
-					vw_SetTextureBlendMode(RI_TBLEND_COLORARG1,  RI_TBLEND_CURRENT);
-					vw_SetTextureBlendMode(RI_TBLEND_COLORARG2,  RI_TBLEND_TEXTURE);
 				}
 
 				// если у нас работают шейдеры и есть текстура нормал меппа - ставим ее
@@ -1237,26 +1235,23 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 
 			int LightType1, LightType2;
 			// включаем источники света
-			int LightsCount;
 			if (HitBB != 0)
-				LightsCount = vw_CheckAndActivateAllLights(&LightType1, &LightType2, Location + HitBBLocation[i], HitBBRadius2[i], 2, Setup.MaxPointLights, Matrix);
+				vw_CheckAndActivateAllLights(&LightType1, &LightType2, Location + HitBBLocation[i], HitBBRadius2[i], 2, Setup.MaxPointLights, Matrix);
 			else
-				LightsCount = vw_CheckAndActivateAllLights(&LightType1, &LightType2, Location, Radius*Radius, 2, Setup.MaxPointLights, Matrix);
+				vw_CheckAndActivateAllLights(&LightType1, &LightType2, Location, Radius*Radius, 2, Setup.MaxPointLights, Matrix);
 
 
 			// если нужно рисовать прозрачным
 			// для корректной прорисовки на всех видеокартах атмосферы планеты ...
 			if (N1)
 			{
-				glEnable(GL_POLYGON_OFFSET_FILL);
-				glPolygonOffset(2.0f, 2.0f);
+				vw_PolygonOffset(true, 2.0f, 2.0f);
 			}
 			if (DrawObjectList[i].DrawType == 1)
 			{
 				vw_SetTextureAlphaTest(true, 0.01f);
 				vw_SetTextureBlend(true, RI_BLEND_SRCALPHA, RI_BLEND_ONE);
-				glEnable(GL_POLYGON_OFFSET_FILL);
-				glPolygonOffset(1.0f, 1.0f);
+				vw_PolygonOffset(true, 1.0f, 1.0f);
 			}
 
 			if (Setup.UseGLSL && DrawObjectList[i].ShaderType >= 0)
@@ -1355,9 +1350,7 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 			{
 				vw_SetTextureAlphaTest(false, 0.01f);
 				vw_SetTextureBlend(false, 0, 0);
-				glDisable(GL_POLYGON_OFFSET_FILL);
-				// как было ставим
-				glPolygonOffset(1.0f, 2.0f);
+				vw_PolygonOffset(false, 0.0f, 0.0f);
 			}
 
 			vw_DeActivateAllLights();

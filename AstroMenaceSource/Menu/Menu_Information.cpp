@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -1699,8 +1699,7 @@ void InformationDrawObject()
 	float AHw = height*1.0f;
 	float AW;
 	float AH;
-	bool ASpresent=false;
-	ASpresent = vw_GetAspectWH(&AW, &AH);
+	vw_GetAspectWH(&AW, &AH);
 
 
 	vw_SetViewport((int)((Setup.iAspectRatioWidth/2-432)/(AW/AWw)), (int)(80/(AH/AHw)), (int)(444/(AW/AWw)), (int)(333/(AH/AHw)), 0.0f, 1.0f, RI_UL_CORNER);

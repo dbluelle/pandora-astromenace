@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ struct eFontChar
 
 	// указатель на сгенерированную текстуру
 	eTexture* 	CharTexture;
+	int			FontSize;
 
 	// указатели точек границ символа, на использовании общей текстуры
 	int			TexturePositionLeft;
@@ -68,7 +69,9 @@ struct eFontChar
 
 
 // инициализация фонта
-int vw_InitFont(const char *FontName, int FontSize);
+int vw_InitFont(const char *FontName);
+// устанавливаем текущий размер шрифта
+void vw_SetFontSize(int FontSize);
 // задаем фиксированное смещение при прорисовке через vw_DrawFont
 void vw_SetFontOffsetY(int NewOffsetY);
 // делаем генерацию нужных символов по списку

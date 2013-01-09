@@ -1,7 +1,7 @@
 /************************************************************************************
 
 	AstroMenace (Hardcore 3D space shooter with spaceship upgrade possibilities)
-	Copyright © 2006-2012 Michael Kurinnoy, Viewizard
+	Copyright © 2006-2013 Michael Kurinnoy, Viewizard
 
 
 	AstroMenace is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 	GLuint TextureID = 0;
 
 	glGenTextures(1, &TextureID);
-    vw_BindTexture(0, TextureID);
+	vw_BindTexture(0, TextureID);
 
 	int Format;
 	int InternalFormat;
@@ -242,37 +242,6 @@ void vw_SetTexture(DWORD Stage, eTexture *Texture)
 	if (Texture == 0) return;
 
 	vw_BindTexture(Stage, Texture->TextureID);
-
-	// устанавливаем базовое смешивания, для прорисовки без шейдеров
-
-	glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
-
-	if (Stage > 0)
-	{
-		// данные для смешение цвета - добавляем к существ.
-		glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_ADD_SIGNED_EXT);
-		glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE);
-		glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PREVIOUS_EXT);
-		// данные для смешение альфы - всегда 1-й слой...
-		glTexEnvf (GL_TEXTURE_ENV, GL_COMBINE_ALPHA_EXT, GL_ADD);
-		glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_EXT, GL_TEXTURE);
-		glTexEnvf (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_EXT, GL_SRC_ALPHA);
-		glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_EXT, GL_PREVIOUS_EXT);
-		glTexEnvf (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_EXT, GL_SRC_ALPHA);
-	}
-	else
-	{
-		// первая текстура, нужно заменить все
-		glTexEnvi (GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT, GL_MODULATE);
-		glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT, GL_TEXTURE);
-		glTexEnvi (GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT, GL_PREVIOUS_EXT);
-
-		glTexEnvf (GL_TEXTURE_ENV, GL_COMBINE_ALPHA_EXT, GL_MODULATE);
-		glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_EXT, GL_TEXTURE);
-		glTexEnvf (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA_EXT, GL_SRC_ALPHA);
-		glTexEnvf (GL_TEXTURE_ENV, GL_SOURCE1_ALPHA_EXT, GL_PREVIOUS_EXT);
-		glTexEnvf (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA_EXT, GL_SRC_ALPHA);
-	}
 }
 
 
@@ -368,8 +337,6 @@ void vw_SetTextureBlendMode(int pname, int param)
 			break;
 	}
 
-
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
 
 	// работаем с MODULATE
 	switch (param)
@@ -499,6 +466,7 @@ void vw_SetTextureBlend(bool Flag, int Src, int Dst)
 	{
 		glDisable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ZERO);
+		return;
 	}
 
 	int tmpSRC,tmpDST;
@@ -644,3 +612,102 @@ void vw_GetPrioritizeTextures(GLuint TextureID, float *Prior)
 
 
 
+
+
+
+
+//------------------------------------------------------------------------------------
+// установка режима и функции сравнения
+//------------------------------------------------------------------------------------
+void vw_SetTextureCompare(int MODE, int FUNC)
+{
+
+	switch(MODE)
+	{
+		case RI_COMPARE_R_TO_TEXTURE:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+			break;
+		case RI_COMPARE_NONE:
+		default:
+#ifndef USE_GLES
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+#endif
+			break;
+	}
+
+	switch(FUNC)
+	{
+		case RI_LESSEQUAL:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+			break;
+		case RI_GREATEREQUAL:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_GEQUAL);
+			break;
+		case RI_LESS:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LESS);
+			break;
+		case RI_GREATER:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_GREATER);
+			break;
+		case RI_EQUAL:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_EQUAL);
+			break;
+		case RI_NOTEQUAL:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_NOTEQUAL);
+			break;
+		case RI_ALWAYS:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_ALWAYS);
+			break;
+		case RI_NEVER:
+		default:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_NEVER);
+			break;
+	}
+
+}
+
+
+
+
+//------------------------------------------------------------------------------------
+// установка режима работы с компонентом глубины
+//------------------------------------------------------------------------------------
+void vw_SetTextureDepthMode(int MODE)
+{
+	switch(MODE)
+	{
+		case RI_DEPTH_TEXTURE_MODE_LUMINANCE:
+			glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
+			break;
+		case RI_DEPTH_TEXTURE_MODE_INTENSITY:
+#ifndef USE_GLES
+			glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+#endif
+			break;
+		case RI_DEPTH_TEXTURE_MODE_ALPHA:
+		default:
+			glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+			break;
+	}
+}
+
+
+
+
+//------------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------------
+void vw_SetTextureEnvMode(int param)
+{
+	switch (param)
+	{
+		case RI_TENV_DECAL: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); break;
+		case RI_TENV_BLEND: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND); break;
+		case RI_TENV_REPLACE: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); break;
+		case RI_TENV_ADD: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); break;
+		case RI_TENV_COMBINE: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE); break;
+		default:
+		case RI_TENV_MODULATE: glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); break;
+	}
+
+}
