@@ -142,7 +142,9 @@ void StarSystemDraw(int DrawType)
 
 	// static space stars
 	if (psSpaceStatic!=0) psSpaceStatic->Draw();
-
+#ifdef USE_GLES
+	return;
+#endif
 	vw_DepthTest(true, RI_LESSEQUAL);
 
 

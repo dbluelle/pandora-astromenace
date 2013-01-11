@@ -55,7 +55,11 @@ float SkyBox_length_2 = 100.0f;
 //-----------------------------------------------------------------------------
 void SkyBoxDraw(void)
 {
+#ifdef USE_GLES
+	int VFV = RI_3f_XYZ | RI_2_TEX;
+#else
 	int VFV = RI_3f_XYZ | RI_2_TEX | RI_DUBLICATE_TEX_COORD;
+#endif
 	float *buff = 0;
 	buff = new float[5*4]; if (buff == 0) return;
 	int k;
@@ -63,7 +67,9 @@ void SkyBoxDraw(void)
 
 	// сразу выполняем настройку второй текстуры
 	vw_SetTexture(1, vw_FindTextureByName("DATA/SKYBOX/tile_stars.tga"));
+#ifndef USE_GLES
 	vw_SetTextureEnvMode(RI_TENV_DECAL);
+#endif
 	vw_SetTextureAnisotropy(Setup.AnisotropyLevel);
 	// по умолчанию всегда трилинейная фильтрация, если надо - ставим билинейную
 	if (Setup.TextureFilteringMode == 1) vw_SetTextureFiltering(RI_TEXTURE_BILINEAR);
