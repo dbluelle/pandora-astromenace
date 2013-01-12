@@ -443,6 +443,10 @@ void vw_SetTextureAddressMode(int nAddressMode)
 //------------------------------------------------------------------------------------
 void vw_SetTextureAlphaTest(bool Flag, float Value)
 {
+#ifdef USE_GLES
+	return;
+#endif
+
 	if (Flag)
 	{
 		glAlphaFunc(GL_GREATER, Value);
