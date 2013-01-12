@@ -142,9 +142,7 @@ void StarSystemDraw(int DrawType)
 
 	// static space stars
 	if (psSpaceStatic!=0) psSpaceStatic->Draw();
-#ifdef USE_GLES
-	return;
-#endif
+
 	vw_DepthTest(true, RI_LESSEQUAL);
 
 
@@ -186,6 +184,9 @@ void StarSystemDraw(int DrawType)
 	}
 	// очищаем буфер глубины, чтобы "3д подложка" не участвовала в проверке глубины
 	vw_Clear(RI_DEPTH_BUFFER);
+#ifdef USE_GLES
+	return;
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
