@@ -108,14 +108,14 @@ bool DrawButton384(int X, int Y, const char *Text, float Transp, float *ButTrans
 	}
 
 
-
+#ifndef USE_GLES
 	// размер задней тени
 	SetRect(&SrcRect,2,2,512-2,96-2 );
 	// рисуем тень
 	SetRect(&DstRect,X-64+2,Y-17+2,X-64+512-2,Y-17+96-2);
 	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/button384_back.tga"),
 		true, IntTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
-
+#endif
 	SetRect(&SrcRect,0,0,384,64 );
 	// рисуем кнопку
 	SetRect(&DstRect,X,Y,X+384,Y+64);
