@@ -411,11 +411,10 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	int k=0;
 	// буфер для последовательности RI_QUADS
 	// войдет RI_2f_XYZ | RI_2f_TEX
-#ifdef USE_GLES
-	GLshort *tmp = 0;
-	tmp = new GLshort[(2+2)*6*strlen(text)]; if (tmp == 0) return;
-#else
 	float *tmp = 0;
+#ifdef USE_GLES
+	tmp = new float[(2+2)*6*strlen(text)]; if (tmp == 0) return;
+#else
 	tmp = new float[(2+2)*4*strlen(text)]; if (tmp == 0) return;
 #endif
 
@@ -448,15 +447,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 				vw_SetTexture(0, CurrentTexture);
 				// отрисовываем все что есть в буфере
 #ifdef USE_GLES
-				vw_MatrixMode(RI_TEXTURE_MATRIX);
-				vw_LoadIdentity();
-				vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
-				vw_PushMatrix();
-				vw_MatrixMode(RI_MODELVIEW_MATRIX);
-				vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
-				vw_PopMatrix();
-				vw_MatrixMode(RI_TEXTURE_MATRIX);
-				vw_LoadIdentity();
+				vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #else
 				vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #endif
@@ -469,71 +460,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			k=0;
 		}
 
-#ifdef USE_GLES
-		float DrawX = (Xstart + DrawChar->Left*FontWidthScale);
-		float DrawY = (Y + 2 + (InternalFontSize - DrawChar->Top)*FontScale); // 2 доп смещение ("привет" от старого фонта)
-		
-		// Вычисление поправки по У в зависимости от DrawCorner
-		// - расположения угла начала координат
-		float tmpPosY = 0;
-		// изменяем только в случае RI_UL_CORNER
-		if (ASpresent) tmpPosY = (AH - DrawY - DrawY - DrawChar->Height*FontScale);
-		else tmpPosY = (AHw - DrawY - DrawY - DrawChar->Height*FontScale);
 
-		// если не пробел - рисуем
-		if (UTF32 != 0x020)
-		{
-
-			GLshort ImageHeight = DrawChar->CharTexture->Height;
-			GLshort ImageWidth = DrawChar->CharTexture->Width;
-
-			GLshort FrameHeight = (DrawChar->TexturePositionBottom);
-			GLshort FrameWidth = (DrawChar->TexturePositionRight);
-
-			GLshort Yst = (DrawChar->TexturePositionTop);
-			GLshort Xst = (DrawChar->TexturePositionLeft);
-
-
-			tmp[k++] = (GLshort)DrawX;
-			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
-			tmp[k++] = Xst;
-			tmp[k++] = ImageHeight-Yst;
-
-			tmp[k++] = (GLshort)DrawX;
-			tmp[k++] = (GLshort)(DrawY + tmpPosY);
-			tmp[k++] = Xst;
-			tmp[k++] = ImageHeight-FrameHeight;
-
-			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
-			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
-			tmp[k++] = FrameWidth;
-			tmp[k++] = ImageHeight-Yst;
-
-
-			tmp[k++] = (GLshort)DrawX;
-			tmp[k++] = (GLshort)(DrawY + tmpPosY);
-			tmp[k++] = Xst;
-			tmp[k++] = ImageHeight-FrameHeight;
-
-			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
-			tmp[k++] = (GLshort)(DrawY + tmpPosY);
-			tmp[k++] = FrameWidth;
-			tmp[k++] = ImageHeight-FrameHeight;
-
-
-			tmp[k++] = (GLshort)(DrawX + DrawChar->Width*FontWidthScale);
-			tmp[k++] = (GLshort)(DrawY + tmpPosY + DrawChar->Height*FontScale);
-			tmp[k++] = FrameWidth;
-			tmp[k++] = ImageHeight-Yst;
-			Xstart += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
-			LineWidth += (DrawChar->Width + DrawChar->Left)*FontWidthScale;
-		}
-		else
-		{
-			Xstart += SpaceWidth*FontWidthScale;
-			LineWidth += SpaceWidth*FontWidthScale;
-		}
-#else
 		// если не пробел - рисуем
 		if (UTF32 != 0x020)
 		{
@@ -556,7 +483,39 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 
 			float Yst = (DrawChar->TexturePositionTop*1.0f)/ImageHeight;
 			float Xst = (DrawChar->TexturePositionLeft*1.0f)/ImageWidth;
+#ifdef USE_GLES
+			tmp[k++] = DrawX;
+			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-Yst;
 
+			tmp[k++] = DrawX;
+			tmp[k++] = DrawY +tmpPosY;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-FrameHeight;
+
+			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
+			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+
+
+			tmp[k++] = DrawX;
+			tmp[k++] = DrawY +tmpPosY;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-FrameHeight;
+
+			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
+			tmp[k++] = DrawY +tmpPosY;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-FrameHeight;
+
+
+			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
+			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+#else
 			tmp[k++] = DrawX;
 			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
 			tmp[k++] = Xst;
@@ -576,6 +535,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
 			tmp[k++] = FrameWidth;
 			tmp[k++] = 1.0f-Yst;
+#endif
 
 
 			Xstart += DrawChar->AdvanceX*FontWidthScale;
@@ -586,7 +546,6 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			Xstart += SpaceWidth*FontWidthScale;
 			LineWidth += SpaceWidth*FontWidthScale;
 		}
-#endif
 		// если нужно прорисовывать с ограничением по длине
 		if (MaxWidth != 0.0f)
 			if (LineWidth >= MaxWidth) break;
@@ -600,15 +559,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 		vw_SetTexture(0, CurrentTexture);
 		// отрисовываем все что есть в буфере
 #ifdef USE_GLES
-		vw_MatrixMode(RI_TEXTURE_MATRIX);
-		vw_LoadIdentity();
-		vw_Scale(1.0f/CurrentTexture->Width,1.0f/CurrentTexture->Height,1.0f);
-		vw_MatrixMode(RI_MODELVIEW_MATRIX);
-		vw_PushMatrix();
-		vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2s_XY | RI_2s_TEX | RI_1_TEX, tmp, 4*sizeof(GLshort));
-		vw_PopMatrix();
-		vw_MatrixMode(RI_TEXTURE_MATRIX);
-		vw_LoadIdentity();
+		vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #else
 		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #endif
@@ -708,7 +659,11 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 	// буфер для последовательности RI_QUADS
 	// войдет RI_2f_XY | RI_2f_TEX
 	float *tmp = 0;
+#ifdef USE_GLES
+	tmp = new float[(2+2)*6*strlen(textdraw)]; if (tmp == 0) return;
+#else
 	tmp = new float[(2+2)*4*strlen(textdraw)]; if (tmp == 0) return;
+#endif
 
 	// установка свойств текстуры
 	vw_SetTextureBlend(true, RI_BLEND_SRCALPHA, RI_BLEND_INVSRCALPHA);
@@ -775,6 +730,37 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 			float Yst = (DrawChar->TexturePositionTop*1.0f)/ImageHeight;
 			float Xst = (DrawChar->TexturePositionLeft*1.0f)/ImageWidth;
 
+#ifdef USE_GLES
+			tmp[k++] = DrawX/10.0f;
+			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-Yst;
+
+			tmp[k++] = DrawX/10.0f;
+			tmp[k++] = DrawY/10.0f;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-FrameHeight;
+
+			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
+			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+
+			tmp[k++] = DrawX/10.0f;
+			tmp[k++] = DrawY/10.0f;
+			tmp[k++] = Xst;
+			tmp[k++] = 1.0f-FrameHeight;
+
+			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
+			tmp[k++] = DrawY/10.0f;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-FrameHeight;
+
+			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
+			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+#else
 			tmp[k++] = DrawX/10.0f;
 			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
 			tmp[k++] = Xst;
@@ -794,6 +780,7 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
 			tmp[k++] = FrameWidth;
 			tmp[k++] = 1.0f-Yst;
+#endif
 
 
 			Xstart += DrawChar->AdvanceX;
@@ -812,7 +799,11 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 		// Установка текстуры
 		vw_SetTexture(0, CurrentTexture);
 		// отрисовываем все что есть в буфере
+#ifdef USE_GLES
+		vw_SendVertices(RI_TRIANGLES, 6*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+#else
 		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+#endif
 	}
 
 
