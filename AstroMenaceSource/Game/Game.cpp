@@ -1300,7 +1300,11 @@ void DrawGame()
 			// буфер для последовательности RI_TRIANGLE_STRIP
 			// войдет RI_2f_XYZ | RI_2f_TEX | RI_4f_COLOR
 			float *tmp = 0;
+#ifdef USE_GLES
+			tmp = new float[(2+2+4)*6*(DrawLifeNum+DrawEnergNum)];
+#else
 			tmp = new float[(2+2+4)*4*(DrawLifeNum+DrawEnergNum)];
+#endif
 			int k=0;
 
 
@@ -1326,6 +1330,62 @@ void DrawGame()
 				float Yst = (SrcRect.top*1.0f)/ImageHeight;
 				float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
+#ifdef USE_GLES
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-FrameHeight;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-FrameHeight;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-FrameHeight;
+
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+#else
 					tmp[k++] = DstRect.left;	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
@@ -1361,7 +1421,7 @@ void DrawGame()
 					tmp[k++] = Transp;
 					tmp[k++] = FrameWidth;
 					tmp[k++] = 1.0f-Yst;
-
+#endif
 			}
 
 			// вывод текущего состояния жизни
@@ -1392,6 +1452,62 @@ void DrawGame()
 				float Yst = (SrcRect.top*1.0f)/ImageHeight;
 				float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
+
+#ifdef USE_GLES
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-FrameHeight;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left;	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = Xst;
+					tmp[k++] = 1.0f-FrameHeight;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-FrameHeight;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+#else
 					tmp[k++] = DstRect.left;	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
@@ -1427,12 +1543,15 @@ void DrawGame()
 					tmp[k++] = Transp;
 					tmp[k++] = FrameWidth;
 					tmp[k++] = 1.0f-Yst;
+#endif
 			}
 
 
-
+#ifdef USE_GLES
+			vw_SendVertices(RI_TRIANGLES, 6*(DrawLifeNum+DrawEnergNum), RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
+#else
 			vw_SendVertices(RI_QUADS, 4*(DrawLifeNum+DrawEnergNum), RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
-
+#endif
 			if (tmp != 0){delete [] tmp; tmp = 0;}
 			vw_SetTextureBlend(false, 0, 0);
 			vw_SetColor(1.0f, 1.0f, 1.0f, 1.0f);
