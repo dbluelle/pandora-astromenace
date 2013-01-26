@@ -240,7 +240,11 @@ bool eParticleSystem::Update(float Time)
 
 
 	// подсчитываем, как много частиц нам нужно создать из ParticlesPerSec
+#ifdef USE_GLES
+	float ParticlesNeeded = ((ParticlesPerSec/2.0f)/ParticleSystemQuality) * TimeDelta + EmissionResidue;
+#else
 	float ParticlesNeeded = (ParticlesPerSec/ParticleSystemQuality) * TimeDelta + EmissionResidue;
+#endif
 
 	// переводим в целочисленные значения
 	ParticlesCreated = (int)ParticlesNeeded;
