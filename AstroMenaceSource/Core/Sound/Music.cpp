@@ -87,8 +87,11 @@ bool eMusic::ReadOggBlock(ALuint BufID, size_t Size)
 	// Read loop
 	while (TotalRet < Size)
 	{
+#ifdef PANDORA
+		ret = ov_read(mVF, PCM + TotalRet, Size - TotalRet, &current_section);
+#else
 		ret = ov_read(mVF, PCM + TotalRet, Size - TotalRet, 0, 2, 1, &current_section);
-
+#endif
 		// if end of file or read limit exceeded
 		if (ret == 0) break;
 		else if (ret < 0) 		// Error in bitstream
@@ -325,13 +328,11 @@ bool eMusic::Update()
 	LastTime = vw_GetTime();
 
 
-
 	// если по какой-то причине перестали играть...
 	ALint TMPS;
 	alGetSourcei(Source, AL_SOURCE_STATE, &TMPS);
 	alGetError(); // сброс ошибок
 	if (TMPS == AL_STOPPED) return false;
-
 	return true;
 }
 

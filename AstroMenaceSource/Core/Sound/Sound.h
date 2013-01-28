@@ -42,9 +42,13 @@
 #endif // defined(__APPLE__) && defined(__MACH__)
 #include "AL/alut.h"
 
+#ifdef PANDORA
+#include <tremor/ivorbiscodec.h>
+#include <tremor/ivorbisfile.h>
+#else
 #include "vorbis/vorbisfile.h"
 #include "ogg/ogg.h"
-
+#endif
 #include "Buffer.h"
 
 #define NUM_OF_DYNBUF	20		// num buffers in queue
