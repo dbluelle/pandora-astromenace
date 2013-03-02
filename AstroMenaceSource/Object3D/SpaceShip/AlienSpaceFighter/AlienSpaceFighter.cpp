@@ -135,6 +135,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(101);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 0.65f, -2.3f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -147,6 +148,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[3] = new eParticleSystem;
 			EngineLocation[3] = VECTOR3D(0.0f, 0.25f, 1.85f);
 			SetAlienSpaceFighterEngine(Engine[3], 3);
+#endif
 			break;
 		case 2:
 			// оружие
@@ -154,6 +156,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(101);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 0.8f, -3.1f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -170,6 +173,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			EngineLocation[4] = VECTOR3D(0.0f, -0.30f, 3.95f);
 			SetAlienSpaceFighterEngine(Engine[4], 7);
 			Engine[4]->Direction = VECTOR3D(0.0f, 0.3f, -1.0f);
+#endif
 			break;
 		case 3:
 			// оружие
@@ -177,6 +181,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(102);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 0.8f, -5.5f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -196,6 +201,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[4]->SizeVar = 0.20f;
 			Engine[4]->Speed = 9.0f;
 			Engine[4]->Direction = VECTOR3D(0.0f, -0.3f, 1.0f);
+#endif
 			break;
 		case 4:
 			// оружие
@@ -217,6 +223,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			WeaponFireType = 1;
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 1.4f, -3.7f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -241,6 +248,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(-0.85f, -1.4f, 6.5f);
 			SetAlienSpaceFighterEngine(Engine[7], 3);
+#endif
 			break;
 		case 5:
 			MaxSpeedRotate = 720.0f;
@@ -249,6 +257,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(103);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.0f, 0.0f, -4.0f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -270,6 +279,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[6] = new eParticleSystem;
 			EngineLocation[6] = VECTOR3D(-1.7f, 0.0f, -1.3f);
 			SetAlienSpaceFighterEngine(Engine[6], 4);
+#endif
 			break;
 		case 6:
 			// оружие
@@ -277,6 +287,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(104);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 2.4f, -7.4f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -296,6 +307,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			EngineLocation[5] = VECTOR3D(0.0f, 0.35f, 2.65f);
 			SetAlienSpaceFighterEngine(Engine[5], 3);
 			Engine[5]->SizeStart = 0.50f;
+#endif
 			break;
 		case 7:
 			// оружие
@@ -303,6 +315,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(105);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 1.8f, -10.2f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -332,6 +345,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(0.0f, 1.8f, -10.2f);
 			SetAlienSpaceFighterEngine(Engine[7], 5);
+#endif
 			break;
 		case 8:
 			// оружие
@@ -340,6 +354,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0]->Create(103);
 			Weapon[0]->NextFireTime = Weapon[0]->NextFireTime/4.0f;
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 1.4f, -8.6f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -366,6 +381,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			EngineLocation[6] = VECTOR3D(-1.25f, -0.95f, 5.4f);
 			SetAlienSpaceFighterEngine(Engine[6], 7);
 			Engine[6]->Direction = VECTOR3D(0.22f, 0.25f, 1.0f);
+#endif
 			break;
 		case 9:
 			// оружие
@@ -378,6 +394,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[1]->Create(107);
 			WeaponFireType = 1;
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 0.2f, -5.8f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -417,6 +434,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			SetAlienSpaceFighterEngine(Engine[10], 7);
 			Engine[10]->Direction = VECTOR3D(0.6f, 0.0f, 0.5f);
 			Engine[10]->SizeVar = Engine[10]->SizeEnd = 0.20f;
+#endif
 			break;
 		case 10:
 			// оружие
@@ -424,6 +442,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(106);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 0.8f, -4.0f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -447,6 +466,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			SetAlienSpaceFighterEngine(Engine[6], 4);
 			Engine[6]->CreationSize = VECTOR3D(2.4f,0.6f,0.1f);
 			Engine[6]->ParticlesPerSec = 50;
+#endif
 			break;
 		case 11:
 			// оружие
@@ -457,6 +477,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[1] = new CWeapon;
 			Weapon[1]->Create(104);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 1.0f, -5.4f);
 			SetAlienSpaceFighterEngine(Engine[0], 1);
@@ -480,6 +501,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			SetAlienSpaceFighterEngine(Engine[5], 7);
 			Engine[5]->Direction = VECTOR3D(0.0f, -0.3f, 1.0f);
 			Engine[5]->Speed = 5.0f;
+#endif
 			break;
 		case 12:
 			// оружие
@@ -487,6 +509,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(108);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.1f, 1.0f, -4.4f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -503,6 +526,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			EngineLocation[4] = VECTOR3D(0.0f, 0.50f, 1.1f);
 			SetAlienSpaceFighterEngine(Engine[4], 4);
 			Engine[4]->CreationSize = VECTOR3D(1.0f,0.1f,0.1f);
+#endif
 			break;
 		case 13:
 			// оружие
@@ -513,6 +537,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[1] = new CWeapon;
 			Weapon[1]->Create(109);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.1f, 1.0f, -4.4f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -529,6 +554,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			EngineLocation[4] = VECTOR3D(0.0f, 0.00f, 1.1f);
 			SetAlienSpaceFighterEngine(Engine[4], 4);
 			Engine[4]->CreationSize = VECTOR3D(0.1f,1.2f,0.1f);
+#endif
 			break;
 		case 14:
 			// оружие
@@ -539,6 +565,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[1] = new CWeapon;
 			Weapon[1]->Create(108);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.1f, 1.1f, -4.9f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -563,6 +590,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(-0.8f, -1.7f, 4.4f);
 			SetAlienSpaceFighterEngine(Engine[7], 3);
+#endif
 			break;
 		case 15:
 			// оружие
@@ -585,6 +613,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[5] = new CWeapon;
 			Weapon[5]->Create(101);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 2.4f, -4.0f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -599,6 +628,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			SetAlienSpaceFighterEngine(Engine[3], 4);
 			Engine[3]->CreationSize = VECTOR3D(1.0f,2.4f,0.1f);
 			Engine[3]->ParticlesPerSec = 40;
+#endif
 			break;
 		case 16:
 			// оружие
@@ -612,6 +642,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[2] = new CWeapon;
 			Weapon[2]->Create(108);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(2.8f, 0.2f, -7.2f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -628,6 +659,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			SetAlienSpaceFighterEngine(Engine[3], 4);
 			Engine[3]->CreationSize = VECTOR3D(3.0f,0.4f,0.8f);
 			Engine[3]->ParticlesPerSec = 40;
+#endif
 			break;
 		case 17:
 			// оружие
@@ -647,6 +679,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Weapon[4] = new CWeapon;
 			Weapon[4]->Create(105);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.8f, 1.0f, -7.2f);
 			SetAlienSpaceFighterEngine(Engine[0], 2);
@@ -667,6 +700,7 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			Engine[5] = new eParticleSystem;
 			EngineLocation[5] = VECTOR3D(-1.7f, -0.85f, 1.9f);
 			SetAlienSpaceFighterEngine(Engine[5], 4);
+#endif
 			break;
 
 
@@ -675,13 +709,14 @@ void CAlienSpaceFighter::Create(int	SpaceShipNum)
 			return;
 	}
 
+#ifndef PANDORA
 	for (int i=0; i< EngineQuantity; i++)
 	{
 		Engine[i]->SetStartLocation(EngineLocation[i]);
 		// находим кол-во внутренних источников света
 		if (Engine[i]->Light != 0) InternalLights++;
 	}
-
+#endif
 
 
 	// находим все данные по геометрии

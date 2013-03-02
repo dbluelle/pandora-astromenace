@@ -191,6 +191,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeaponLocation[0] = VECTOR3D(0.0f, 0.0f, 0.0f);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(8.4f, 5.2f, -24.0f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 1);
@@ -221,6 +222,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[9] = new eParticleSystem;
 			EngineLocation[9] = VECTOR3D(0.0f, 0.0f, 15.0f);
 			SetAlienSpaceMotherShipEngine(Engine[9], 6);
+#endif
 			break;
 		case 2:
 			// оружие
@@ -288,6 +290,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(5.6f, 7.0f, -27.6f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 1);
@@ -318,6 +321,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[9] = new eParticleSystem;
 			EngineLocation[9] = VECTOR3D(0.0f, 0.0f, 15.0f);
 			SetAlienSpaceMotherShipEngine(Engine[9], 6);
+#endif
 			break;
 		case 3:
 			// оружие
@@ -353,6 +357,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeapon[0]->Create(110);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(5.5f, 8.1f, -26.1f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 1);
@@ -377,6 +382,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(0.0f, -1.0f, -10.0f);
 			SetAlienSpaceMotherShipEngine(Engine[7], 4);
+#endif
 			break;
 		case 4:
 			// оружие
@@ -438,6 +444,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.9f, 5.9f, -24.6f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 2);
@@ -478,6 +485,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			SetAlienSpaceMotherShipEngine(Engine[11], 6);
 			Engine[11]->CreationSize = VECTOR3D(6.0f,6.0f,2.0f);
 			Engine[11]->DeadZone = 5.9f;
+#endif
 			break;
 		case 5:
 			// оружие
@@ -532,6 +540,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeapon[5]->Create(104);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(25.1f, 0.65f, -18.8f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 9);
@@ -591,6 +600,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[18] = new eParticleSystem;
 			EngineLocation[18] = VECTOR3D(0.0f, -2.4f, -23.0f);
 			SetAlienSpaceMotherShipEngine(Engine[18], 13);
+#endif
 			break;
 
 
@@ -670,6 +680,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeapon[5]->Create(106);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, -7.0f, -23.0f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 13);
@@ -715,6 +726,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[14] = new eParticleSystem;
 			EngineLocation[14] = VECTOR3D(25.4f, -4.0f, -20.0f);
 			SetAlienSpaceMotherShipEngine(Engine[14], 11);
+#endif
 			break;
 
 		case 7:
@@ -752,6 +764,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeapon[1]->Create(110);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.0f, 2.3f, -25.0f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 15);
@@ -770,6 +783,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			Engine[5] = new eParticleSystem;
 			EngineLocation[5] = VECTOR3D(0.0f, -8.0f, 0.0f);
 			SetAlienSpaceMotherShipEngine(Engine[5], 19);
+#endif
 			break;
 
 
@@ -814,6 +828,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			BossWeapon[5]->Create(107);
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(15.0f, 4.4f, -29.0f);
 			SetAlienSpaceMotherShipEngine(Engine[0], 15);
@@ -850,6 +865,7 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			SetAlienSpaceMotherShipEngine(Engine[9], 18);
 			Engine[9]->CreationSize = VECTOR3D(17.0f,1.0f,17.0f);
 			Engine[9]->DeadZone = 16.9f;
+#endif
 			break;
 
 
@@ -859,13 +875,14 @@ void CAlienSpaceMotherShip::Create(int	SpaceShipNum)
 			return;
 	}
 
+#ifndef PANDORA
 	for (int i=0; i< EngineQuantity; i++)
 	{
 		Engine[i]->SetStartLocation(EngineLocation[i]);
 		// находим кол-во внутренних источников света
 		if (Engine[i]->Light != 0) InternalLights++;
 	}
-
+#endif
 
 
 

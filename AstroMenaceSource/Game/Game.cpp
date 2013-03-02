@@ -903,6 +903,7 @@ void InitGame()
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// активные частицы космоса
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifndef PANDORA
 	psSpace = 0;
 	psSpace = new eParticleSystem;
 	psSpace->ColorStart.r = 0.80f;
@@ -926,7 +927,7 @@ void InitGame()
 	psSpace->Texture[0] = vw_FindTextureByName("DATA/GFX/flare3.tga");
 	psSpace->Direction = VECTOR3D(0.0f, 0.0f, -1.0f);
 	psSpace->SetStartLocation(VECTOR3D(0,10,250));//поправь ниже, на переносе если изменил!!!
-
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -937,13 +938,14 @@ void InitGame()
 	vw_SetCameraMoveAroundPoint(VECTOR3D(0,0,10), 0.0f, VECTOR3D(0.0f, 0.0f, 0.0f));
 
 
+#ifndef PANDORA
 	float Time = psSpace->TimeLastUpdate;
 	for (float i=Time; i<Time+25;i+=1.0f)
 	{
 		psSpace->Update(i);
 	}
 	psSpace->TimeLastUpdate = Time;
-
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

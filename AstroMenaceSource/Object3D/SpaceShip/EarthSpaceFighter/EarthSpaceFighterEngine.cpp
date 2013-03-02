@@ -316,8 +316,7 @@ void SetEarthSpaceFighterEngine(CEarthSpaceFighter *SpaceShip, int EngineType)
 		SpaceShip->MaxSpeedRotate = 0.0f;
 		return;
 	}
-
-
+#ifndef PANDORA
 	for (int i=0; i<SpaceShip->EngineQuantity; i++)
 	{
 		if (SpaceShip->Engine[i] != 0){delete SpaceShip->Engine[i]; SpaceShip->Engine[i] = 0;}
@@ -351,8 +350,7 @@ void SetEarthSpaceFighterEngine(CEarthSpaceFighter *SpaceShip, int EngineType)
 		SpaceShip->EngineRight[i]->Direction = VECTOR3D(-1.0f, 0.0f, 0.6f);
 		SpaceShip->EngineRight[i]->IsSuppressed = true;
 	}
-
-
+#endif
     // параметрами игрока управляем в другом месте!!!! пользуй поиск
 	SpaceShip->MaxSpeed = GetEnginePower(EngineType)*SpaceShip->EngineQuantity - SpaceShip->Weight/1000.0f;
 	SpaceShip->MaxAcceler = GetEngineAcceleration(EngineType)*SpaceShip->EngineQuantity - SpaceShip->Weight/1000.0f;

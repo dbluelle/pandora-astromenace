@@ -159,12 +159,14 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFireType = 1;
 
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(0.9f, 1.6f, -5.4f);
 			SetPirateShipEngine(Engine[0], 1);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-0.9f, 1.6f, -5.4f);
 			SetPirateShipEngine(Engine[1], 1);
+#endif
 			break;
 
 		case 2:
@@ -175,12 +177,14 @@ void CPirateShip::Create(int PirateShipNum)
 			Weapon[0] = new CWeapon;
 			Weapon[0]->Create(205);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.1f, 0.5f, -5.7f);
 			SetPirateShipEngine(Engine[0], 2);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-1.1f, 0.5f, -5.7f);
 			SetPirateShipEngine(Engine[1], 2);
+#endif
 			break;
 
 		case 3:
@@ -200,12 +204,14 @@ void CPirateShip::Create(int PirateShipNum)
 			Weapon[3] = new CWeapon;
 			Weapon[3]->Create(206);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.0f, 1.8f, -1.2f);
 			SetPirateShipEngine(Engine[0], 1);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-1.0f, 1.8f, -1.2f);
 			SetPirateShipEngine(Engine[1], 1);
+#endif
 			break;
 		case 4:
 			MaxSpeed = 30.0f;
@@ -224,12 +230,14 @@ void CPirateShip::Create(int PirateShipNum)
 			Weapon[3] = new CWeapon;
 			Weapon[3]->Create(205);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.3f, 1.9f, -1.7f);
 			SetPirateShipEngine(Engine[0], 2);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-1.3f, 1.9f, -1.7f);
 			SetPirateShipEngine(Engine[1], 2);
+#endif
 			break;
 
 		case 5:
@@ -249,6 +257,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Weapon[3] = new CWeapon;
 			Weapon[3]->Create(211);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(5.8f, 6.5f-4.6f, 0.0f);
 			SetPirateShipEngine(Engine[0], 3);
@@ -269,6 +278,7 @@ void CPirateShip::Create(int PirateShipNum)
 			EngineLocation[5] = VECTOR3D(-5.8f, 6.1f-4.6f, -2.3f);
 			SetPirateShipEngine(Engine[5], 1);
 			Engine[5]->Direction = VECTOR3D(0.0f, -0.2f, -0.8f);
+#endif
 			break;
 
 		case 6:
@@ -289,12 +299,14 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.7f, 6.6f-3.83f, -14.2f);
 			SetPirateShipEngine(Engine[0], 2);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-1.7f, 6.6f-3.83f, -14.2f);
 			SetPirateShipEngine(Engine[1], 2);
+#endif
 			break;
 
 		case 7:
@@ -315,6 +327,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(2.2f, 7.6f-5.25f, -14.8f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -327,6 +340,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[3] = new eParticleSystem;
 			EngineLocation[3] = VECTOR3D(-17.2f, 6.8f-5.25f, -9.0f);
 			SetPirateShipEngine(Engine[3], 5);
+#endif
 			break;
 
 		case 8:
@@ -360,6 +374,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(4.5f, 6.3f-3.62f, -12.5f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -372,6 +387,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[3] = new eParticleSystem;
 			EngineLocation[3] = VECTOR3D(-9.2f, 4.4f-3.62f, -5.6f);
 			SetPirateShipEngine(Engine[3], 5);
+#endif
 			break;
 
 		case 9:
@@ -399,6 +415,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.4f, 8.7f-4.9f, -20.4f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -417,6 +434,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[5] = new eParticleSystem;
 			EngineLocation[5] = VECTOR3D(-7.5f, 6.8f-4.9f, 0.0f);
 			SetPirateShipEngine(Engine[5], 2);
+#endif
 			break;
 
 		case 10:
@@ -454,6 +472,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(3.8f, 5.4f-4.29f, -19.5f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -478,6 +497,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(-20.0f, 5.0f-4.29f, -3.6f);
 			SetPirateShipEngine(Engine[7], 2);
+#endif
 			break;
 
 
@@ -497,12 +517,14 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.7f, 6.6f-3.83f, -14.2f);
 			SetPirateShipEngine(Engine[0], 2);
 			Engine[1] = new eParticleSystem;
 			EngineLocation[1] = VECTOR3D(-1.7f, 6.6f-3.83f, -14.2f);
 			SetPirateShipEngine(Engine[1], 2);
+#endif
 			break;
 
 		case 12:
@@ -518,6 +540,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(2.2f, 7.6f-5.25f, -14.8f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -530,6 +553,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[3] = new eParticleSystem;
 			EngineLocation[3] = VECTOR3D(-17.2f, 6.8f-5.25f, -9.0f);
 			SetPirateShipEngine(Engine[3], 5);
+#endif
 			break;
 
 		case 13:
@@ -557,6 +581,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(4.5f, 6.3f-3.62f, -12.5f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -569,6 +594,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[3] = new eParticleSystem;
 			EngineLocation[3] = VECTOR3D(-9.2f, 4.4f-3.62f, -5.6f);
 			SetPirateShipEngine(Engine[3], 5);
+#endif
 			break;
 
 		case 14:
@@ -584,6 +610,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(1.4f, 8.7f-4.9f, -20.4f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -602,6 +629,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[5] = new eParticleSystem;
 			EngineLocation[5] = VECTOR3D(-7.5f, 6.8f-4.9f, 0.0f);
 			SetPirateShipEngine(Engine[5], 2);
+#endif
 			break;
 
 		case 15:
@@ -623,6 +651,7 @@ void CPirateShip::Create(int PirateShipNum)
 			WeaponFlare = new CWeapon;
 			WeaponFlare->Create(203);
 			// двигатели
+#ifndef PANDORA
 			Engine[0] = new eParticleSystem;
 			EngineLocation[0] = VECTOR3D(3.8f, 5.4f-4.29f, -19.5f);
 			SetPirateShipEngine(Engine[0], 2);
@@ -647,6 +676,7 @@ void CPirateShip::Create(int PirateShipNum)
 			Engine[7] = new eParticleSystem;
 			EngineLocation[7] = VECTOR3D(-20.0f, 5.0f-4.29f, -3.6f);
 			SetPirateShipEngine(Engine[7], 2);
+#endif
 			break;
 
 
@@ -659,13 +689,14 @@ void CPirateShip::Create(int PirateShipNum)
 	}
 
 
+#ifndef PANDORA
 	for (int i=0; i< EngineQuantity; i++)
 	{
 		Engine[i]->SetStartLocation(EngineLocation[i]);
 		// находим кол-во внутренних источников света
 		if (Engine[i]->Light != 0) InternalLights++;
 	}
-
+#endif
 
 	// находим все данные по геометрии
 	::CObject3D::InitByDrawObjectList();

@@ -78,6 +78,7 @@ case1next:
 			Texture[2] = vw_FindTextureByName("DATA/MODELS/SPACEBASE/metal.tga");
 			TextureIllum[2] = 0;
 
+#ifndef PANDORA
 			GFXQuantity = 8;
 			GFXLocation = new VECTOR3D[GFXQuantity];
 			GFX = new eParticleSystem*[GFXQuantity];
@@ -108,6 +109,7 @@ case1next:
 			GFX[7] = new eParticleSystem;
 			GFXLocation[7] = VECTOR3D(-14.3f, 3.2f, 14.3f);
 			SetSpaceObjectGFX(GFX[7], 2);
+#endif
 			break;
 
 		case 21:
@@ -144,6 +146,7 @@ case2next:
 			Texture[1] = vw_FindTextureByName("DATA/MODELS/SPACEBASE/allalpha.tga");
 			TextureIllum[1] = 0;
 
+#ifndef PANDORA
 			GFXQuantity = 2;
 			GFXLocation = new VECTOR3D[GFXQuantity];
 			GFX = new eParticleSystem*[GFXQuantity];
@@ -156,6 +159,7 @@ case2next:
 			GFX[1] = new eParticleSystem;
 			GFXLocation[1] = VECTOR3D(0.0f, 5.0f, 13.7f);
 			SetSpaceObjectGFX(GFX[1], 2);
+#endif
 			break;
 
 		case 4:

@@ -176,6 +176,7 @@ void InitMenu()
 
 
 
+#ifndef PANDORA
 	// активные частицы космоса
 	psSpace = 0;
 	if (psSpace==0) psSpace = new eParticleSystem;
@@ -210,7 +211,7 @@ void InitMenu()
 		psSpace->Update(i);
 	}
 	psSpace->TimeLastUpdate = Time;
-
+#endif
 
 	LastMenuUpdateTime = vw_GetTime();
 	NeedShowMenu = true;

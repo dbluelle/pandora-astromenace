@@ -710,11 +710,13 @@ void CEarthSpaceFighter::Create(int	SpaceShipNum)
 	MaxAcceler = 4.5f;
 	MaxSpeedRotate = 4.5f;*/
 
+#ifndef PANDORA
 	for (int i=0; i< EngineQuantity; i++)
 	{
 		// находим кол-во внутренних источников света
 		if (Engine[i]->Light != 0) InternalLights++;
 	}
+#endif
 
 	// находим все данные по геометрии
 	::CObject3D::InitByDrawObjectList();
