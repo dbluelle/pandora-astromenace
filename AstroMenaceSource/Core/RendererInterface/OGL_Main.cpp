@@ -214,9 +214,6 @@ int vw_InitWindow(const char* Title, int Width, int Height, int *Bits, BOOL Full
 		fprintf(stderr, "Can't set video mode %i x %i x %i\n\n", Width, Height, WBits);
 		return 1;
 	}
-#ifdef USE_GLES
-	EGL_Init();
-#endif
 
 
 
