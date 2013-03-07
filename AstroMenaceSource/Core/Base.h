@@ -68,6 +68,20 @@
 #ifdef USE_GLES
 #undef SDL_GL_GetProcAddress
 void* SDL_GL_GetProcAddress(const char* name);
+
+#define GL_ENABLE_BIT 1
+void glPopAttrib();
+void glPushAttrib(int t);
+static __inline__ int GLES2D_p2( int input )
+{
+	int value = 1;
+
+	 while (value < input)
+	{
+		value <<= 1;
+	}
+	return value;
+}
 #endif
 
 

@@ -130,6 +130,97 @@ void* SDL_GL_GetProcAddress(const char* name)
 {
 	return dlsym(gles_library,name);
 }
+
+
+/*
+This is an limited implementation based on this game need.
+Only these flags are managed :
+GL_ALPHA_TEST flag ; glEnable(GL_ALPHA_TEST); and glDisable(GL_ALPHA_TEST);
+GL_BLEND flag
+GL_CULL_FACE flag
+GL_DEPTH_TEST flag
+GL_LINE_SMOOTH flag
+GL_MULTISAMPLE flag
+GL_POLYGON_OFFSET_FILL flag
+GL_TEXTURE_2D flag
+GL_LIGHTING flag
+GL_LIGHTi where 0 <= i < GL_MAX_LIGHTS
+*/
+
+typedef struct node
+{
+	unsigned int data;
+	struct node * next;
+} node;
+
+node * stackTop = NULL;
+
+#define PUSHFLAG(a)                     \
+        glGetBooleanv(a, &b);           \
+        if (b == GL_TRUE) n->data++;    \
+        n->data = n->data<<1;
+#define POPFLAG(a)                      \
+        c->data = c->data>>1;           \
+        if (c->data & 1 > 0)            \
+                glEnable(a);            \
+        else                            \
+                glDisable(a);
+
+void glPushAttrib(int t)
+{
+        static node     *n;
+        GLboolean       b;
+        GLint           ln;
+        n = (node*)calloc(1, sizeof(node));
+        glGetIntegerv(GL_MAX_LIGHTS, &ln);      // 8 for current SGX
+
+        n->data = 0;
+        PUSHFLAG(GL_ALPHA_TEST)
+        PUSHFLAG(GL_BLEND)
+        PUSHFLAG(GL_CULL_FACE)
+        PUSHFLAG(GL_DEPTH_TEST)
+        PUSHFLAG(GL_LINE_SMOOTH)
+        PUSHFLAG(GL_MULTISAMPLE)
+        PUSHFLAG(GL_POLYGON_OFFSET_FILL)
+        PUSHFLAG(GL_TEXTURE_2D)
+        PUSHFLAG(GL_LIGHTING)
+
+        for(GLint i=0;i<ln;i++)
+        {
+                PUSHFLAG(GL_LIGHT0+i)
+        }
+        //printf("glPushAttrib : %d\n", n->data);
+
+        n->next = stackTop;
+        stackTop = n;
+}
+
+void glPopAttrib()
+{
+        GLint           ln;
+        node * c = stackTop;
+        if (c == NULL)
+                return;
+        glGetIntegerv(GL_MAX_LIGHTS, &ln);
+        //printf("glPopAttrib  : %d\n", c->data);
+
+        for(GLint i=ln-1;i>=0;i--)
+        {
+                POPFLAG(GL_LIGHT0+i)
+        }
+        POPFLAG(GL_LIGHTING)
+        POPFLAG(GL_TEXTURE_2D)
+        POPFLAG(GL_POLYGON_OFFSET_FILL)
+        POPFLAG(GL_MULTISAMPLE)
+        POPFLAG(GL_LINE_SMOOTH)
+        POPFLAG(GL_DEPTH_TEST)
+        POPFLAG(GL_CULL_FACE)
+        POPFLAG(GL_BLEND)
+        POPFLAG(GL_ALPHA_TEST)
+
+        stackTop = c->next;
+        free(c);
+}
 #endif
 
 
@@ -514,7 +605,7 @@ ReCreate:
 		fprintf(stderr, "Couldn't init GLES\n");
 		return 1;
 	}
-	if (EGL_Open())
+	if (EGL_Open(800,480))
 	{
 		fprintf(stderr, "Couldn't init EGL\n");
 		return 1;
