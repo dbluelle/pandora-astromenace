@@ -140,10 +140,6 @@ void NewRecord()
 	// сразу ставим первую миссию все равно выбирать не из чего
 	CurrentMission = 0;
 	Setup.Profile[CurrentProfile].LastMission = CurrentMission;
-	// ставим первый лист миссий
-	StartMission = 0;
-	EndMission = 4;
-
 }
 
 
@@ -154,92 +150,24 @@ void NewRecord()
 //------------------------------------------------------------------------------------
 void DuplicateRecord()
 {
-	// запоминаем номер профайла, с которого копировать
-	int BaseProfileNum = CurrentProfile;
-
-	// заносим в новый профайл (последний)
+	// ищем номер пустого слота для создания копии профайла
 	int ProfileNum = -1;
 	for (int i=4; i>=0; i--)
 		if (!Setup.Profile[i].Used) ProfileNum = i;
 
-	// выводим диалог - все заняты!
+	// выводим диалог - все слоты заняты!
 	if (ProfileNum == -1)
 	{
 		SetCurrentDialogBox(1);
 		return;
 	}
 
-
-	// пишем данные в профайл (дублируем)
-
-	Setup.Profile[ProfileNum].Used = true;
-	strcpy(Setup.Profile[ProfileNum].Name, Setup.Profile[BaseProfileNum].Name);
-
-	Setup.Profile[ProfileNum].NPCWeaponPenalty = Setup.Profile[BaseProfileNum].NPCWeaponPenalty;
-	Setup.Profile[ProfileNum].NPCArmorPenalty = Setup.Profile[BaseProfileNum].NPCArmorPenalty;
-	Setup.Profile[ProfileNum].NPCTargetingSpeedPenalty = Setup.Profile[BaseProfileNum].NPCTargetingSpeedPenalty;
-	Setup.Profile[ProfileNum].LimitedAmmo = Setup.Profile[BaseProfileNum].LimitedAmmo;
-	Setup.Profile[ProfileNum].DestroyableWeapon = Setup.Profile[BaseProfileNum].DestroyableWeapon;
-	Setup.Profile[ProfileNum].WeaponTargetingMode = Setup.Profile[BaseProfileNum].WeaponTargetingMode;
-	Setup.Profile[ProfileNum].SpaceShipControlMode = Setup.Profile[BaseProfileNum].SpaceShipControlMode;
-
-
-	Setup.Profile[ProfileNum].Ship = Setup.Profile[BaseProfileNum].Ship;
-	Setup.Profile[ProfileNum].ShipHullUpgrade = Setup.Profile[BaseProfileNum].ShipHullUpgrade;
-	Setup.Profile[ProfileNum].ShipHullCurrentStrength = Setup.Profile[BaseProfileNum].ShipHullCurrentStrength;
-
-	// сброс настроек оружия
-	for (int i=0; i<6; i++)
-	{
-		Setup.Profile[ProfileNum].Weapon[i] = Setup.Profile[BaseProfileNum].Weapon[i];
-		Setup.Profile[ProfileNum].WeaponAmmo[i] = Setup.Profile[BaseProfileNum].WeaponAmmo[i];
-		Setup.Profile[ProfileNum].WeaponControl[i] = Setup.Profile[BaseProfileNum].WeaponControl[i];
-		Setup.Profile[ProfileNum].WeaponAltControl[i] = Setup.Profile[BaseProfileNum].WeaponAltControl[i];
-		Setup.Profile[ProfileNum].WeaponAltControlData[i] = Setup.Profile[BaseProfileNum].WeaponAltControlData[i];
-		Setup.Profile[ProfileNum].WeaponSlotYAngle[i] = Setup.Profile[BaseProfileNum].WeaponSlotYAngle[i];
-	}
-
-
-	Setup.Profile[ProfileNum].EngineSystem = Setup.Profile[BaseProfileNum].EngineSystem;
-	Setup.Profile[ProfileNum].TargetingSystem = Setup.Profile[BaseProfileNum].TargetingSystem;
-	Setup.Profile[ProfileNum].AdvancedProtectionSystem = Setup.Profile[BaseProfileNum].AdvancedProtectionSystem;
-	Setup.Profile[ProfileNum].PowerSystem = Setup.Profile[BaseProfileNum].PowerSystem;
-	Setup.Profile[ProfileNum].TargetingMechanicSystem = Setup.Profile[BaseProfileNum].TargetingMechanicSystem;
-
-	Setup.Profile[ProfileNum].Difficulty = Setup.Profile[BaseProfileNum].Difficulty;
-
-	Setup.Profile[ProfileNum].PrimaryWeaponFireMode = Setup.Profile[BaseProfileNum].PrimaryWeaponFireMode;
-	Setup.Profile[ProfileNum].SecondaryWeaponFireMode = Setup.Profile[BaseProfileNum].SecondaryWeaponFireMode;
-
-
-	Setup.Profile[ProfileNum].Money = Setup.Profile[BaseProfileNum].Money;
-	Setup.Profile[ProfileNum].Experience = Setup.Profile[BaseProfileNum].Experience;
-
-	for (int i=0; i<100; i++)
-	{
-		Setup.Profile[ProfileNum].ByMissionExperience[i] = Setup.Profile[BaseProfileNum].ByMissionExperience[i];
-		Setup.Profile[ProfileNum].MissionReplayCount[i] = Setup.Profile[BaseProfileNum].MissionReplayCount[i];
-	}
-
-
-	Setup.Profile[ProfileNum].OpenLevelNum = Setup.Profile[BaseProfileNum].OpenLevelNum;
-	Setup.Profile[ProfileNum].LastMission = Setup.Profile[BaseProfileNum].LastMission;
-
-
+	// копируем данные в новый профайл
+	memcpy(&Setup.Profile[ProfileNum], &Setup.Profile[CurrentProfile], sizeof(GameProfile));
 
 	CurrentProfile = ProfileNum;
 	Setup.LastProfile = CurrentProfile;
 	CurrentMission = Setup.Profile[CurrentProfile].LastMission;
-	// ставим нужный лист миссий
-	StartMission = 0;
-	EndMission = 4;
-	if (CurrentMission != -1)
-	while (!(StartMission<=CurrentMission && CurrentMission<=EndMission))
-	{
-		StartMission += 5;
-		EndMission += 5;
-	}
-
 }
 
 
@@ -258,39 +186,35 @@ void DeleteRecord()
 		AddTopScores(Setup.Profile[CurrentProfile].Experience, Setup.Profile[CurrentProfile].Name, false);
 
 
-
-	// если это последняя запись...
+	// если это последняя запись
 	if (CurrentProfile == 4)
 	{
 		Setup.Profile[CurrentProfile].Used = false;
 		CurrentProfile -= 1;
-		goto exit;
 	}
-	// если после этой записи - ничего нет... тоже просто удаляем
+	else
+	// или после этой записи - ничего нет
 	if (!Setup.Profile[CurrentProfile+1].Used)
 	{
 		Setup.Profile[CurrentProfile].Used = false;
 		CurrentProfile -= 1;
-		goto exit;
 	}
-
-
-
-	for (int i=CurrentProfile; i<4; i++)
+	else
+	// удалили где-то в середине, сдвигаем все записи
 	{
-		memcpy(Setup.Profile+i, Setup.Profile+i+1, sizeof(GameProfile));
-		Setup.Profile[i+1].Used = false;
-
+		for (int i=CurrentProfile; i<4; i++)
+		{
+			memcpy(&Setup.Profile[i], &Setup.Profile[i+1], sizeof(GameProfile));
+			Setup.Profile[i+1].Used = false;
+		}
 	}
 
-
-exit:
 
 	// проверяем, текущий номер
 	if (CurrentProfile == -1)
-	if (Setup.Profile[0].Used) CurrentProfile = 0;
-	Setup.LastProfile = CurrentProfile;
+		if (Setup.Profile[0].Used) CurrentProfile = 0;
 
+	Setup.LastProfile = CurrentProfile;
 }
 
 
@@ -317,7 +241,7 @@ void ProfileInputText()
 		vw_SetCurrentKeyUnicode(0); // сразу сбрасываем данные
 		// делаем простое преобразование, без учета суррогатной пары
 		char* str = NewProfileName + NewProfileNamePos;
-		if (NewChar <= 0x7F)
+		if (NewChar <= 0x7F && NewChar != 0x0025) // для символа % используем 2 байта, иначе не корректно будет добавляться и удаляться
 		{
 			*str = (char)NewChar;
 			NewProfileNamePos++;
@@ -340,8 +264,6 @@ void ProfileInputText()
 			vw_FindSoundByNum(SoundTaping)->Stop(0.0f);
 
 		SoundTaping = Audio_PlaySound2D(4,1.0f);
-
-		vw_SetCurrentKeyUnicode(0);
 	}
 
 
@@ -529,8 +451,8 @@ void ProfileMenu()
 				vw_DrawFont(X1+50, TmpY, 0, 0, 1.0f, 1.0f,1.0f,1.0f, MenuContentTransp, Setup.Profile[i].Name);
 
 
-			int Size = vw_FontSize("%i", Setup.Profile[i].Money);
-			int SizeI = Setup.iAspectRatioWidth/2+2 + (130 - Size)/2;
+			Size = vw_FontSize("%i", Setup.Profile[i].Money);
+			SizeI = Setup.iAspectRatioWidth/2+2 + (130 - Size)/2;
 			vw_DrawFont(SizeI, TmpY, 0, 0, 1.0f, 1.0f,1.0f,1.0f, MenuContentTransp, "%i", Setup.Profile[i].Money);
 			Size = vw_FontSize("%i", Setup.Profile[i].Experience);
 			SizeI = Setup.iAspectRatioWidth/2+132 + (130 - Size)/2;
@@ -681,9 +603,5 @@ void ProfileMenu()
 	{
 		ComBuffer = MISSION;
 	}
-
-
-
-
 
 }

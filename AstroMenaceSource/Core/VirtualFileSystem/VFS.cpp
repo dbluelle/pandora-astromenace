@@ -30,48 +30,17 @@
 
 
 // Список подключенных VFS файлов
-struct eVFS
-{
-	char *FileName;		// Имя файла VFS
-	SDL_RWops *File;	// Указатель на файл виртуальной системы
-
-	// данные для записи в создаваемую VFS
-	int NumberOfFilesVFS;
-	int HeaderLengthVFS;
-	int HeaderOffsetVFS;
-	int DataStartOffsetVFS;
-
-
-	eVFS*	Prev;
-	eVFS*	Next;
-};
 eVFS *StartVFS = 0;
 eVFS *EndVFS = 0;
-
+eVFS *vw_GetStartVFS(){ return StartVFS;}
 
 
 
 
 // Список файлов, доступных в подключенных (открытых) VFS
-struct eVFS_Entry
-{
-	BOOL	Link;		// флаг что это не реальная запись а линк на существующую в VFS
-	DWORD	NameLen;	// Кол-во байт в имени...
-	char	*Name;		// Имя записи (имя файла) (может быть "линком")
-	int		Offset;		// Смещение начала файла относительно начала файловой системы
-	int		Length;		// Длина файла в системе
-	int		RealLength;	// Длина файла после распаковки
-	eVFS	*Parent;
-	BYTE	ArhKeyLen;	// Кол-во байт ключа упаковки
-	char	*ArhKey;	// Ключ-упаковки
-
-	eVFS_Entry*	Prev;
-	eVFS_Entry*	Next;
-
-};
 eVFS_Entry *StarVFSArray = 0;
 eVFS_Entry *EndVFSArray = 0;
-
+eVFS_Entry *vw_GetStarVFSArray(){ return StarVFSArray;}
 
 
 
@@ -408,7 +377,7 @@ int	vw_WriteIntoVFSfromMemory(const char *Name, const BYTE * buffer, int size)
 
 	switch (BestMode)
 	{
-		case 0:
+		default: // по умолчанию (0), или если неверный номер, не используем сжатие
 			NewVFS_Entry->ArhKeyLen = 2;
 			NewVFS_Entry->ArhKey = new char[NewVFS_Entry->ArhKeyLen];
 			NewVFS_Entry->ArhKey[0] = '0';
@@ -1465,23 +1434,23 @@ int eFILE::fseek(long offset, int origin)
 	switch (origin)
 	{
 		case SEEK_CUR:
-		{
 			if (Pos + offset > RealLength) return 1;
 			Pos += offset;
 			break;
-		}
+
 		case SEEK_END:
-		{
 			if (RealLength-offset < 0) return 1;
 			Pos = RealLength-offset;
 			break;
-		}
+
 		case SEEK_SET:
-		{
 			if (offset < 0 || offset > RealLength) return 1;
 			Pos = offset;
 			break;
-		}
+
+		default:
+			fprintf(stderr, "Error in fseek function call, wrong origin.\n");
+			break;
 	}
 
 	return 0;

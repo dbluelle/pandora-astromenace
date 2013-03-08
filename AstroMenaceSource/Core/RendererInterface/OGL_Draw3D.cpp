@@ -427,6 +427,10 @@ void vw_SendVertices(int PrimitiveType, int NumVertices, int DataFormat, void *D
 			tmpPrimCountGL += NumVertices/4;
 #endif
 			break;
+
+		default:
+			fprintf(stderr, "Error in vw_SendVertices function call, wrong PrimitiveType.\n");
+			return;
 	}
 
 

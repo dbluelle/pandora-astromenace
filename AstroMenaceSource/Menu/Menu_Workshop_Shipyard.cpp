@@ -79,6 +79,8 @@ const char *GetWorkshopShipName(int Num)
 		case 20: return "7_ship20";
 		case 21: return "7_ship21";
 		case 22: return "7_ship22";
+
+		default: fprintf(stderr, "Error in GetWorkshopShipName function call, wrong Num.\n"); break;
 	}
 
 	return 0;
@@ -121,6 +123,8 @@ const char *GetShipGroupTitle(int Num)
 		case 21:
 		case 22:
 			return "4_Scout";
+
+		default: fprintf(stderr, "Error in GetShipGroupTitle function call, wrong Num.\n"); break;
 	}
 
 	return 0;
@@ -157,6 +161,8 @@ int GetWorkshopShipCost(int Num)
 		case 20: return 9000;
 		case 21: return 10000;
 		case 22: return 8000;
+
+		default: fprintf(stderr, "Error in GetWorkshopShipCost function call, wrong Num.\n"); break;
 	}
 
 	return 0;
@@ -557,6 +563,26 @@ void Workshop_Shipyard()
 	SetRect(&DstRect,Setup.iAspectRatioWidth/2-457,450-13,Setup.iAspectRatioWidth/2-57,450+173-13);
 	vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/workshop_panel1.tga"), true, MenuContentTransp);
 
+
+	// проверяем колесо мышки
+	SetRect(&DstRect,Setup.iAspectRatioWidth/2-457,100+35-11,Setup.iAspectRatioWidth/2-57,450-13);
+	if (vw_OnRect(&DstRect))
+	{
+		if (vw_GetWheelStatus() != 0 && !isDialogBoxDrawing())
+		{
+			CurrentWorkshopNewFighter += vw_GetWheelStatus();
+
+			if (CurrentWorkshopNewFighter < 1) CurrentWorkshopNewFighter = 22;
+			if (CurrentWorkshopNewFighter > 22) CurrentWorkshopNewFighter = 1;
+			WorkshopCreateNewShip();
+
+			vw_ResetWheelStatus();
+		}
+	}
+	else if (vw_GetWheelStatus() != 0)
+	{
+		vw_ResetWheelStatus();
+	}
 
 	if (DrawButton128_2(Setup.iAspectRatioWidth/2-395,482, vw_GetText("1_Prev"), MenuContentTransp, false))
 	{
