@@ -1,0 +1,49 @@
+<PXML xmlns="http://openpandora.org/namespaces/PXML">
+<package id="astromenace">
+<version major="1" minor="3" release="2" build="20130309" type="beta"/>
+<author name="dbluelle" />
+<titles>
+<title lang="en_US">
+AstroMenace
+</title>
+</titles>
+<descriptions>
+<description lang="en_US">
+AstroMenace is an astonishing hardcore scroll-shooter where brave space warriors may find a great opportunity to hone their combat skills. Gather money during the battle to spend them on turning your spaceship into an ultimate weapon of mass destruction and give hell to swarms of adversaries. Enjoy the wonderfully crafted 3d graphics and high-quality special effects along with a detailed difficulty adjustment and a handy interface of AstroMenace.
+</description>
+</descriptions>
+<icon src="astromenace_64.png"/>
+</package>
+<application id="astromenace">
+<exec command="start.sh"/>
+<version major="1" minor="3" release="2" build="20130309" type="beta"/>
+<osversion major="1" minor="0" release="0" build="0"/>
+<author name="dbluelle" />
+<titles>
+<title lang="en_US">
+AstroMenace
+</title>
+</titles>
+<title lang="en_US">
+AstroMenace
+</title>
+<descriptions>
+<description lang="en_US">
+AstroMenace is an astonishing hardcore scroll-shooter where brave space warriors may find a great opportunity to hone their combat skills. Gather money during the battle to spend them on turning your spaceship into an ultimate weapon of mass destruction and give hell to swarms of adversaries. Enjoy the wonderfully crafted 3d graphics and high-quality special effects along with a detailed difficulty adjustment and a handy interface of AstroMenace.
+</description>
+</descriptions>
+<icon src="astromenace_64.png"/>
+<licenses>
+<license name="GPL3+" />
+</licenses>
+<categories>
+ <category name="Game">
+    <subcategory name="ArcadeGame"/>
+  </category>
+ </categories>
+ <previewpics>
+  <pic src="screenshot.png"/>
+  <pic src="screenshot1.png"/>
+</previewpics>
+</application>
+</PXML>
