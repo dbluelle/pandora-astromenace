@@ -43,20 +43,20 @@ void InitSetup()
 
 	Setup.MenuLanguage = 1; // en by default
 	Setup.VoiceLanguage = 1; // en by default
-	Setup.FontNumber = 0;
-	Setup.FontSize = 16;
+#ifdef PANDORA
+	Setup.FontNumber = 3;
+	Setup.FontSize = 14;
 
-	Setup.Width = 1228;
-	Setup.Height = 768;
+	Setup.Width = 800;
+	Setup.Height = 480;
 	Setup.BPP = 0;
-	Setup.fAspectRatioWidth = 1228.0f;
-	Setup.fAspectRatioHeight = 768.0f;
-	Setup.iAspectRatioWidth = 1228;
-	Setup.iAspectRatioHeight = 768;
+	Setup.fAspectRatioWidth = 800.0f;
+	Setup.fAspectRatioHeight = 480.0f;
+	Setup.iAspectRatioWidth = 800;
+	Setup.iAspectRatioHeight = 480;
 
 	Setup.CameraModeWithStandardAspectRatio = 0;
 
-#ifdef PANDORA
 	Setup.TextureFilteringMode = 1;
 	Setup.TexturesQuality = 1;
 	Setup.MSAA = 0;
@@ -79,6 +79,19 @@ void InitSetup()
 	Setup.GameSpeed = 1.0f;
 	Setup.LoadingHint = 0;
 #else
+	Setup.FontNumber = 0;
+	Setup.FontSize = 16;
+
+	Setup.Width = 1228;
+	Setup.Height = 768;
+	Setup.BPP = 0;
+	Setup.fAspectRatioWidth = 1228.0f;
+	Setup.fAspectRatioHeight = 768.0f;
+	Setup.iAspectRatioWidth = 1228;
+	Setup.iAspectRatioHeight = 768;
+
+	Setup.CameraModeWithStandardAspectRatio = 0;
+
 	Setup.TextureFilteringMode = 2;
 	Setup.TexturesQuality = 3;
 	Setup.MSAA = 0;
