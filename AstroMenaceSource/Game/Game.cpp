@@ -496,21 +496,12 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-Yst;
 
 		tmp[k++] = DstRect.left;	// X
-		tmp[k++] = DstRect.top +tmpPosY;	// Y
-		tmp[k++] = R;
-		tmp[k++] = G;
-		tmp[k++] = B;
-		tmp[k++] = Transp;
-		tmp[k++] = Xst;
-		tmp[k++] = 1.0f-FrameHeight;
-
-		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
 		tmp[k++] = Transp;
-		tmp[k++] = FrameWidth;
+		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
 		tmp[k++] = DstRect.left;	// X
@@ -523,6 +514,15 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-FrameHeight;
 
 		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+		tmp[k++] = R;
+		tmp[k++] = G;
+		tmp[k++] = B;
+		tmp[k++] = Transp;
+		tmp[k++] = FrameWidth;
+		tmp[k++] = 1.0f-Yst;
+
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
@@ -532,13 +532,13 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-FrameHeight;
 
 		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
-		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
 		tmp[k++] = Transp;
 		tmp[k++] = FrameWidth;
-		tmp[k++] = 1.0f-Yst;
+		tmp[k++] = 1.0f-FrameHeight;
 #else
 		tmp[k++] = DstRect.left;	// X
 		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
@@ -625,21 +625,12 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-Yst;
 
 		tmp[k++] = DstRect.left;	// X
-		tmp[k++] = DstRect.top +tmpPosY;	// Y
-		tmp[k++] = R;
-		tmp[k++] = G;
-		tmp[k++] = B;
-		tmp[k++] = Transp;
-		tmp[k++] = Xst;
-		tmp[k++] = 1.0f-FrameHeight;
-
-		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
 		tmp[k++] = Transp;
-		tmp[k++] = FrameWidth;
+		tmp[k++] = Xst;
 		tmp[k++] = 1.0f-Yst;
 
 		tmp[k++] = DstRect.left;	// X
@@ -652,6 +643,15 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-FrameHeight;
 
 		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+		tmp[k++] = R;
+		tmp[k++] = G;
+		tmp[k++] = B;
+		tmp[k++] = Transp;
+		tmp[k++] = FrameWidth;
+		tmp[k++] = 1.0f-Yst;
+
+		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
@@ -661,13 +661,13 @@ void DrawGameExpMoney(int Exp, int Money)
 		tmp[k++] = 1.0f-FrameHeight;
 
 		tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
-		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+		tmp[k++] = DstRect.top +tmpPosY;	// Y
 		tmp[k++] = R;
 		tmp[k++] = G;
 		tmp[k++] = B;
 		tmp[k++] = Transp;
 		tmp[k++] = FrameWidth;
-		tmp[k++] = 1.0f-Yst;
+		tmp[k++] = 1.0f-FrameHeight;
 #else
 		tmp[k++] = DstRect.left;	// X
 		tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
@@ -710,7 +710,7 @@ void DrawGameExpMoney(int Exp, int Money)
 	}
 
 #ifdef USE_GLES
-	vw_SendVertices(RI_TRIANGLES, 6*16, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
+	vw_SendVertices(RI_QUADS, 6*16, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #else
 	vw_SendVertices(RI_QUADS, 4*16, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #endif
@@ -1570,21 +1570,12 @@ void DrawGame()
 					tmp[k++] = 1.0f-Yst;
 
 					tmp[k++] = DstRect.left;	// X
-					tmp[k++] = DstRect.top +tmpPosY;	// Y
-					tmp[k++] = R;
-					tmp[k++] = G;
-					tmp[k++] = B;
-					tmp[k++] = Transp;
-					tmp[k++] = Xst;
-					tmp[k++] = 1.0f-FrameHeight;
-
-					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
 					tmp[k++] = Transp;
-					tmp[k++] = FrameWidth;
+					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-Yst;
 
 					tmp[k++] = DstRect.left;	// X
@@ -1597,6 +1588,15 @@ void DrawGame()
 					tmp[k++] = 1.0f-FrameHeight;
 
 					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
@@ -1605,15 +1605,14 @@ void DrawGame()
 					tmp[k++] = FrameWidth;
 					tmp[k++] = 1.0f-FrameHeight;
 
-
 					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
-					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
 					tmp[k++] = Transp;
 					tmp[k++] = FrameWidth;
-					tmp[k++] = 1.0f-Yst;
+					tmp[k++] = 1.0f-FrameHeight;
 #else
 					tmp[k++] = DstRect.left;	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
@@ -1693,21 +1692,12 @@ void DrawGame()
 					tmp[k++] = 1.0f-Yst;
 
 					tmp[k++] = DstRect.left;	// X
-					tmp[k++] = DstRect.top +tmpPosY;	// Y
-					tmp[k++] = R;
-					tmp[k++] = G;
-					tmp[k++] = B;
-					tmp[k++] = Transp;
-					tmp[k++] = Xst;
-					tmp[k++] = 1.0f-FrameHeight;
-
-					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
 					tmp[k++] = Transp;
-					tmp[k++] = FrameWidth;
+					tmp[k++] = Xst;
 					tmp[k++] = 1.0f-Yst;
 
 					tmp[k++] = DstRect.left;	// X
@@ -1720,6 +1710,15 @@ void DrawGame()
 					tmp[k++] = 1.0f-FrameHeight;
 
 					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
+					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = R;
+					tmp[k++] = G;
+					tmp[k++] = B;
+					tmp[k++] = Transp;
+					tmp[k++] = FrameWidth;
+					tmp[k++] = 1.0f-Yst;
+
+					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
 					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
@@ -1729,13 +1728,13 @@ void DrawGame()
 					tmp[k++] = 1.0f-FrameHeight;
 
 					tmp[k++] = DstRect.left + (DstRect.right - DstRect.left);	// X
-					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
+					tmp[k++] = DstRect.top +tmpPosY;	// Y
 					tmp[k++] = R;
 					tmp[k++] = G;
 					tmp[k++] = B;
 					tmp[k++] = Transp;
 					tmp[k++] = FrameWidth;
-					tmp[k++] = 1.0f-Yst;
+					tmp[k++] = 1.0f-FrameHeight;
 #else
 					tmp[k++] = DstRect.left;	// X
 					tmp[k++] = DstRect.top +tmpPosY +(DstRect.bottom - DstRect.top);	// Y
@@ -1777,7 +1776,7 @@ void DrawGame()
 
 
 #ifdef USE_GLES
-			vw_SendVertices(RI_TRIANGLES, 6*(DrawLifeNum+DrawEnergNum), RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
+			vw_SendVertices(RI_QUADS, 6*(DrawLifeNum+DrawEnergNum), RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #else
 			vw_SendVertices(RI_QUADS, 4*(DrawLifeNum+DrawEnergNum), RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #endif

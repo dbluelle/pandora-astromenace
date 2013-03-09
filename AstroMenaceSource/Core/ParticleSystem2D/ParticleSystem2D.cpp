@@ -505,60 +505,59 @@ void eParticleSystem2D::Draw()
 			float Yst = (SrcRect.top*1.0f)/ImageHeight;
 			float Xst = (SrcRect.left*1.0f)/ImageWidth;
 
-				tmp[k++] = (DestRect.left);
-				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = DestRect.left;
+				tmp[k++] = DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top);
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (Xst);
-				tmp[k++] = (1.0f-Yst);
+				tmp[k++] = Xst;
+				tmp[k++] = 1.0f-Yst;
 
-				tmp[k++] = (DestRect.left);
-				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = DestRect.left;
+				tmp[k++] = DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top);
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (Xst);
-				tmp[k++] = (1.0f-FrameHeight);
+				tmp[k++] = Xst;
+				tmp[k++] = 1.0f-Yst;
 
-				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = DestRect.left;
+				tmp[k++] = DestRect.top +tmpPosY;
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (FrameWidth);
-				tmp[k++] = (1.0f-FrameHeight);
+				tmp[k++] = Xst;
+				tmp[k++] = 1.0f-FrameHeight;
 
-
-				tmp[k++] = (DestRect.left);
-				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = DestRect.left + (DestRect.right - DestRect.left);
+				tmp[k++] = DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top);
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (Xst);
-				tmp[k++] = (1.0f-Yst);
+				tmp[k++] = FrameWidth;
+				tmp[k++] = 1.0f-Yst;
 
-				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (DestRect.top +tmpPosY);
+				tmp[k++] = DestRect.left + (DestRect.right - DestRect.left);
+				tmp[k++] = DestRect.top +tmpPosY;
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (FrameWidth);
-				tmp[k++] = (1.0f-FrameHeight);
+				tmp[k++] = FrameWidth;
+				tmp[k++] = 1.0f-FrameHeight;
 
-				tmp[k++] = (DestRect.left + (DestRect.right - DestRect.left));
-				tmp[k++] = (DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top));
+				tmp[k++] = DestRect.left + (DestRect.right - DestRect.left);
+				tmp[k++] = DestRect.top +tmpPosY;
 				tmp[k++] = tmp1->Color.r;
 				tmp[k++] = tmp1->Color.g;
 				tmp[k++] = tmp1->Color.b;
 				tmp[k++] = tmp1->Alpha;
-				tmp[k++] = (FrameWidth);
-				tmp[k++] = (1.0f-Yst);
+				tmp[k++] = FrameWidth;
+				tmp[k++] = 1.0f-FrameHeight;
 #else
 			float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 			float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
@@ -607,7 +606,7 @@ void eParticleSystem2D::Draw()
 	}
 
 #ifdef USE_GLES
-	vw_SendVertices(RI_TRIANGLES, 6*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
+	vw_SendVertices(RI_QUADS, 6*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #else
 	vw_SendVertices(RI_QUADS, 4*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #endif

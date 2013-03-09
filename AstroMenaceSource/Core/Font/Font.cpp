@@ -447,7 +447,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 				vw_SetTexture(0, CurrentTexture);
 				// отрисовываем все что есть в буфере
 #ifdef USE_GLES
-				vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+				vw_SendVertices(RI_QUADS, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #else
 				vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #endif
@@ -490,15 +490,9 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			tmp[k++] = 1.0f-Yst;
 
 			tmp[k++] = DrawX;
-			tmp[k++] = DrawY +tmpPosY;
-			tmp[k++] = Xst;
-			tmp[k++] = 1.0f-FrameHeight;
-
-			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
 			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
-			tmp[k++] = FrameWidth;
+			tmp[k++] = Xst;
 			tmp[k++] = 1.0f-Yst;
-
 
 			tmp[k++] = DrawX;
 			tmp[k++] = DrawY +tmpPosY;
@@ -506,15 +500,20 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 			tmp[k++] = 1.0f-FrameHeight;
 
 			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
+			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+
+			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
 			tmp[k++] = DrawY +tmpPosY;
 			tmp[k++] = FrameWidth;
 			tmp[k++] = 1.0f-FrameHeight;
 
-
 			tmp[k++] = DrawX + DrawChar->Width*FontWidthScale;
-			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
+			tmp[k++] = DrawY +tmpPosY;
 			tmp[k++] = FrameWidth;
-			tmp[k++] = 1.0f-Yst;
+			tmp[k++] = 1.0f-FrameHeight;
+
 #else
 			tmp[k++] = DrawX;
 			tmp[k++] = DrawY +tmpPosY + DrawChar->Height*FontScale;
@@ -559,7 +558,7 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 		vw_SetTexture(0, CurrentTexture);
 		// отрисовываем все что есть в буфере
 #ifdef USE_GLES
-		vw_SendVertices(RI_TRIANGLES, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+		vw_SendVertices(RI_QUADS, 6*(k/24), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #else
 		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #endif
@@ -737,13 +736,8 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 			tmp[k++] = 1.0f-Yst;
 
 			tmp[k++] = DrawX/10.0f;
-			tmp[k++] = DrawY/10.0f;
-			tmp[k++] = Xst;
-			tmp[k++] = 1.0f-FrameHeight;
-
-			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
 			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
-			tmp[k++] = FrameWidth;
+			tmp[k++] = Xst;
 			tmp[k++] = 1.0f-Yst;
 
 			tmp[k++] = DrawX/10.0f;
@@ -752,14 +746,19 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 			tmp[k++] = 1.0f-FrameHeight;
 
 			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
+			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
+			tmp[k++] = FrameWidth;
+			tmp[k++] = 1.0f-Yst;
+
+			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
 			tmp[k++] = DrawY/10.0f;
 			tmp[k++] = FrameWidth;
 			tmp[k++] = 1.0f-FrameHeight;
 
 			tmp[k++] = (DrawX + DrawChar->Width)/10.0f;
-			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
+			tmp[k++] = DrawY/10.0f;
 			tmp[k++] = FrameWidth;
-			tmp[k++] = 1.0f-Yst;
+			tmp[k++] = 1.0f-FrameHeight;
 #else
 			tmp[k++] = DrawX/10.0f;
 			tmp[k++] = (DrawY + DrawChar->Height)/10.0f;
@@ -800,7 +799,7 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 		vw_SetTexture(0, CurrentTexture);
 		// отрисовываем все что есть в буфере
 #ifdef USE_GLES
-		vw_SendVertices(RI_TRIANGLES, 6*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
+		vw_SendVertices(RI_QUADS, 6*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #else
 		vw_SendVertices(RI_QUADS, 4*(k/16), RI_2f_XY | RI_1_TEX, tmp, 4*sizeof(float));
 #endif

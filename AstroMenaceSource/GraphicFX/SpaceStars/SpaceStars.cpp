@@ -273,18 +273,18 @@ bool CSpaceStars::Update(float Time)
 
 #ifdef USE_GLES
 				k+=3;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=7;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=7;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=7;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=7;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=7;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=4;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=6;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=6;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=6;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=6;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=6;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k+=3;
 #else
 				k+=3;
 				tmpDATAub[k*sizeof(float)+3] = A;
@@ -379,8 +379,8 @@ void CSpaceStars::Draw()
 		{
 			// делаем массив для всех элементов
 #ifdef USE_GLES
-			// войдет RI_3s_XYZ | RI_2s_TEX | RI_4ub_COLOR
-			tmpDATA = new GLshort[6*(3+2+2)*PrimitCount]; if (tmpDATA == 0) return;
+			// войдет RI_3f_XYZ | RI_2f_TEX | RI_4ub_COLOR
+			tmpDATA = new float[6*(3+2+1)*PrimitCount]; if (tmpDATA == 0) return;
 #else
 			// войдет RI_3f_XYZ | RI_2f_TEX | RI_4ub_COLOR
 			tmpDATA = new float[4*(3+2+1)*PrimitCount]; if (tmpDATA == 0) return;
@@ -425,72 +425,71 @@ void CSpaceStars::Draw()
 				// собираем четырехугольник
 
 #ifdef USE_GLES
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle3.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle3.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle3.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 0;
-				tmpDATA[k++] = 1;
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle3.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle3.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle3.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 0.0f;
+				tmpDATA[k++] = 1.0f;
 
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle2.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle2.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle2.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 0;
-				tmpDATA[k++] = 0;
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle3.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle3.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle3.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 0.0f;
+				tmpDATA[k++] = 1.0f;
 
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle1.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle1.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle1.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 1;
-				tmpDATA[k++] = 0;
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle2.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle2.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle2.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 0.0f;
+				tmpDATA[k++] = 0.0f;
 
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle4.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle4.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle4.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 1.0f;
+				tmpDATA[k++] = 1.0f;
 
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle3.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle3.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle3.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 0;
-				tmpDATA[k++] = 1;
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle1.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle1.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle1.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 1.0f;
+				tmpDATA[k++] = 0.0f;
 
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle1.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle1.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle1.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 1;
-				tmpDATA[k++] = 0;
-
-				tmpDATA[k++] = (GLshort)(list[i]->Location.x+tmpAngle4.x);	// X
-				tmpDATA[k++] = (GLshort)(list[i]->Location.y+tmpAngle4.y);	// Y
-				tmpDATA[k++] = (GLshort)(list[i]->Location.z+tmpAngle4.z);	// Z
-				tmpDATAub[k*sizeof(GLshort)] = 204;
-				tmpDATAub[k*sizeof(GLshort)+1] = 204;
-				tmpDATAub[k*sizeof(GLshort)+2] = 255;
-				tmpDATAub[k*sizeof(GLshort)+3] = A;
-				k+=2;
-				tmpDATA[k++] = 1;
-				tmpDATA[k++] = 1;
+				tmpDATA[k++] = list[i]->Location.x+tmpAngle1.x;	// X
+				tmpDATA[k++] = list[i]->Location.y+tmpAngle1.y;		// Y
+				tmpDATA[k++] = list[i]->Location.z+tmpAngle1.z;		// Z
+				tmpDATAub[k*sizeof(float)] = 204;
+				tmpDATAub[k*sizeof(float)+1] = 204;
+				tmpDATAub[k*sizeof(float)+2] = 255;
+				tmpDATAub[k*sizeof(float)+3] = A;
+				k++;
+				tmpDATA[k++] = 1.0f;
+				tmpDATA[k++] = 0.0f;
 #else
 				tmpDATA[k++] = list[i]->Location.x+tmpAngle3.x;	// X
 				tmpDATA[k++] = list[i]->Location.y+tmpAngle3.y;		// Y
@@ -545,8 +544,8 @@ void CSpaceStars::Draw()
 
 			// делаем массив для всех элементов
 #ifdef USE_GLES
-			// войдет RI_3s_XYZ | RI_2s_TEX | RI_4ub_COLOR
-			tmpDATA = new GLshort[6*(3+2+3)*PrimitCount]; if (tmpDATA == 0) return;
+			// войдет RI_3f_XYZ | RI_2f_TEX | RI_3f_NORMAL*/
+			tmpDATA = new float[6*(3+2+3)*PrimitCount]; if (tmpDATA == 0) return;
 #else
 			// войдет RI_3f_XYZ | RI_2f_TEX | RI_3f_NORMAL*/
 			tmpDATA = new float[4*(3+2+3)*PrimitCount]; if (tmpDATA == 0) return;
@@ -666,7 +665,7 @@ void CSpaceStars::Draw()
 		if (!Setup.UseGLSL)
 		{
 #ifdef USE_GLES
-			vw_SendVertices(RI_TRIANGLES, 6*PrimitCount, RI_3s_XYZ | RI_4ub_COLOR | RI_2s_TEX | RI_1_TEX, tmpDATA, 7*sizeof(GLshort));
+			vw_SendVertices(RI_QUADS, 6*PrimitCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
 #else
 			vw_SendVertices(RI_QUADS, 4*PrimitCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
 #endif
