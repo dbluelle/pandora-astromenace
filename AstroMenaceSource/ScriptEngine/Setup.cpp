@@ -56,6 +56,29 @@ void InitSetup()
 
 	Setup.CameraModeWithStandardAspectRatio = 0;
 
+#ifdef PANDORA
+	Setup.TextureFilteringMode = 1;
+	Setup.TexturesQuality = 1;
+	Setup.MSAA = 0;
+	Setup.CSAA = 0;
+	Setup.VisualEffectsQuality = 2;
+	Setup.AnisotropyLevel = 1;
+	Setup.TexturesCompression = 0;
+	Setup.UseGLSL = false;
+	Setup.ShadowMap = 0;
+	Setup.MaxPointLights = 0;
+	Setup.MusicSw = 8;
+	Setup.Music_check = true;
+	Setup.SoundSw = 10;
+	Setup.VoiceSw = 10;
+	Setup.Sound_check = true;
+	Setup.VSync = 1;
+	Setup.Brightness = 5;
+	Setup.ShowFPS = false;
+	Setup.GameWeaponInfoType = 1;
+	Setup.GameSpeed = 1.0f;
+	Setup.LoadingHint = 0;
+#else
 	Setup.TextureFilteringMode = 2;
 	Setup.TexturesQuality = 3;
 	Setup.MSAA = 0;
@@ -77,6 +100,7 @@ void InitSetup()
 	Setup.GameWeaponInfoType = 1;
 	Setup.GameSpeed = 1.5f;
 	Setup.LoadingHint = 0;
+#endif
 
 
 	Setup.KeyboardDecreaseGameSpeed = SDLK_F5;
@@ -90,8 +114,13 @@ void InitSetup()
 	Setup.KeyBoardRight = SDLK_RIGHT;
 	Setup.KeyBoardUp = SDLK_UP;
 	Setup.KeyBoardDown = SDLK_DOWN;
+#ifdef PANDORA
+	Setup.KeyBoardPrimary = SDLK_HOME;
+	Setup.KeyBoardSecondary = SDLK_PAGEDOWN;
+#else
 	Setup.KeyBoardPrimary = SDLK_LCTRL;
 	Setup.KeyBoardSecondary = SDLK_SPACE;
+#endif
 	Setup.MousePrimary = SDL_BUTTON_LEFT;
 	Setup.MouseSecondary = SDL_BUTTON_RIGHT;
 	Setup.JoystickPrimary = 0;
