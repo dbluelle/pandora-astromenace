@@ -109,7 +109,9 @@ void DrawAllObject3D(int DrawType)
 	}
 
 	// взрывы
+#ifndef PANDORA
 	DrawAllExplosion(false);
+#endif
 
 
 	// эффекты - самые последние в прорисовке!
