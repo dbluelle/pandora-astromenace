@@ -132,12 +132,15 @@ void vw_Draw(int X, int Y, RECT *SrcRect, eTexture *Tex, bool Alpha, float Rotat
 	float ImageHeight = Tex->Height*1.0f;
 	float ImageWidth = Tex->Width*1.0f;
 
+#ifdef USE_POWERVR_TEXTURES
+	float FrameHeight = 1.0f;
+	float FrameWidth = 1.0f;
+#else
 	float FrameHeight = (SrcRect->bottom*1.0f)/ImageHeight;
 	float FrameWidth = (SrcRect->right*1.0f)/ImageWidth;
-
+#endif
 	float Yst = (SrcRect->top)/ImageHeight;
 	float Xst = (SrcRect->left)/ImageWidth;
-
 
 	// буфер для последовательности RI_TRIANGLE_STRIP
 	// войдет RI_2f_XYZ | RI_2f_TEX
@@ -184,7 +187,7 @@ void vw_Draw(int X, int Y, RECT *SrcRect, eTexture *Tex, bool Alpha, float Rotat
 //------------------------------------------------------------------------------------
 // Прорисовка в 2д с прозрачностью
 //------------------------------------------------------------------------------------
-void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha, float Transp, float RotateAngle, int DrawCorner, float R, float G, float B)
+void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha, float Transp, float RotateAngle, int DrawCorner, float R, float G, float B,int origtexwidth,int origtexheight)
 {
 
 	if (Tex == 0) return;
@@ -222,12 +225,19 @@ void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha,
 	float ImageHeight = Tex->Height*1.0f;
 	float ImageWidth = Tex->Width*1.0f;
 
-	float FrameHeight = (SrcRect->bottom*1.0f )/ImageHeight;
-	float FrameWidth = (SrcRect->right*1.0f )/ImageWidth;
+#ifdef USE_POWERVR_TEXTURES
+	float FrameHeight = origtexheight ? (SrcRect->bottom*1.0f)/(origtexheight*1.0f) :1.0f;
+	float FrameWidth = origtexwidth ? (SrcRect->right*1.0f)/(origtexwidth*1.0f) :1.0f;
+
+	float Yst = (SrcRect->top*1.0f)/(origtexheight ? origtexheight*1.0f:ImageHeight);
+	float Xst = (SrcRect->left*1.0f)/(origtexwidth ? origtexwidth*1.0f :ImageWidth);
+#else
+	float FrameHeight = (SrcRect->bottom*1.0f)/ImageHeight;
+	float FrameWidth = (SrcRect->right*1.0f)/ImageWidth;
 
 	float Yst = (SrcRect->top*1.0f)/ImageHeight;
 	float Xst = (SrcRect->left*1.0f)/ImageWidth;
-
+#endif
 
 	vw_SetColor(R, G, B, Transp);
 

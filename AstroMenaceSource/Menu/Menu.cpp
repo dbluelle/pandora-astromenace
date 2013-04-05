@@ -503,7 +503,7 @@ void DrawMenu()
 		GameStatus != OPTIONS_ADVANCED)
 	{
 		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/astromenace.tga"),
-			true, MenuContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f);
+			true, MenuContentTransp, 0.0f, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,1024,128);
 	}
 
 	vw_End2DMode();

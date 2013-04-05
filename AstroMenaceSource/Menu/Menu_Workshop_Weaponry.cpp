@@ -274,9 +274,9 @@ void ShipSlotWeapon(int SlotNum, int X, int Y)
 		SetRect(&SrcRect,0,AmmoShow,18,56);
 		SetRect(&DstRect,Xpos+23,Ypos+40+AmmoShow,Xpos+18+23,Ypos+56+40);
 		if (AmmoShow > 0)
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/ammo.tga"), true, CurrentAlert3*MenuContentTransp);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/ammo.tga"), true, CurrentAlert3*MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,32,64);
 		else
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/ammo.tga"), true, MenuContentTransp);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/ammo.tga"), true, MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,32,64);
 
 
 		if (WorkshopFighterGame->Weapon[SlotNum]->Ammo == 0) WeaponAmmoOut = true;
@@ -316,7 +316,7 @@ void ShipSlotWeapon(int SlotNum, int X, int Y)
 		(DstRect.bottom >= MouseY) &&
 		(DstRect.top<= MouseY)) || InFocusByKeyboard) && !isDialogBoxDrawing() && !DragWeapon)
 	{
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/button_weaponry_in.tga"), true, MenuContentTransp);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/button_weaponry_in.tga"), true, MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,32,64);
 		CurrentCursorStatus = 1;
 		if (vw_GetWindowLBMouse(true) || (InFocusByKeyboard && (vw_GetKeys(SDLK_KP_ENTER) || vw_GetKeys(SDLK_RETURN))))
 		{
@@ -330,7 +330,7 @@ void ShipSlotWeapon(int SlotNum, int X, int Y)
 		}
 	}
 	else
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/button_weaponry_out.tga"), true, MenuContentTransp);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/MENU/button_weaponry_out.tga"), true, MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,32,64);
 
 
 

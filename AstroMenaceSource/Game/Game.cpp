@@ -246,11 +246,19 @@ void DrawGameExpMoney(int Exp, int Money)
 	if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 	else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+	float FrameHeight = (SrcRect.bottom*1.0f )/32.0f;
+	float FrameWidth = (SrcRect.right*1.0f)/250.0f;
+
+	float Yst = (SrcRect.top*1.0f)/32.0f;
+	float Xst = (SrcRect.left*1.0f)/250.0f;
+#else
 	float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 	float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 	float Yst = (SrcRect.top*1.0f)/ImageHeight;
 	float Xst = (SrcRect.left*1.0f)/ImageWidth;
+#endif
 
 #ifdef USE_GLES
 		tmp[k++] = DstRect.left;	// X
@@ -352,11 +360,19 @@ void DrawGameExpMoney(int Exp, int Money)
 	if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 	else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+	FrameHeight = (SrcRect.bottom*1.0f )/32.0f;
+	FrameWidth = (SrcRect.right*1.0f)/250.0f;
+
+	Yst = (SrcRect.top*1.0f)/32.0f;
+	Xst = (SrcRect.left*1.0f)/250.0f;
+#else
 	FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 	FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 	Yst = (SrcRect.top*1.0f)/ImageHeight;
 	Xst = (SrcRect.left*1.0f)/ImageWidth;
+#endif
 
 #ifdef USE_GLES
 		tmp[k++] = DstRect.left;	// X
@@ -479,11 +495,19 @@ void DrawGameExpMoney(int Exp, int Money)
 		if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 		else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+		FrameHeight = (SrcRect.bottom*1.0f )/32.0f;
+		FrameWidth = (SrcRect.right*1.0f)/250.0f;
+		
+		Yst = (SrcRect.top*1.0f)/32.0f;
+		Xst = (SrcRect.left*1.0f)/250.0f;
+#else
 		FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 		FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 		Yst = (SrcRect.top*1.0f)/ImageHeight;
 		Xst = (SrcRect.left*1.0f)/ImageWidth;
+#endif
 
 #ifdef USE_GLES
 		tmp[k++] = DstRect.left;	// X
@@ -608,11 +632,19 @@ void DrawGameExpMoney(int Exp, int Money)
 		if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 		else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+		FrameHeight = (SrcRect.bottom*1.0f )/32.0f;
+		FrameWidth = (SrcRect.right*1.0f)/250.0f;
+		
+		Yst = (SrcRect.top*1.0f)/32.0f;
+		Xst = (SrcRect.left*1.0f)/250.0f;
+#else
 		FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
 		FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 		Yst = (SrcRect.top*1.0f)/ImageHeight;
 		Xst = (SrcRect.left*1.0f)/ImageWidth;
+#endif
 
 #ifdef USE_GLES
 		tmp[k++] = DstRect.left;	// X
@@ -1366,17 +1398,17 @@ void DrawGame()
 	{
 		SetRect(&SrcRect,0,0,466,73);
 		SetRect(&DstRect,0,0,466,73);
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,610,146);
 
 
 		SetRect(&SrcRect,1,74,150,145);
 		SetRect(&DstRect,540,0,540+149,71);
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,610,146);
 
 
 		SetRect(&SrcRect,150,74,610,145);
 		SetRect(&DstRect,768,0,768+460,71);
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/game_panel2.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,610,146);
 	}
 
 
@@ -1553,7 +1585,11 @@ void DrawGame()
 				if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 				else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+				float FrameHeight = 1.0f;
+#else
 				float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+#endif
 				float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 				float Yst = (SrcRect.top*1.0f)/ImageHeight;
@@ -1674,7 +1710,11 @@ void DrawGame()
 				if (ASpresent) tmpPosY = (AH - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 				else tmpPosY = (AHw - DstRect.top - DstRect.top - (DstRect.bottom - DstRect.top));
 
+#ifdef USE_POWERVR_TEXTURES
+				float FrameHeight = 1.0f;
+#else
 				float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+#endif
 				float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
 
 				float Yst = (SrcRect.top*1.0f)/ImageHeight;

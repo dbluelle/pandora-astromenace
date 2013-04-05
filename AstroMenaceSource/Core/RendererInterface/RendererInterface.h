@@ -39,6 +39,10 @@
 
 #ifdef USE_GLES
 #define GL_DEPTH_COMPONENT GL_DEPTH_COMPONENT24
+#define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG                      0x8C00
+#define GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG                      0x8C01
+#define GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG                     0x8C02
+#define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG                     0x8C03
 #endif
 
 
@@ -617,7 +621,7 @@ void vw_GetGammaRamp(float *Gamma, float *Contrast, float *Brightness);
 // Draw
 void vw_Draw(int X, int Y, RECT *SrcRect, eTexture *Tex, bool Alpha, float RotateAngle=0, int DrawCorner = RI_UL_CORNER);
 // Draw transparent
-void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha, float Transp, float RotateAngle=0, int DrawCorner = RI_UL_CORNER, float R=1.0f, float G=1.0f, float B=1.0f);
+void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha, float Transp, float RotateAngle=0, int DrawCorner = RI_UL_CORNER, float R=1.0f, float G=1.0f, float B=1.0f,int origtexwidth=0,int origtexheight=0);
 
 
 

@@ -2114,13 +2114,13 @@ void InformationDrawObject()
 
 	// отрисовка стрелок
 	SetRect(&SrcRect,32,0,64,32);
-	vw_DrawTransparent(&DstRectLeft, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fLeft*MenuContentTransp);
+	vw_DrawTransparent(&DstRectLeft, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fLeft*MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,128,32);
 	SetRect(&SrcRect,96,0,128,32);
-	vw_DrawTransparent(&DstRectRight, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fRight*MenuContentTransp);
+	vw_DrawTransparent(&DstRectRight, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fRight*MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,128,32);
 	SetRect(&SrcRect,0,0,32,32);
-	vw_DrawTransparent(&DstRectUp, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fUp*MenuContentTransp);
+	vw_DrawTransparent(&DstRectUp, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fUp*MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,128,32);
 	SetRect(&SrcRect,64,0,96,32);
-	vw_DrawTransparent(&DstRectDown, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fDown*MenuContentTransp);
+	vw_DrawTransparent(&DstRectDown, &SrcRect, vw_FindTextureByName("DATA/MENU/arrows_blue.tga"), true, fDown*MenuContentTransp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,128,32);
 
 	vw_End2DMode();
 

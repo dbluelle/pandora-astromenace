@@ -864,7 +864,7 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 				if (DrawObjectList[i].NeedGeometryAnimation)
 				{
 					vw_Rotate(DrawObjectList[i].GeometryAnimation.z, 0.0f, 0.0f, 1.0f);
-					vw_Rotate(DrawObjectList[i].GeometryAnimation.y, 0.0f, 1.0f, 0.0f);
+				vw_Rotate(DrawObjectList[i].GeometryAnimation.y, 0.0f, 1.0f, 0.0f);
 					vw_Rotate(DrawObjectList[i].GeometryAnimation.x, 1.0f, 0.0f, 0.0f);
 				}
 

@@ -109,7 +109,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,56);
 			SetRect(&DstRect,Xpos+2,Ypos+16+AmmoShow,Xpos+8+2,Ypos+56+16);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,56);
 
 			// перезарядка
 			int ReloadShow = (int)(56.0f - (56.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -118,7 +118,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,56);
 			SetRect(&DstRect,Xpos+12,Ypos+16+ReloadShow,Xpos+12+8,Ypos+56+16);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,56);
 		}
 	}
 	if (Setup.GameWeaponInfoType == 2)
@@ -180,7 +180,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,64);
 			SetRect(&DstRect,Xpos+2,Ypos+2+AmmoShow,Xpos+8+2,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 
 			// перезарядка
 			int ReloadShow = (int)(64.0f - (64.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -189,7 +189,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,64);
 			SetRect(&DstRect,Xpos+12+1,Ypos+2+ReloadShow,Xpos+12+8+1,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 		}
 	}
 	if (Setup.GameWeaponInfoType == 3)
@@ -222,7 +222,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,64);
 			SetRect(&DstRect,Xpos+2,Ypos+2+AmmoShow,Xpos+8+2,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 
 			// перезарядка
 			int ReloadShow = (int)(64.0f - (64.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -231,7 +231,7 @@ void DrawGameWeaponLeftSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,64);
 			SetRect(&DstRect,Xpos+12+1,Ypos+2+ReloadShow,Xpos+12+8+1,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 		}
 	}
 
@@ -322,7 +322,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,56);
 			SetRect(&DstRect,Xpos+154,Ypos+16+AmmoShow,Xpos+8+154,Ypos+56+16);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,56);
 
 			// перезарядка
 			int ReloadShow = (int)(56.0f - (56.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -331,7 +331,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,56);
 			SetRect(&DstRect,Xpos+144,Ypos+16+ReloadShow,Xpos+144+8,Ypos+56+16);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/weapon_energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,56);
 		}
 	}
 	if (Setup.GameWeaponInfoType == 2)
@@ -392,7 +392,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,64);
 			SetRect(&DstRect,Xpos+12+2+128,Ypos+2+AmmoShow,Xpos+12+8+2+128,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 
 			// перезарядка
 			int ReloadShow = (int)(64.0f - (64.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -401,7 +401,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,64);
 			SetRect(&DstRect,Xpos+3+128,Ypos+2+ReloadShow,Xpos+8+3+128,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 		}
 	}
 	if (Setup.GameWeaponInfoType == 3)
@@ -435,7 +435,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 
 			SetRect(&SrcRect,0,AmmoShow,8,64);
 			SetRect(&DstRect,Xpos+12+2+128,Ypos+2+AmmoShow,Xpos+12+8+2+128,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/ammo.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 
 			// перезарядка
 			int ReloadShow = (int)(64.0f - (64.0f*(PlayerFighter->TimeLastUpdate-PlayerFighter->Weapon[WeaponNum]->LastFireTime))/PlayerFighter->Weapon[WeaponNum]->NextFireTime);
@@ -444,7 +444,7 @@ void DrawGameWeaponRightSlot(int WeaponNum, int DrawLevelPos)
 			if (ReloadShow<0) ReloadShow = 0;
 			SetRect(&SrcRect,0,ReloadShow,8,64);
 			SetRect(&DstRect,Xpos+3+128,Ypos+2+ReloadShow,Xpos+8+3+128,Ypos+64+2);
-			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f);
+			vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/energy.tga"), true, 1.0f,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,8,64);
 		}
 	}
 

@@ -127,7 +127,7 @@ void DrawMissionTitleNum(int X, int Y, char *Num, float Transp)
 
 
 		SetRect(&DstRect,XStart,Y,XStart+(SrcRect.right - SrcRect.left),Y+(SrcRect.bottom - SrcRect.top));
-		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/nums.tga"), true, Transp);
+		vw_DrawTransparent(&DstRect, &SrcRect, vw_FindTextureByName("DATA/GAME/nums.tga"), true, Transp,0, RI_UL_CORNER, 1.0f, 1.0f, 1.0f,416,64);
 		XStart += SrcRect.right - SrcRect.left;
 	}
 

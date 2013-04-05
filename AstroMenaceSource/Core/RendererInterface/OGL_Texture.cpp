@@ -55,6 +55,22 @@ GLuint vw_BuildTexture(BYTE *ustDIB, int Width, int Height, bool MipMap, int Byt
 	int type = GL_UNSIGNED_BYTE;
 	eDevCaps *OpenGL_DevCaps = vw_GetDevCaps();
 
+#ifdef USE_POWERVR_TEXTURES
+	if (NeedCompression)
+	{
+		Format = Bytes == 3 ? GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG : GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+		InternalFormat = Format;
+		unsigned char* data = ustDIB;
+		for (int level = 0; Width > 0 && Height > 0; ++level) 
+		{
+			GLsizei size = std::max(32, Width * Height * 2 / 8);
+			glCompressedTexImage2D(GL_TEXTURE_2D, level, InternalFormat, Width, Height, 0, size, data);
+			data += size;
+			Width >>= 1; Height >>= 1;
+		}
+		return TextureID;
+	}
+#endif
 
 #ifdef USE_GLES
 	uint16_t *outPixel16 = (uint16_t *)ustDIB;

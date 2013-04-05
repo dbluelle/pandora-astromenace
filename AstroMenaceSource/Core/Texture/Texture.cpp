@@ -50,7 +50,7 @@ void vw_DetachTexture(eTexture* Texture);
 int ReadJPG(BYTE **DIB, eFILE *pFile, int *DWidth, int *DHeight, int *DChanels);
 int ReadTGA(BYTE **DIB, eFILE *pFile, int *DWidth, int *DHeight, int *DChanels);
 int ReadPNG(BYTE **DIB, eFILE *pFile, int *DWidth, int *DHeight, int *DChanels);
-
+int ReadPVR(BYTE **DIB, eFILE *pFile, int *DWidth, int *DHeight, int *DChanels);
 
 //------------------------------------------------------------------------------------
 // Освобождение памяти и удаление текстуры
@@ -503,8 +503,11 @@ eTexture* vw_LoadTexture(const char *nName, const char *RememberAsName, bool Nee
 		fprintf(stderr, "Unable to found %s\n", nName);
 		return 0;
 	}
-
-
+	
+#ifdef USE_POWERVR_TEXTURES
+	ReadPVR(&tmp_image, pFile, &DWidth, &DHeight, &DChanels);
+	NeedCompression = true;
+#else
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Ищем как грузить текстуру по расширению
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -573,6 +576,7 @@ eTexture* vw_LoadTexture(const char *nName, const char *RememberAsName, bool Nee
 			return 0;
 			break;
 	}
+#endif
 
 	if (tmp_image == 0)
 	{
@@ -602,7 +606,6 @@ eTexture* vw_LoadTexture(const char *nName, const char *RememberAsName, bool Nee
 
 	// освобождаем память
 	if (tmp_image != 0){delete [] tmp_image; tmp_image = 0;}
-
 
 	return Result;
 }
@@ -657,11 +660,20 @@ eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DW
 	Texture->Width = DWidth;
 	Texture->Height = DHeight;
 	Texture->Bytes = DChanels;
-
 	// временный массив данных
 	BYTE *tmp_image = 0;
+#ifdef USE_POWERVR_TEXTURES
+	if (NeedCompression)
+		tmp_image = DIB;
+	else
+	{
+		tmp_image = new BYTE[DWidth*DHeight*DChanels];
+		memcpy(tmp_image, DIB, DWidth*DHeight*DChanels);
+	}
+#else
 	tmp_image = new BYTE[DWidth*DHeight*DChanels];
 	memcpy(tmp_image, DIB, DWidth*DHeight*DChanels);
+#endif
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Сохраняем имя текстуры
@@ -669,7 +681,7 @@ eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DW
 	Texture->Name = new char[strlen(TextureName)+1]; if (Texture->Name == 0) return 0;
 	strcpy(Texture->Name, TextureName);
 
-
+#ifndef USE_POWERVR_TEXTURES
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Делаем альфа канал
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -684,13 +696,19 @@ eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DW
 		if (AlphaTexMan)
 			CreateAlpha(&tmp_image, Texture, AFlagTexMan);
 	}
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Растягиваем, если есть запрос
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef USE_POWERVR_TEXTURES
+	if (!NeedCompression && NeedResizeW!=0 && NeedResizeH!=0)
+		ResizeImage(NeedResizeW, NeedResizeH, &tmp_image, Texture);
+#else
 	if (NeedResizeW!=0 && NeedResizeH!=0)
 		ResizeImage(NeedResizeW, NeedResizeH, &tmp_image, Texture);
+#endif
 
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -703,9 +721,13 @@ eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DW
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Делаем подгонку по размерам, с учетом необходимости железа
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef USE_POWERVR_TEXTURES
+	if (!NeedCompression && !OpenGL_DevCaps.TextureNPOTSupported) // если не поддерживаем - берем и сами растягиваем до степени двойки
+		Resize(&tmp_image, Texture);
+#else
 	if (!OpenGL_DevCaps.TextureNPOTSupported) // если не поддерживаем - берем и сами растягиваем до степени двойки
 		Resize(&tmp_image, Texture);
-
+#endif
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// Создаем текстуру
@@ -718,8 +740,11 @@ eTexture* vw_CreateTextureFromMemory(const char *TextureName, BYTE * DIB, int DW
 	vw_BindTexture(0, 0);
 
 	// освобождаем память
+#ifdef USE_POWERVR_TEXTURES
+	if (!NeedCompression && tmp_image != 0){delete [] tmp_image; tmp_image = 0;}
+#else
 	if (tmp_image != 0){delete [] tmp_image; tmp_image = 0;}
-
+#endif
 	// присоединяем текстуру к менеджеру текстур
 	vw_AttachTexture(Texture);
 	printf("Ok ... %s\n", TextureName);
