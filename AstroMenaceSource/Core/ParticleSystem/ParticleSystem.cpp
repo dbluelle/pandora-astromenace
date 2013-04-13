@@ -109,8 +109,6 @@ eParticleSystem::eParticleSystem()
 	LightDeviation = 100.0f;
 	LightDeviationSpeed = 3.5f+3.5f*vw_Randf1;
 
-	tmpDATA = 0;
-
 	// настройка массива
 	Start = 0;
 	End = 0;
@@ -143,7 +141,6 @@ eParticleSystem::~eParticleSystem()
 		tmp = tmp2;
 	}
 	if (Light != 0){vw_ReleaseLight(Light); Light = 0;}
-	if (tmpDATA!=0){delete [] tmpDATA; tmpDATA = 0;}
 	vw_DetachParticleSystem(this);
 }
 
@@ -683,8 +680,6 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 		// если есть живые - рисуем их
 		if (DrawCount > 0)
 		{
-			if (tmpDATA != 0){delete [] tmpDATA; tmpDATA = 0;}
-
 			GLubyte *tmpDATAub = 0;
 			// номер float'а в последовательности
 			int k=0;
@@ -693,10 +688,10 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 			// делаем массив для всех элементов
 #ifdef USE_GLES
 			// RI_3f_XYZ | RI_2f_TEX | RI_4ub_COLOR
-			tmpDATA = new float[6*(3+2+1)*DrawCount];
+			float tmpDATA[6*(3+2+1)*DrawCount];
 #else
 			// RI_3f_XYZ | RI_2f_TEX | RI_4ub_COLOR
-			tmpDATA = new float[4*(3+2+1)*DrawCount];
+			float tmpDATA[4*(3+2+1)*DrawCount];
 #endif
 			tmpDATAub = (GLubyte *)tmpDATA;
 
@@ -926,12 +921,6 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 					tmp = tmp2;
 				}
 			}
-		}
-
-
-		if (DrawCount > 0)
-		{
-
 			if (*CurrentTexture != Texture[i])
 			{
 				vw_SetTexture(0, Texture[i]);

@@ -411,11 +411,10 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 	int k=0;
 	// буфер для последовательности RI_QUADS
 	// войдет RI_2f_XYZ | RI_2f_TEX
-	float *tmp = 0;
 #ifdef USE_GLES
-	tmp = new float[(2+2)*6*strlen(text)]; if (tmp == 0) return;
+	float tmp[(2+2)*6*strlen(text)]; 
 #else
-	tmp = new float[(2+2)*4*strlen(text)]; if (tmp == 0) return;
+	float tmp[(2+2)*4*strlen(text)]; 
 #endif
 
 	// чтобы меньше делать операций умножения, включаем коэф. один в другой сразу для ширины символов
@@ -566,7 +565,6 @@ void vw_DrawFont(int X, int Y, float FlattenWidth, float MaxWidth, float FontSca
 
 
 
-	if (tmp != 0){delete [] tmp; tmp = 0;}
 	vw_SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	vw_SetTextureBlend(false, 0, 0);
 	vw_BindTexture(0, 0);
@@ -657,11 +655,10 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 	int k=0;
 	// буфер для последовательности RI_QUADS
 	// войдет RI_2f_XY | RI_2f_TEX
-	float *tmp = 0;
 #ifdef USE_GLES
-	tmp = new float[(2+2)*6*strlen(textdraw)]; if (tmp == 0) return;
+	float tmp[(2+2)*6*strlen(textdraw)];
 #else
-	tmp = new float[(2+2)*4*strlen(textdraw)]; if (tmp == 0) return;
+	float tmp[(2+2)*4*strlen(textdraw)];
 #endif
 
 	// установка свойств текстуры
@@ -810,7 +807,6 @@ void vw_DrawFont3D(float X, float Y, float Z, const char *Text, ...)
 
 
 
-	if (tmp != 0){delete [] tmp; tmp = 0;};
 	vw_SetTextureBlend(false, 0, 0);
 	vw_BindTexture(0, 0);
 

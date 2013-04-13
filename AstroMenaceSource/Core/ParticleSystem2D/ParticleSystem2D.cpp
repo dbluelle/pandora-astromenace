@@ -466,16 +466,22 @@ void eParticleSystem2D::Draw()
 	float ImageHeight = Texture->Height*1.0f;
 	float ImageWidth = Texture->Width*1.0f;
 
+	float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
+	float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
+	
+	float Yst = (SrcRect.top*1.0f)/ImageHeight;
+	float Xst = (SrcRect.left*1.0f)/ImageWidth;
+	
+
 	float tmpPosY = 0;
 
 	// выделяем память
 	// буфер для последовательности RI_TRIANGLE_STRIP
 	// войдет RI_2f_XYZ | RI_2f_TEX | RI_4f_COLOR
-	float *tmp = 0;
 #ifdef USE_GLES
-	tmp = new float[(2+2+4)*6*CurrentCount]; if (tmp == 0) return;
+	float tmp[(2+2+4)*6*CurrentCount]; 
 #else
-	tmp = new float[(2+2+4)*4*CurrentCount]; if (tmp == 0) return;
+	float tmp[(2+2+4)*4*CurrentCount]; 
 #endif
 	int k=0;
 
@@ -498,12 +504,6 @@ void eParticleSystem2D::Draw()
 			else tmpPosY = (AHw - DestRect.top - DestRect.top - (DestRect.bottom - DestRect.top));
 
 #ifdef USE_GLES
-			float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
-			float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
-
-			float Yst = (SrcRect.top*1.0f)/ImageHeight;
-			float Xst = (SrcRect.left*1.0f)/ImageWidth;
-
 				tmp[k++] = DestRect.left;
 				tmp[k++] = DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top);
 				tmp[k++] = tmp1->Color.r;
@@ -559,12 +559,6 @@ void eParticleSystem2D::Draw()
 				tmp[k++] = 1.0f-Yst;
 
 #else
-			float FrameHeight = (SrcRect.bottom*1.0f )/ImageHeight;
-			float FrameWidth = (SrcRect.right*1.0f )/ImageWidth;
-
-			float Yst = (SrcRect.top*1.0f)/ImageHeight;
-			float Xst = (SrcRect.left*1.0f)/ImageWidth;
-
 				tmp[k++] = DestRect.left;
 				tmp[k++] = DestRect.top +tmpPosY +(DestRect.bottom - DestRect.top);
 				tmp[k++] = tmp1->Color.r;
@@ -611,7 +605,6 @@ void eParticleSystem2D::Draw()
 	vw_SendVertices(RI_QUADS, 4*CurrentCount, RI_2f_XY | RI_1_TEX | RI_4f_COLOR, tmp, 8*sizeof(float));
 #endif
 
-	if (tmp != 0){delete [] tmp; tmp = 0;}
 	vw_SetTextureBlend(false, 0, 0);
     vw_SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	vw_BindTexture(0, 0);

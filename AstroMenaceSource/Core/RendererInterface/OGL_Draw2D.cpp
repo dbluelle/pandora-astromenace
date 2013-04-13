@@ -144,8 +144,7 @@ void vw_Draw(int X, int Y, RECT *SrcRect, eTexture *Tex, bool Alpha, float Rotat
 
 	// буфер для последовательности RI_TRIANGLE_STRIP
 	// войдет RI_2f_XYZ | RI_2f_TEX
-	float *tmp = 0;
-	tmp = new float[(2+2)*4]; if (tmp == 0) return;
+	float tmp [(2+2)*4];
 	int k=0;
 
 	tmp[k++] = X;
@@ -175,7 +174,6 @@ void vw_Draw(int X, int Y, RECT *SrcRect, eTexture *Tex, bool Alpha, float Rotat
 	glPopMatrix();
 
 
-	if (tmp != 0){delete [] tmp; tmp = 0;}
 	vw_SetTextureBlend(false, 0, 0);
 	vw_BindTexture(0, 0);
 }
@@ -243,8 +241,7 @@ void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha,
 
 	// буфер для последовательности RI_TRIANGLE_STRIP
 	// войдет RI_2f_XYZ | RI_2f_TEX
-	float *tmp = 0;
-	tmp = new float[(2+2)*4]; if (tmp == 0) return;
+	float tmp[(2+2)*4];
 	int k=0;
 
 	tmp[k++] = X;
@@ -276,8 +273,6 @@ void vw_DrawTransparent(RECT *DstRect, RECT *SrcRect, eTexture *Tex, bool Alpha,
 	glPopMatrix();
 
 
-
-	if (tmp != 0){delete [] tmp; tmp = 0;}
 
 	vw_SetTextureBlend(false, 0, 0);
 	vw_SetColor(1.0f, 1.0f, 1.0f, 1.0f);

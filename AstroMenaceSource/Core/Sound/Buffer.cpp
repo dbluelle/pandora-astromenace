@@ -76,10 +76,9 @@ bool ReadOggBlockSFX(ALuint BufID, size_t Size, OggVorbis_File *mVF, ALsizei Rat
 	int			current_section;
 	unsigned int TotalRet = 0;
 	long		ret = 0;
-	char		*PCM;
 
 	if (Size < 1) return false;
-	PCM = new char[Size];
+	char PCM[Size];
 
 	// Read loop
 	while (TotalRet < Size)
@@ -106,7 +105,6 @@ bool ReadOggBlockSFX(ALuint BufID, size_t Size, OggVorbis_File *mVF, ALsizei Rat
 		alBufferData(BufID, Format, PCM, TotalRet, Rate);
 		CheckALError();
 	}
-	delete [] PCM;
 	return (ret > 0);
 }
 

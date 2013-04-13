@@ -718,8 +718,7 @@ void DrawLine(VECTOR3D Point1, VECTOR3D Point2, float ColorR, float ColorG, floa
 {
 	// буфер для последовательности RI_LINES
 	// войдет RI_3f_XYZ | RI_4f_COLOR
-	float *tmpDATA = 0;
-	tmpDATA = new float[2*(3+4)];
+	float tmpDATA[2*(3+4)];
 	int k=0;
 
 	tmpDATA[k++] = Point1.x;		// X
@@ -741,7 +740,6 @@ void DrawLine(VECTOR3D Point1, VECTOR3D Point2, float ColorR, float ColorG, floa
 
 	vw_SendVertices(RI_LINES, 2, RI_3f_XYZ | RI_4f_COLOR, tmpDATA, 7*sizeof(float));
 
-	if (tmpDATA != 0){delete [] tmpDATA; tmpDATA = 0;}
 }
 //-----------------------------------------------------------------------------
 // Прорисовка сетки бокса
@@ -1440,8 +1438,7 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 
 	// буфер для последовательности RI_TRIANGLE_STRIP
 	// войдет RI_3f_XYZ | RI_4f_COLOR
-	float *tmpDATA = 0;
-	tmpDATA = new float[4*(3+4)];
+	float tmpDATA[4*(3+4)];
 	int k=0;
 
 	// рисуем заднюю часть - основу
@@ -1655,7 +1652,6 @@ void CObject3D::Draw(bool VertexOnlyPass, bool ShadowMap)
 
 
 
-	if (tmpDATA != 0){delete [] tmpDATA; tmpDATA = 0;}
 
 
 

@@ -130,9 +130,8 @@ void DrawAllObject3D(int DrawType)
 	if( Setup.Brightness != 5 )
 	{
 
-		float *buff = 0;
 		// RI_2f_XY | RI_1_TEX
-		buff = new float[4*4]; if (buff == 0) return;
+		float buff[4*4];
 
 		int k=0;
 
@@ -179,7 +178,6 @@ void DrawAllObject3D(int DrawType)
 
 		vw_SetTextureBlend(false, 0, 0);
 		vw_BindTexture(0, 0);
-		if (buff != 0){delete [] buff; buff = 0;}
 	}
 }
 

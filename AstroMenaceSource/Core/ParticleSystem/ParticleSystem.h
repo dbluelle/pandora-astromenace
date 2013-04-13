@@ -52,8 +52,6 @@ public:
 	// базовая текстура частиц
 	eTexture	*Texture[5];
 	int			TextureQuantity;
-	// последовательность прорисовки
-	float 		*tmpDATA;
 	// тип смешивания
 	int			BlendType;
 
