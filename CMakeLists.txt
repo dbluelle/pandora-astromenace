@@ -11,9 +11,31 @@ SET(CMAKE_CXX_COMPILER arm-angstrom-linux-gnueabi-g++)
 # where is the target environment
 SET(CMAKE_FIND_ROOT_PATH /usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi)
 
+
+
+# AstroMenaceFS2VFS
+# standalone pack utility for AstroMenace game (gamedata.vfs file)
+IF(DEFINED FS2VFS)
+	# sources
+	FILE(GLOB astromenace_SRCS AstroMenaceSource/MainFS2VFS.cpp
+			AstroMenaceSource/Core/VirtualFileSystem/VFS.cpp
+			AstroMenaceSource/Core/VirtualFileSystem/Haff.cpp
+			AstroMenaceSource/Core/VirtualFileSystem/RLE.cpp)
+
+	# targets
+	ADD_EXECUTABLE(AstroMenaceFS2VFS ${astromenace_SRCS})
+	TARGET_LINK_LIBRARIES(AstroMenaceFS2VFS)
+	SET_TARGET_PROPERTIES(AstroMenaceFS2VFS PROPERTIES COMPILE_FLAGS "-O2 -Wno-unused-result -Dvfs_pack_standalone")
+ENDIF(DEFINED FS2VFS)
+
+
+
+
+
 # depends
 set(SDL_CONFIG "sdl-config" CACHE STRING "Path to sdl-config script")
 EXEC_PROGRAM(${SDL_CONFIG} ARGS "--cflags" OUTPUT_VARIABLE SDL_CFLAGS)
+ADD_DEFINITIONS(${SDL_CFLAGS})
 EXEC_PROGRAM(${SDL_CONFIG} ARGS "--libs" OUTPUT_VARIABLE SDL_LIBS)
 
 
@@ -184,11 +206,16 @@ FIND_PATH(FREETYPE_INCLUDE_DIR_freetype2 freetype/config/ftheader.h
 	PATH_SUFFIXES freetype2)
 IF(FREETYPE_INCLUDE_DIR_freetype2)
 	MESSAGE(STATUS "Found freetype2 headers: ${FREETYPE_INCLUDE_DIR_freetype2}")
+	INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_freetype2})
 ELSE(FREETYPE_INCLUDE_DIR_freetype2)
-	MESSAGE(FATAL_ERROR "freetype2 headers not found")
+	EXEC_PROGRAM("freetype-config" ARGS "--cflags" OUTPUT_VARIABLE freetype2_CFLAGS)
+	IF(freetype2_CFLAGS)
+		MESSAGE(STATUS "Found freetype2 cflags: ${freetype2_CFLAGS}")
+		ADD_DEFINITIONS(${freetype2_CFLAGS})
+	ELSE(freetype2_CFLAGS)
+		MESSAGE(FATAL_ERROR "freetype2 headers not found")
+	ENDIF(freetype2_CFLAGS)
 ENDIF(FREETYPE_INCLUDE_DIR_freetype2)
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_freetype2})
-
 
 
 # sources
@@ -200,7 +227,7 @@ IF(DEFINED DATADIR)
 ENDIF(DEFINED DATADIR)
 
 # we need all speed optimization flags, this could add up to 40% FPS in game
-ADD_DEFINITIONS("-O -O1 -O2 -O3 -Os -fomit-frame-pointer -DUSE_GLES -DPANDORA -DUSE_GLES1 -DUSE_POWERVR_TEXTURES -I/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/SDL -march=armv7-a -ftree-vectorize -mthumb-interwork -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -ffast-math")
+ADD_DEFINITIONS("-Os -DUSE_GLES -DPANDORA -DUSE_GLES1 -DUSE_POWERVR_TEXTURES -I/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/SDL -march=armv7-a -ftree-vectorize -mthumb-interwork -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -ffast-math")
 ADD_EXECUTABLE(AstroMenace ${astromenace_SRCS})
 TARGET_LINK_LIBRARIES(AstroMenace ${ALL_LIBRARIES} -L/usr/local/oecore-x86_64/sysroots/armv7a-angstrom-linux-gnueabi/usr/lib -lX11 -lSDL -lGLES_CM -lGLUES_CM -lEGL -ldl -lvorbisidec)
 
