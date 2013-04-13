@@ -833,7 +833,7 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 
 		}
 		// тк был квадрат, теперь вытягиваем нормальное значение
-		AABBSpeed = sqrtf(AABBSpeed);
+		AABBSpeed = vw_sqrtf(AABBSpeed);
 	}
 
 

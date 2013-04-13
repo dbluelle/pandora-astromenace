@@ -291,9 +291,9 @@ void eModel3D::CreateHardwareBuffers()
 int RecursiveBufferLimitedBySizeTriangles(float Point1[8], float Point2[8], float Point3[8], int Stride, float *VertexBuffer, int *CurrentPosition, float TriangleSizeLimit)
 {
 	// подсчитываем длину сторон, если они меньше чем необходимый минимум - выходим с 1
-	float Dist1 = sqrtf((Point1[0]-Point2[0])*(Point1[0]-Point2[0]) + (Point1[1]-Point2[1])*(Point1[1]-Point2[1]) + (Point1[2]-Point2[2])*(Point1[2]-Point2[2]));
-	float Dist2 = sqrtf((Point2[0]-Point3[0])*(Point2[0]-Point3[0]) + (Point2[1]-Point3[1])*(Point2[1]-Point3[1]) + (Point2[2]-Point3[2])*(Point2[2]-Point3[2]));
-	float Dist3 = sqrtf((Point3[0]-Point1[0])*(Point3[0]-Point1[0]) + (Point3[1]-Point1[1])*(Point3[1]-Point1[1]) + (Point3[2]-Point1[2])*(Point3[2]-Point1[2]));
+	float Dist1 = vw_sqrtf((Point1[0]-Point2[0])*(Point1[0]-Point2[0]) + (Point1[1]-Point2[1])*(Point1[1]-Point2[1]) + (Point1[2]-Point2[2])*(Point1[2]-Point2[2]));
+	float Dist2 = vw_sqrtf((Point2[0]-Point3[0])*(Point2[0]-Point3[0]) + (Point2[1]-Point3[1])*(Point2[1]-Point3[1]) + (Point2[2]-Point3[2])*(Point2[2]-Point3[2]));
+	float Dist3 = vw_sqrtf((Point3[0]-Point1[0])*(Point3[0]-Point1[0]) + (Point3[1]-Point1[1])*(Point3[1]-Point1[1]) + (Point3[2]-Point1[2])*(Point3[2]-Point1[2]));
 
 	if ((Dist1<=TriangleSizeLimit) && (Dist2<=TriangleSizeLimit) && (Dist3<=TriangleSizeLimit))
 	{

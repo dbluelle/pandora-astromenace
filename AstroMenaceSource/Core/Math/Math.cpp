@@ -265,7 +265,7 @@ float InvSqrt(const float x)
  	return y;
 }
 
-float vw_sqrtf(float x)
+float vw_sqrtf(const float x)
 {
 	return x*InvSqrt(x);
 }
@@ -329,7 +329,7 @@ void Normalise(VECTOR3D *v)
 void NormaliseHi(VECTOR3D *v)
 {
 	float Length;
-	Length = sqrtf((v->x * v->x) + (v->y * v->y) + (v->z * v->z));
+	Length = vw_sqrtf((v->x * v->x) + (v->y * v->y) + (v->z * v->z));
 	if (Length < 0.001f) return; // если все координаты очень маленькие
 	v->x = v->x / Length;
 	v->y = v->y / Length;
