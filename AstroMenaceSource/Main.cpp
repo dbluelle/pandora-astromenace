@@ -245,6 +245,10 @@ void enable_fastmath()
 
 
 
+#ifdef multithread
+extern bool	LoadSoundThreadNeedOff;
+extern SDL_Thread *SoundThread;
+#endif //multithread
 
 
 //------------------------------------------------------------------------------------
@@ -1428,6 +1432,11 @@ GotoQuit:
 
 	if (VideoModes != 0) {delete [] VideoModes; VideoModes = 0;}
 
+#ifdef multithread
+	//ждем завершение звука
+	LoadSoundThreadNeedOff = true;
+	if (SoundThread != 0) SDL_WaitThread(SoundThread, NULL);
+#endif //multithread
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// завершение, освобождение памяти...

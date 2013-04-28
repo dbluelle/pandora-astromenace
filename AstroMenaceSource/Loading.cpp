@@ -132,7 +132,11 @@ sGLSLLoadList	GLSLLoadList[GLSLLoadListCount] =
 #define TEXTURE_NO_MIPMAP	RI_MAGFILTER_LINEAR | RI_MINFILTER_LINEAR | RI_MIPFILTER_NONE
 
 // сколько нужно загружать в листе меню
+#ifdef NO_OGG
+const int	MenuLoadListCount = 185 + 6;
+#else
 const int	MenuLoadListCount = 185;
+#endif
 // лист загрузки меню
 LoadList	MenuLoadList[MenuLoadListCount] =
 {
@@ -345,7 +349,15 @@ LoadList	MenuLoadList[MenuLoadListCount] =
 {"DATA/GFX/trail3.tga",							1, 64, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, RI_TEXTURE_BILINEAR, true, false, -1.0f, false},
 {"DATA/GFX/trail4.tga",							1, 64, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, RI_TEXTURE_BILINEAR, true, false, -1.0f, false},
 {"DATA/GFX/trail5.tga",							1, 64, true,  0,0,0, TX_ALPHA_EQUAL, RI_CLAMP_TO_EDGE, RI_TEXTURE_BILINEAR, true, false, -1.0f, false},
-
+#ifdef NO_OGG
+// preload all music
+{"DATA/MUSIC/boss-intro.ogg",					4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+{"DATA/MUSIC/boss-loop.ogg",					4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+{"DATA/MUSIC/game.ogg",							4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+{"DATA/MUSIC/intro.ogg",						4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+{"DATA/MUSIC/menu.ogg",							4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+{"DATA/MUSIC/missionfailed.ogg",				4, 20, false, 0,0,0, 0, 0, 0, true, true, -1.0f, false},
+#endif
 };
 
 
@@ -1083,7 +1095,11 @@ int LoadSoundThread(void *UNUSED(data))
 	while (!LoadSoundThreadNeedOff)
 	{
 		Audio_LoopProc();
+#ifdef NO_OGG
+		SDL_Delay(100);
+#else
 		SDL_Delay(10);
+#endif
 	}
 
 	return 0;
@@ -1098,6 +1114,9 @@ int LoadSoundThread(void *UNUSED(data))
 
 
 
+#ifdef multithread
+	SDL_Thread *SoundThread = 0;
+#endif //multithread
 
 
 //------------------------------------------------------------------------------------
@@ -1116,9 +1135,6 @@ void LoadGameData(int LoadType)
 	int RealLoadedTextures = 0;
 	bool NeedLoadShaders = false;
 	int AllDrawLoading = 0;
-#ifdef multithread
-	SDL_Thread *SoundThread = 0;
-#endif //multithread
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// проверяем, если уже что-то было загружено, если данные для этой миссии-меню загружены - тут вообще нечего делать
@@ -1348,7 +1364,9 @@ void LoadGameData(int LoadType)
 		// меню, загрузка в самом начале
 		case -1:
 			GameStatus = MAIN_MENU;
+#ifndef multithread
 			Audio_LoopProc();
+#endif
 			StartMusicWithFade(0, 4.0f, 4.0f);
 			break;
 		// переход игра-меню
@@ -1396,7 +1414,8 @@ void LoadGameData(int LoadType)
 
 #ifdef multithread
 	// поток проигрывания звука
-	SoundThread = SDL_CreateThread(LoadSoundThread, 0);
+	if (SoundThread == NULL)
+		SoundThread = SDL_CreateThread(LoadSoundThread, 0);
 #endif //multithread
 
 
@@ -1653,7 +1672,11 @@ void LoadGameData(int LoadType)
 						else
 						{
 							if( vw_TestFileExtension( CurrentList[i].FileName, "ogg" ) || vw_TestFileExtension( CurrentList[i].FileName, "OGG" ))
+#ifdef NO_OGG
+								vw_CreateSoundBufferFromWAV(CurrentList[i].FileName);
+#else
 								vw_CreateSoundBufferFromOGG(CurrentList[i].FileName);
+#endif
 						}
 					}
 				}
@@ -1673,14 +1696,14 @@ void LoadGameData(int LoadType)
 
 
 
-
+/*
 
 #ifdef multithread
 	//ждем завершение звука
 	LoadSoundThreadNeedOff = true;
 	if (SoundThread != 0) SDL_WaitThread(SoundThread, NULL);
 #endif //multithread
-
+//*/
 
 
 
