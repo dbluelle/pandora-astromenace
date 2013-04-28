@@ -72,7 +72,11 @@ bool eSound::Play(const char *Name, float fVol, float fMainVol, float x, float y
 		else
 		{
 			if( vw_TestFileExtension( Name, "ogg" ) || vw_TestFileExtension( Name, "OGG" ))
+#ifdef NO_OGG
+				Buffer = vw_CreateSoundBufferFromWAV(Name);
+#else
 				Buffer = vw_CreateSoundBufferFromOGG(Name);
+#endif
 		}
 	}
 

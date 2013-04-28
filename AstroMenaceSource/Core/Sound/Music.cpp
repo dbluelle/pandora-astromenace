@@ -162,7 +162,14 @@ bool eMusic::Play(const char * Name, float fVol, float fMainVol, bool Loop, cons
 
 	// делаем буфер...
 
-	// Open Ogg file
+#ifdef NO_OGG
+	MusicFile = 0;
+	ALuint Buffer = vw_FindBufferIDByName(Name);
+	if (!Buffer)
+		Buffer = vw_CreateSoundBufferFromWAV(Name);
+	if (!Buffer) return 0;
+	alSourcei (Source, AL_BUFFER,   Buffer   );
+#else	// Open Ogg file
 	MusicFile = vw_fopen(Name);
 	if (MusicFile == 0) return false;
 
@@ -213,6 +220,7 @@ bool eMusic::Play(const char * Name, float fVol, float fMainVol, bool Loop, cons
 		if (!CheckALError()) return false;
 	}
 
+#endif
 
 
 
@@ -244,6 +252,7 @@ bool eMusic::Update()
 		alSourceUnqueueBuffers(Source, 1, &bufferID);
 		if (!CheckALError()) return true;
 
+#ifndef NO_OGG
 		if (ReadOggBlock(bufferID, DYNBUF_SIZE) != 0)
 		{
 			alSourceQueueBuffers(Source, 1, &bufferID);
@@ -298,6 +307,7 @@ bool eMusic::Update()
 			if (!CheckALError()) return true;
 
 		}
+#endif
 	}
 
 
