@@ -60,8 +60,7 @@ void SkyBoxDraw(void)
 #else
 	int VFV = RI_3f_XYZ | RI_2_TEX | RI_DUBLICATE_TEX_COORD;
 #endif
-	float *buff = 0;
-	buff = new float[5*4]; if (buff == 0) return;
+	float buff[5*4];
 	int k;
 
 
@@ -287,7 +286,6 @@ void SkyBoxDraw(void)
 
 	vw_BindTexture(0, 0);
 
-	if (buff != 0){delete [] buff; buff = 0;}
 }
 
 

@@ -785,6 +785,7 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 			// удаляем старые буферы, если они есть, создаем новые
 			// ! индексный буфер не трогаем, его не надо пересоздавать вообще
 
+#ifndef USE_GLES
 			if (DrawObjectList[j].VBO != 0)
 			{
 				vw_DeleteVBO(*DrawObjectList[j].VBO); delete DrawObjectList[j].VBO; DrawObjectList[j].VBO = 0;
@@ -793,12 +794,15 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 			{
 				vw_DeleteVAO(*DrawObjectList[j].VAO); delete DrawObjectList[j].VAO; DrawObjectList[j].VAO = 0;
 			}
-
+#endif
 			// делаем VBO
-			DrawObjectList[j].VBO = new unsigned int;
-			if (!vw_BuildVBO(DrawObjectList[j].VertexCount, DrawObjectList[j].VertexBuffer, DrawObjectList[j].VertexStride, DrawObjectList[j].VBO))
+			if (DrawObjectList[j].VBO == 0)
 			{
-				delete DrawObjectList[j].VBO; DrawObjectList[j].VBO=0;
+				DrawObjectList[j].VBO = new unsigned int;
+				if (!vw_BuildVBO(DrawObjectList[j].VertexCount, DrawObjectList[j].VertexBuffer, DrawObjectList[j].VertexStride, DrawObjectList[j].VBO))
+				{
+					delete DrawObjectList[j].VBO; DrawObjectList[j].VBO=0;
+				}
 			}
 
 			// делаем IBO, создаем его один раз, если его нет
@@ -811,6 +815,7 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 				}
 			}
 
+#ifndef USE_GLES
 			// делаем VAO
 			DrawObjectList[j].VAO = new unsigned int;
 			if (!vw_BuildVAO(DrawObjectList[j].VAO, DrawObjectList[j].VertexCount, DrawObjectList[j].VertexFormat, DrawObjectList[j].VertexBuffer,
@@ -819,7 +824,7 @@ void CSpaceExplosion::Create(CObject3D *Object, int ExplType, VECTOR3D ExplLocat
 			{
 				delete DrawObjectList[j].VAO; DrawObjectList[j].VAO=0;
 			}
-
+#endif
 
 			// установки по шейдеру для объекта
 			if (Setup.UseGLSL)

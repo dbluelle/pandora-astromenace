@@ -242,7 +242,7 @@ void eModel3D::CreateHardwareBuffers()
 	{
 		delete GlobalIBO; GlobalIBO=0;
 	}
-
+#ifndef USE_GLES
 	GlobalVAO = new unsigned int;
 	if (!vw_BuildVAO(GlobalVAO, GlobalIndexCount, DrawObjectList[0].VertexFormat, GlobalVertexBuffer,
 						DrawObjectList[0].VertexStride*sizeof(float), GlobalVBO, 0,
@@ -250,7 +250,7 @@ void eModel3D::CreateHardwareBuffers()
 	{
 		delete GlobalVAO; GlobalVAO=0;
 	}
-
+#endif
 
 	// создаем буферы для каждого объекта
 	for (int i=0; i<DrawObjectCount; i++)
@@ -269,6 +269,7 @@ void eModel3D::CreateHardwareBuffers()
 			delete DrawObjectList[i].IBO; DrawObjectList[i].IBO=0;
 		}
 
+#ifndef USE_GLES
 		// делаем VAO
 		DrawObjectList[i].VAO = new unsigned int;
 		if (!vw_BuildVAO(DrawObjectList[i].VAO, DrawObjectList[i].VertexCount, DrawObjectList[i].VertexFormat, DrawObjectList[i].VertexBuffer,
@@ -277,6 +278,7 @@ void eModel3D::CreateHardwareBuffers()
 		{
 			delete DrawObjectList[i].VAO; DrawObjectList[i].VAO=0;
 		}
+#endif
 	}
 
 }

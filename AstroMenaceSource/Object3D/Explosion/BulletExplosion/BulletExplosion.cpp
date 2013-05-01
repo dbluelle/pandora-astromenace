@@ -1002,6 +1002,7 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 		// удаляем старые буферы, если они есть, создаем новые
 		// ! индексный буфер не трогаем, его не надо пересоздавать вообще
 
+#ifndef USE_GLES
 		if (DrawObjectList[0].VBO != 0)
 		{
 			vw_DeleteVBO(*DrawObjectList[0].VBO); delete DrawObjectList[0].VBO; DrawObjectList[0].VBO = 0;
@@ -1010,12 +1011,15 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 		{
 			vw_DeleteVAO(*DrawObjectList[0].VAO); delete DrawObjectList[0].VAO; DrawObjectList[0].VAO = 0;
 		}
-
+#endif
 		// делаем VBO
-		DrawObjectList[0].VBO = new unsigned int;
-		if (!vw_BuildVBO(DrawObjectList[0].VertexCount, DrawObjectList[0].VertexBuffer, DrawObjectList[0].VertexStride, DrawObjectList[0].VBO))
+		if (DrawObjectList[0].VBO == 0)
 		{
-			delete DrawObjectList[0].VBO; DrawObjectList[0].VBO=0;
+			DrawObjectList[0].VBO = new unsigned int;
+			if (!vw_BuildVBO(DrawObjectList[0].VertexCount, DrawObjectList[0].VertexBuffer, DrawObjectList[0].VertexStride, DrawObjectList[0].VBO))
+			{
+				delete DrawObjectList[0].VBO; DrawObjectList[0].VBO=0;
+			}
 		}
 
 		// делаем IBO, создаем его один раз, если его нет
@@ -1028,6 +1032,7 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 			}
 		}
 
+#ifndef USE_GLES
 		// делаем VAO
 		DrawObjectList[0].VAO = new unsigned int;
 		if (!vw_BuildVAO(DrawObjectList[0].VAO, DrawObjectList[0].VertexCount, DrawObjectList[0].VertexFormat, DrawObjectList[0].VertexBuffer,
@@ -1036,6 +1041,7 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 		{
 			delete DrawObjectList[0].VAO; DrawObjectList[0].VAO=0;
 		}
+#endif
 	}
 
 
