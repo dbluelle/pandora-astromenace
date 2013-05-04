@@ -143,7 +143,7 @@ void vw_SetCameraMoveAroundPoint(VECTOR3D Point, float ChangeDistance, VECTOR3D 
 	float kat=(exV.z)*(exV.z)+(exV.x)*(exV.x);
 	if (kat != 0.0f)
 	{
-		kat=vw_sqrtf(kat);
+		kat=sqrtf(kat);
 		if (0<exV.y)
 			newrotX=-(atanf(fabsf(exV.y)/kat))/0.0174532925f;
 		else

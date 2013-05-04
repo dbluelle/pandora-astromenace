@@ -985,7 +985,7 @@ void CBulletExplosion::Create(CObject3D *Object, CProjectile *Projectile, int Ex
 		}
 
 		// тк был квадрат, теперь вытягиваем нормальное значение
-		AABBSpeed = vw_sqrtf(AABBSpeed);
+		AABBSpeed = sqrtf(AABBSpeed);
 
 		// установка шейдера
 		if (Setup.UseGLSL)
