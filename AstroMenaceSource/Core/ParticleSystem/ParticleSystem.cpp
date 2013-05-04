@@ -505,6 +505,9 @@ bool eParticleSystem::Update(float Time)
 			float NewSpeed = Speed + vw_Randf0 * SpeedVar;
 			if (NewSpeed < 0.0f) NewSpeed = 0.0f;
 			NewParticle->Velocity *= NewSpeed ;
+#ifdef PANDORA
+			NewParticle->Lifetime /= 4.0f;
+#endif
 
 			// подключаем частицу к системе
 			Attach(NewParticle);
@@ -743,20 +746,12 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 					R = (GLubyte)(tmp->Color.r*255);
 					G = (GLubyte)(tmp->Color.g*255);
 					B = (GLubyte)(tmp->Color.b*255);
+#ifdef PANDORA
+					A = (GLubyte)(255);
+#else
 					A = (GLubyte)(tmp->Alpha*255);
-
+#endif
 #ifdef USE_GLES
-					tmpDATA[k++] = tmp->Location.x+tmpAngle3.x;
-					tmpDATA[k++] = tmp->Location.y+tmpAngle3.y;
-					tmpDATA[k++] = tmp->Location.z+tmpAngle3.z;
-					tmpDATAub[k*sizeof(float)] = R;
-					tmpDATAub[k*sizeof(float)+1] = G;
-					tmpDATAub[k*sizeof(float)+2] = B;
-					tmpDATAub[k*sizeof(float)+3] = A;
-					k++;
-					tmpDATA[k++] = 0.0f;
-					tmpDATA[k++] = 1.0f;
-
 					tmpDATA[k++] = tmp->Location.x+tmpAngle3.x;
 					tmpDATA[k++] = tmp->Location.y+tmpAngle3.y;
 					tmpDATA[k++] = tmp->Location.z+tmpAngle3.z;
@@ -790,16 +785,27 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 					tmpDATA[k++] = 1.0f;
 					tmpDATA[k++] = 0.0f;
 
-					tmpDATA[k++] = tmp->Location.x+tmpAngle4.x;
-					tmpDATA[k++] = tmp->Location.y+tmpAngle4.y;
-					tmpDATA[k++] = tmp->Location.z+tmpAngle4.z;
+					tmpDATA[k++] = tmp->Location.x+tmpAngle3.x;
+					tmpDATA[k++] = tmp->Location.y+tmpAngle3.y;
+					tmpDATA[k++] = tmp->Location.z+tmpAngle3.z;
+					tmpDATAub[k*sizeof(float)] = R;
+					tmpDATAub[k*sizeof(float)+1] = G;
+					tmpDATAub[k*sizeof(float)+2] = B;
+					tmpDATAub[k*sizeof(float)+3] = A;
+					k++;
+					tmpDATA[k++] = 0.0f;
+					tmpDATA[k++] = 1.0f;
+
+					tmpDATA[k++] = tmp->Location.x+tmpAngle1.x;
+					tmpDATA[k++] = tmp->Location.y+tmpAngle1.y;
+					tmpDATA[k++] = tmp->Location.z+tmpAngle1.z;
 					tmpDATAub[k*sizeof(float)] = R;
 					tmpDATAub[k*sizeof(float)+1] = G;
 					tmpDATAub[k*sizeof(float)+2] = B;
 					tmpDATAub[k*sizeof(float)+3] = A;
 					k++;
 					tmpDATA[k++] = 1.0f;
-					tmpDATA[k++] = 1.0f;
+					tmpDATA[k++] = 0.0f;
 
 					tmpDATA[k++] = tmp->Location.x+tmpAngle4.x;
 					tmpDATA[k++] = tmp->Location.y+tmpAngle4.y;
@@ -930,7 +936,7 @@ void eParticleSystem::Draw(eTexture **CurrentTexture)
 
 			if (BlendType == 1) vw_SetTextureBlend(true, RI_BLEND_SRCALPHA, RI_BLEND_INVSRCALPHA);
 #ifdef USE_GLES
-			vw_SendVertices(RI_QUADS, 6*DrawCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
+			vw_SendVertices(RI_TRIANGLES, 6*DrawCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
 #else
 			vw_SendVertices(RI_QUADS, 4*DrawCount, RI_3f_XYZ | RI_4ub_COLOR | RI_1_TEX, tmpDATA, 6*sizeof(float));
 #endif

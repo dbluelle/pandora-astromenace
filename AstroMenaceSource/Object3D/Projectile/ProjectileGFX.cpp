@@ -38,8 +38,11 @@
 void SetProjectileGFX(eParticleSystem *ParticleSystem, int GFXNum)
 {
 
+#ifdef PANDORA
+	ParticleSystem->Texture[0] = vw_FindTextureByName("DATA/MENU/whitepoint.tga");
+#else
 	ParticleSystem->Texture[0] = vw_FindTextureByName("DATA/GFX/flare1.tga");
-
+#endif
 
 	switch(GFXNum)
 	{
@@ -834,9 +837,48 @@ void SetProjectileGFX(eParticleSystem *ParticleSystem, int GFXNum)
 
 
 
+#ifdef PANDORA
+		case 101:	// шлейф ракеты землян и пиратов
 
+			ParticleSystem->ColorStart.r = 1.00f;
+			ParticleSystem->ColorStart.g = 1.00f;
+			ParticleSystem->ColorStart.b = 1.00f;
+			ParticleSystem->ColorEnd.r = 1.00f;
+			ParticleSystem->ColorEnd.g = 1.00f;
+			ParticleSystem->ColorEnd.b = 1.00f;
+			ParticleSystem->AlphaStart = 0.06f;
+			ParticleSystem->AlphaEnd   = 0.00f;
+			ParticleSystem->SizeStart  = 0.20f;
+			ParticleSystem->SizeVar    = 0.20f;
+			ParticleSystem->SizeEnd    = 2.50f;
+			ParticleSystem->Speed      = 0.20f;
+			ParticleSystem->SpeedVar   = 0.30f;
+			ParticleSystem->Theta      = 360.00f;
+			ParticleSystem->Life       = 0.15f;
+			ParticleSystem->ParticlesPerSec = 150;
+			break;
 
+		case 102:	// шлейф ракет пришельцев
 
+			ParticleSystem->ColorStart.r = 0.00f;
+			ParticleSystem->ColorStart.g = 0.70f;
+			ParticleSystem->ColorStart.b = 1.00f;
+			ParticleSystem->ColorEnd.r = 0.00f;
+			ParticleSystem->ColorEnd.g = 0.70f;
+			ParticleSystem->ColorEnd.b = 1.00f;
+			ParticleSystem->AlphaStart = 0.08f;
+			ParticleSystem->AlphaEnd   = 0.00f;
+			ParticleSystem->SizeStart  = 0.20f;
+			ParticleSystem->SizeVar    = 0.10f;
+			ParticleSystem->SizeEnd    = 2.00f;
+			ParticleSystem->Speed      = 0.20f;
+			ParticleSystem->SpeedVar   = 0.30f;
+			ParticleSystem->Theta      = 360.00f;
+			ParticleSystem->Life       = 0.15f;
+			ParticleSystem->ParticlesPerSec = 100;
+			break;
+
+#else
 		case 101:	// шлейф ракеты землян и пиратов
 
 			ParticleSystem->Texture[0] = vw_FindTextureByName("DATA/GFX/trail1.tga");
@@ -895,6 +937,7 @@ void SetProjectileGFX(eParticleSystem *ParticleSystem, int GFXNum)
 			ParticleSystem->BlendType = 1;
 			break;
 
+#endif
 
 		default:
 			fprintf(stderr, "Error in SetProjectileGFX function call, wrong GFXNum.\n");
