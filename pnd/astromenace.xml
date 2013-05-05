@@ -1,6 +1,6 @@
 <PXML xmlns="http://openpandora.org/namespaces/PXML">
 <package id="astromenace">
-<version major="1" minor="3" release="2" build="20130311" type="beta"/>
+<version major="1" minor="3" release="2" build="20130505" type="release"/>
 <author name="dbluelle" />
 <titles>
 <title lang="en_US">
@@ -16,7 +16,7 @@ AstroMenace is an astonishing hardcore scroll-shooter where brave space warriors
 </package>
 <application id="astromenace">
 <exec command="start.sh"/>
-<version major="1" minor="3" release="2" build="20130311" type="beta"/>
+<version major="1" minor="3" release="2" build="20130505" type="release"/>
 <osversion major="1" minor="0" release="0" build="0"/>
 <author name="dbluelle" />
 <titles>
