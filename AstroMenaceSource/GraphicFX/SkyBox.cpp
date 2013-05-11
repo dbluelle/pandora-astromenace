@@ -56,7 +56,7 @@ float SkyBox_length_2 = 100.0f;
 void SkyBoxDraw(void)
 {
 #ifdef USE_GLES
-	int VFV = RI_3f_XYZ | RI_2_TEX;
+	int VFV = RI_3f_XYZ | RI_1_TEX;
 #else
 	int VFV = RI_3f_XYZ | RI_2_TEX | RI_DUBLICATE_TEX_COORD;
 #endif
@@ -65,8 +65,8 @@ void SkyBoxDraw(void)
 
 
 	// сразу выполняем настройку второй текстуры
-	vw_SetTexture(1, vw_FindTextureByName("DATA/SKYBOX/tile_stars.tga"));
 #ifndef USE_GLES
+	vw_SetTexture(1, vw_FindTextureByName("DATA/SKYBOX/tile_stars.tga"));
 	vw_SetTextureEnvMode(RI_TENV_DECAL);
 #endif
 	vw_SetTextureAnisotropy(Setup.AnisotropyLevel);
@@ -75,7 +75,9 @@ void SkyBoxDraw(void)
 	// корректируем текстурные координаты для второй текстуры через матрицу
 	vw_MatrixMode(RI_TEXTURE_MATRIX);
 	vw_LoadIdentity();
+#ifndef USE_GLES
 	vw_Scale(2.0f, 2.0f, 1.0f);
+#endif
 	vw_MatrixMode(RI_MODELVIEW_MATRIX);
 
 
@@ -279,7 +281,9 @@ void SkyBoxDraw(void)
 	}
 
 
+#ifndef USE_GLES
 	vw_BindTexture(1, 0);
+#endif
 	vw_MatrixMode(RI_TEXTURE_MATRIX);
 	vw_LoadIdentity();
 	vw_MatrixMode(RI_MODELVIEW_MATRIX);
