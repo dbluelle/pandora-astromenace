@@ -1,0 +1,200 @@
+Index: AstroMenaceSource/MainFS2VFS.cpp
+===================================================================
+--- AstroMenaceSource/MainFS2VFS.cpp	(Revision 266)
++++ AstroMenaceSource/MainFS2VFS.cpp	(Arbeitskopie)
+@@ -28,6 +28,12 @@
+ #include "config.h"
+ 
+ 
++// uncomment this to generate PNGs from vw2d files
++//#define GENERATE_PNGS
++// uncomment this to generate vfs file from PVRTC textures
++//#define GENERATE_POWERVR
++
++
+ #ifndef vfs_pack_standalone
+ 
+ #include "Game.h"
+@@ -223,7 +229,88 @@
+ #endif // vfs_pack_standalone
+ 
+ 
++#ifdef GENERATE_PNGS
++#include <png.h>
++int save_png_to_file (png_byte *data,int xres, int yres,int channels , const char *path)
++{
++    FILE * fp;
++    png_structp png_ptr = NULL;
++    png_infop info_ptr = NULL;
++    png_byte *row = NULL;
++    size_t x, y;
++    /* "status" contains the return value of this function. At first
++       it is set to a value which means 'failure'. When the routine
++       has finished its work, it is set to a value which means
++       'success'. */
++    int status = -1;
++    /* The following number is set by trial and error only. I cannot
++       see where it it is documented in the libpng manual.
++    */
++    
++    fp = fopen (path, "wb");
++    if (! fp) {
++        goto fopen_failed;
++    }
+ 
++    png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
++    if (png_ptr == NULL) {
++        goto png_create_write_struct_failed;
++    }
++    
++    info_ptr = png_create_info_struct (png_ptr);
++    if (info_ptr == NULL) {
++        goto png_create_info_struct_failed;
++    }
++    
++    /* Set up error handling. */
++
++    if (setjmp (png_jmpbuf (png_ptr))) {
++        goto png_failure;
++    }
++    
++    png_init_io (png_ptr, fp);
++
++    png_set_IHDR (png_ptr,
++                  info_ptr,
++                  xres,
++                  yres,
++                  8,
++                  channels == 3 ? PNG_COLOR_TYPE_RGB :PNG_COLOR_TYPE_RGB_ALPHA,
++                  PNG_INTERLACE_NONE,
++                  PNG_COMPRESSION_TYPE_DEFAULT,
++                  PNG_FILTER_TYPE_DEFAULT);
++    
++	png_write_info(png_ptr, info_ptr);
++ 
++    row = (png_bytep)png_malloc (png_ptr, sizeof (uint8_t) * xres * channels);
++    for (y = 0; y < yres; ++y) {
++        
++        for (x = 0; x < xres*channels; ++x) {
++            row[x] = data[y*xres*channels+x];
++        }
++        png_write_row(png_ptr, row);
++
++    }
++    
++
++	png_write_end(png_ptr, NULL);
++
++    status = 0;
++    
++    png_free (png_ptr, row);
++    
++ png_failure:
++ png_create_info_struct_failed:
++    png_destroy_write_struct (&png_ptr, &info_ptr);
++ png_create_write_struct_failed:
++    fclose (fp);
++ fopen_failed:
++    return status;
++}
++#endif
++
++
++
+ const int	VFSFilesListCount = 388;
+ const char *VFSFilesList[VFSFilesListCount] =
+ {"DATA_RU/VOICE/EngineMalfunction.wav",
+@@ -744,6 +831,30 @@
+ 	// добавляем файлы из пакета 3д моделей
+ 	for (int i=0; i<ModelsPackListCount; i++)
+ 	{
++#ifdef GENERATE_PNGS
++		char ModelsPackExtraFile[MAX_PATH];
++		strcpy(ModelsPackExtraFile, RawDataDir);
++		strcat(ModelsPackExtraFile, (filename[i]+5));
++		if (strstr(filename[i],".VW2D") ||strstr(filename[i],".vw2d"))
++		{
++			char ModelsPackExtraFilePNG[MAX_PATH];
++			strcpy(ModelsPackExtraFilePNG, RawDataDir);
++			strcat(ModelsPackExtraFilePNG, (filename[i]+5));
++			strcat(ModelsPackExtraFilePNG, ".png");
++			save_png_to_file((png_byte*)(filedata[i]+4+3*sizeof(int)),*((int*)(filedata[i]+4)),*(int*)(filedata[i]+4+1*sizeof(int)),*(int*)(filedata[i]+4+2*sizeof(int)),ModelsPackExtraFilePNG);
++		
++		}
++#endif
++#ifdef GENERATE_POWERVR
++		char ModelsPackExtraFile[MAX_PATH];
++		strcpy(ModelsPackExtraFile, RawDataDir);
++		strcat(ModelsPackExtraFile, (filename[i]+5));
++		if (0 != vw_WriteIntoVFSfromFile(ModelsPackExtraFile, filename[i]))
++		{
++			fprintf(stderr, "VFS compilation process aborted!\n");
++        	return -1;
++		}
++#else
+ 		// запись в VFS
+ 		if (0 != vw_WriteIntoVFSfromMemory(filename[i], filedata[i], filedatasize[i]))
+ 		{
+@@ -752,6 +863,7 @@
+ 			fprintf(stderr, "VFS compilation process aborted!\n");
+ 			return -1;
+ 		}
++#endif
+ 
+ 		delete [] filedata[i];
+ 		delete [] filename[i];
+@@ -773,6 +885,36 @@
+ 		strcpy(SrcFileName, RawDataDir);
+ 		strcat(SrcFileName, VFSFilesList[i]);
+ 
++#ifdef GENERATE_PNGS
++		if (strstr(SrcFileName,".VW2D") ||strstr(SrcFileName,".vw2d"))
++		{
++			char ModelsPackExtraFilePNG[MAX_PATH];
++			strcpy(ModelsPackExtraFilePNG, SrcFileName);
++			strcat(ModelsPackExtraFilePNG, ".png");
++			SDL_RWops *Ftmp = SDL_RWFromFile(SrcFileName, "rb");
++			// Если файл не найден - выходим
++			if (Ftmp == NULL)
++			{
++				fprintf(stderr, "Can't find file %s !!!\n", SrcFileName);
++				return -1;
++			}
++			
++			// получаем размер файла
++			SDL_RWseek(Ftmp, 0, SEEK_END);
++			int tmpLength = SDL_RWtell(Ftmp);
++			SDL_RWseek(Ftmp, 0, SEEK_SET);
++			
++			// копируем все данные файла в массив
++			BYTE *tmp = 0;
++			tmp = new BYTE[tmpLength];
++			SDL_RWread(Ftmp, tmp, tmpLength, 1);
++			SDL_RWclose(Ftmp);
++			
++			save_png_to_file((png_byte*)(tmp+4+3*sizeof(int)),*((int*)(tmp+4)),*(int*)(tmp+4+1*sizeof(int)),*(int*)(tmp+4+2*sizeof(int)),ModelsPackExtraFilePNG);
++			free(tmp);
++		
++		}
++#endif
+ 		// все наши файлы внутри VFS лежат в директории DATA
+ 		strcpy(DstFileName, "DATA/");
+ 		strcat(DstFileName, VFSFilesList[i]);
+@@ -792,5 +934,3 @@
+ }
+ 
+ 
+-
+-
+Index: CMakeLists.txt
+===================================================================
+--- CMakeLists.txt	(Revision 266)
++++ CMakeLists.txt	(Arbeitskopie)
+@@ -50,6 +50,7 @@
+ 
+ FIND_PACKAGE(OpenAL REQUIRED)
+ SET(ALL_LIBRARIES ${ALL_LIBRARIES} ${OPENAL_LIBRARY})
++SET(ALL_LIBRARIES ${ALL_LIBRARIES} -lpng)
+ 
+ 
+ 
